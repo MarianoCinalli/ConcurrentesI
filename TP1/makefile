@@ -3,19 +3,19 @@
  TEMP := $(subst src/,obj/,$(SOURCES))
  OBJECTS := $(subst .cpp,.o,$(TEMP))
  COMPILER := g++
- LIBRARIES := -lSDL2
+ LIBRARIES := 
  LINKING_FLAGS := $(LIBRARIES) -Wall -I headers/ -o
- COMPILING_FLAGS := $(LIBRARIES) -Wall -I headers/ -c -o
+ COMPILING_FLAGS := -g -std=c++11 -Wall -I headers/ -c -o
 
 # Target
  all: directories main
 
  main: $(OBJECTS)
-	$(COMPILER) $(LINKING_FLAGS) $@ $^
+	$(COMPILER) $(LINKING_FLAGS) $@ $^ $(LIBRARIES)
 
  directories:
 	mkdir ./obj
-	find src -type d | tr src obj | xargs mkdir -p
+	find src -type d | sed -e 's/src/obj/g' | xargs mkdir -p
 
 # Pattern
  obj/%.o: src/%.cpp
@@ -27,4 +27,3 @@
 	rm main
 
 .PHONY: all clean main
-
