@@ -14,7 +14,7 @@
 	$(COMPILER) $(LINKING_FLAGS) $@ $^ $(LIBRARIES)
 
  directories:
-	mkdir ./obj
+	mkdir -p ./obj
 	find src -type d | sed -e 's/src/obj/g' | xargs mkdir -p
 
 # Pattern
