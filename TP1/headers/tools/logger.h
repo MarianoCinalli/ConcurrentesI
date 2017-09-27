@@ -3,15 +3,14 @@
 
 #include <iostream>
 #include <string>
-#include <pwd.h>
 #include "interfaces/Loggable.h"
 
 // File write
 #include <fstream>
 
 // Time
-#include <chrono>
 #include <ctime>
+#include <unistd.h>
 
 std::string getDate();
 
@@ -28,5 +27,7 @@ int log(std::string messageToConcatenate, const char* charsToConcatenate, int me
 int log(std::string messageToConcatenate, char* charsToConcatenate, int messageLevel);
 int log(std::string messageToConcatenate, Loggable* classToConcatenate, int messageLevel);
 int log(Loggable* classToConcatenate, int messageLevel);
+
+void flushLog();
 
 #endif

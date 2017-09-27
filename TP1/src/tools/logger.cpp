@@ -4,12 +4,16 @@ extern int LOG_MIN_LEVEL;
 extern std::ofstream LOG_FILE_POINTER;
 
 std::string getDate() {
+    std::time_t now = std::time(nullptr);
+    struct tm tstruct;
+    char buf[40];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%F %T", &tstruct);
+    return buf;
+}
 
-    std::time_t timeT = std::time(nullptr);
-    std::string timeString = std::asctime(std::localtime(&timeT));
-    unsigned int length = timeString.size();
-    timeString.resize(--length);
-    return timeString;
+std::string getPID() {
+    return std::to_string(getpid());
 }
 
 // PRE: Global variables LOG_MIN_LEVEL and LOG_FILE_POINTER have to be initialized.
@@ -19,7 +23,7 @@ int log(std::string message, int messageLevel) {
         return 1;
     }
     std::string timeString = getDate();
-    std::string toLog = "[" + getDate() + "] : " + message + "\n";
+    std::string toLog = "[" + getDate() + " - " + getPID() + "] : " + message + "\n";
     LOG_FILE_POINTER << toLog;
     return 0;
 }
@@ -27,7 +31,7 @@ int log(std::string message, int messageLevel) {
 // Logs a separator indicating the session start.
 int logSessionStarted() {
     std::string separator = "========================================================================================================== \n";
-    std::string sessionStartHeader = "Program started at " + getDate() + "\n";
+    std::string sessionStartHeader = "Program started at " + getDate() + " by " + getPID() + "\n";
     LOG_FILE_POINTER << separator;
     LOG_FILE_POINTER << sessionStartHeader;
     LOG_FILE_POINTER << separator;
@@ -37,10 +41,14 @@ int logSessionStarted() {
 // Logs a separator indicating the session finished.
 int logSessionFinished() {
     std::string separator = "========================================================================================================== \n";
-    std::string sessionFinishedHeader = "Program finished at " + getDate()+ "\n";
+    std::string sessionFinishedHeader = "Program finished at " + getDate() + " by " + getPID() + "\n";
     LOG_FILE_POINTER << separator;
     LOG_FILE_POINTER << sessionFinishedHeader;
     return 0;
+}
+
+void flushLog() {
+    LOG_FILE_POINTER.flush();
 }
 
 // Overloaded loggers with concatenators ---------------------------------------------------------------------
@@ -78,7 +86,7 @@ int log(Loggable* classToConcatenate, int messageLevel) {
     if (classToConcatenate != NULL) {
         toLog = classToConcatenate->logMemberVariables();
     } else {
-        toLog = "[ **error** char* is NULL]";
+        toLog = "[ **error** classToConcatenate* is NULL]";
     }
     return log(toLog, messageLevel);
 }
@@ -88,7 +96,7 @@ int log(std::string messageToConcatenate, Loggable* classToConcatenate, int mess
     if (classToConcatenate != NULL) {
         concatenatedMessage = messageToConcatenate + classToConcatenate->logMemberVariables();
     } else {
-        concatenatedMessage = messageToConcatenate + "[ **error** char* is NULL]";
+        concatenatedMessage = messageToConcatenate + "[ **error** classToConcatenate* is NULL]";
     }
     return log(concatenatedMessage, messageLevel);
 }

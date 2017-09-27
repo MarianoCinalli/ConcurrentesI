@@ -2,19 +2,26 @@
 #include <string>
 #include "tools/logger.h"
 #include "tools/Constants.h"
+#include <unistd.h>
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
 std::ofstream LOG_FILE_POINTER;
 // Constants ------------------------------------------------------
 
-int main(int argc, char* argv[]){
-    std::string logFileName = "/var/tmp/beachVoley.log";
+void dosomething() { 
+    log("Hola mi pid es ", getpid(), 3);
+}
+
+int main(int argc, char* argv[]) {
+    // Initialization
+    srand(time(NULL));
+    std::string logFileName = "beachVoley.log";
     LOG_FILE_POINTER.open(logFileName, std::ofstream::app);
+    // End Initialization
     logSessionStarted();
-	std::cout << "Hello World!" << std::endl;
-    std::cout << "MIN_SETS_DEFAULT is: " << MIN_SETS_DEFAULT << std::endl;
-    std::cout << "MAX_SETS_DEFAULT is: " << MAX_SETS_DEFAULT << std::endl;
+    // Main body
+    // End Main body
 	logSessionFinished();
 
 	return 0;
