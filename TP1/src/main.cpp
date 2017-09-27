@@ -15,7 +15,7 @@ void dosomething() {
 
 int main(int argc, char* argv[]) {
     // Initialization
-    srand(time(NULL));
+    srand(time(NULL)); // Para calcular randoms
     std::string logFileName = "beachVoley.log";
     LOG_FILE_POINTER.open(logFileName, std::ofstream::app);
     // End Initialization
