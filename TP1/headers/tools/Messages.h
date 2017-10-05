@@ -1,11 +1,4 @@
-#include <iostream>
 #include <string>
-
-#ifndef MESSAGE_H
-#define MESSAGE_H
-
-
-class MESSAGE_H{
 
 	/*
 	*	struct sent to fifoPlayerManager, used by PlayerManager.
@@ -64,6 +57,3 @@ class MESSAGE_H{
 		int setsWonTeam1;
 		int setsWonTeam2;
 	};
-
-
-};
