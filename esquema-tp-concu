@@ -1,0 +1,98 @@
+
+
+
+
+CommandManager: recibe jugadores y se encarga de armar equipos
+	contiene:
+			- tipos de mensajes
+
+	Implemtacion: 
+			- addPlayer agrega un jugador  que estaba fuera del predio a fifoPlayerManager (dentro del predio)
+			- removePlayer al reves del anterior.
+			- raiseTide levanta la marea, mandando mensaje al courtManager
+
+
+
+
+
+Player Manager: recibe jugadores y controla la condición de corte y 
+	contiene:
+
+			- lista de todos los jugadores con (id,partidos jugados (lambda), estado)
+			- lista de jugadores en espera en el predio
+
+	Implemtacion: 
+			- si llega un mensaje de addPlayer si no se supera a M, agrega a la lista y lo acola en fifoTeamManager y si se sepera se pone en jugadores en espera.
+			- se verifica la cantidad de jugadores en el predio contado a aquellos que tienen estado activo.
+			- si llega un mensaje de remove id jugador y este está jugando, al terminar el partido del jugador id, el PlayerManager no lo acola en el fifoTeamManager.
+			Cuando llega el mensaje de remove y hay jugadores en espera, se acola  uno de ellos.
+
+
+
+
+Team Manager: recibe jugadores y se encarga de armar equipos
+	contiene:
+			- fifoTeamManager
+			- lista de m jugadores con (id,TeamMates[])
+			- jugador en espera de equiṕo.
+
+	Implemtacion: 
+			- mientras no tenga 2 jugadores para armar un equipo, lee el fifo
+			- cuando tiene 2 jugadores escribe el team en el fifoMatchManager
+
+
+
+
+Match Manager: recibe equipos y se encarga de armar juegos
+	contiene:
+			- fifoMatchManager
+			- lista de n equipos en espera
+
+	Implemtacion: 
+			- mientras no tenga 2 teams para armar un match, lee el fifo fifoMatchManager
+			- cuando tiene 2 teams escribe el team en el fifo de fifoMatches
+
+
+
+
+
+courts: recibe matches y se encarga de jugarlos
+	contiene:
+			- fifoMatches
+			- 
+
+	Implemtacion: 
+
+			- escribe en fifoPlayerManager el estado del partido jugado por los 4 players - si terminó o no el partido -
+			- escribe en fifoResultManager el resultado del partido
+
+
+
+
+
+ResultManager: recibe resultados de cada partido
+	contiene:
+			- fifoResultmanager
+			- n jugadores con id, puntaje.
+
+	Implemtacion: 
+
+			- recibe jugadores, si no lo tiene lo da de alta.
+			- puede interpretar los resultados 
+
+
+
+
+CourtManager: recibe
+	contiene:
+			- fifoCourtManager
+			- matriz de courts
+
+	Implemtacion: 
+			- Lee el mensaje de RaiseTide y manda a una signal a los courts correspondientes
+			- Inicializa las canchas (lanzar procesos)
+
+
+			
+
+
