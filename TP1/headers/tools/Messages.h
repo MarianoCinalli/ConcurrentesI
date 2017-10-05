@@ -1,5 +1,8 @@
 #include <string>
 
+#ifndef MESSAGES_H_
+#define MESSAGES_H_
+
 	/*
 	*	struct sent to fifoPlayerManager, used by PlayerManager.
 	*	CommandManager and Court sent this type of struct
@@ -57,3 +60,5 @@
 		int setsWonTeam1;
 		int setsWonTeam2;
 	};
+
+#endif // MESSAGES_H_
