@@ -9,11 +9,15 @@ class MESSAGE_H{
 
 	/*
 	*	struct sent to fifoPlayerManager, used by PlayerManager.
-	*	
 	*	CommandManager and Court sent this type of struct
 	*	if CommandManager send this message PlayerManager ignore idPlayer
-	*	
 	*	types of status: remove, add, finalized, disrupted
+	*
+	*
+	* 	struct also sent to FifoTeamManager,
+	*	PlayerManager sent this struct to notify status 
+	*	of last Game the player, to TeamManager.
+	*
 	*/
 	struct messagePlayer {
 		int idPlayer;
@@ -22,9 +26,8 @@ class MESSAGE_H{
 
 
 	/*
-	*	struct sent to fifoTeamManager, used for TeamManager 
-	*
-	*	PlayerManager send this type of struct
+	*	struct sent to fifoMatchManager, used for MatchManager 
+	*	TeamManager send this type of struct.
 	*	
 	*/
 	struct messageTeam {
@@ -33,6 +36,11 @@ class MESSAGE_H{
 	};
 
 
+	/*
+	*	struct sent to fifoMatches, used for all Courts
+	*	MatchManager send this type of struct.
+	*	
+	*/
 	struct messageMatch {
 		int idPlayer1_Team1;
 		int idPlayer2_team1;
@@ -41,6 +49,12 @@ class MESSAGE_H{
 	};
 
 
+
+	/*
+	*	struct sent to fifoResultManager, used for resultManager
+	*	each court send this type of struct when its end successtly.
+	*	
+	*/
 	struct messageResult {
 		int idPlayer1_Team1;
 		int idPlayer2_team1;
