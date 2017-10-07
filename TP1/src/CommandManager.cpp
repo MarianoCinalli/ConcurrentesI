@@ -2,11 +2,10 @@
 #include <iostream>
 
 //include "log.h"
-#include "fifos/FifoEscritura.h"
-
 
 CommandManager::CommandManager(){
 	this->finalizedProcess = false;
+	this->fifoManagerPlayer = new FifoEscritura(FILE_FIFO);
 }
 
 
@@ -56,6 +55,10 @@ void CommandManager::receiveCommand(char command){
 
 void CommandManager::addPlayer(){
 	std::cout<<"agregue un judador"<<std::endl;
+	messagePlayer *player = new messagePlayer;
+	player->idPlayer = 0;
+	player->status = "ADD";
+	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
 }
 
 void CommandManager::removePlayer(){

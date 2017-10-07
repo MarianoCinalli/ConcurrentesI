@@ -7,6 +7,8 @@
 
 
 #include <string>
+#include "fifos/FifoEscritura.h"
+#include "tools/Messages.h"
 
 #ifndef COMMANDMANAGER_H
 #define COMMANDMANAGER_H
@@ -65,6 +67,7 @@ private:
 	void receiveCommand(char command);
 
 	bool finalizedProcess;
+	FifoEscritura *fifoManagerPlayer;
 
 public:
 

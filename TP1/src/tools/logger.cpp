@@ -19,7 +19,7 @@ std::string getPID() {
 // PRE: Global variables LOG_MIN_LEVEL and LOG_FILE_POINTER have to be initialized.
 // Returns 0 if the message was logged, 1 otherwise.
 int log(std::string message, int messageLevel) {
-    if (messageLevel < LOG_MIN_LEVEL) {
+if (messageLevel < LOG_MIN_LEVEL) {
         return 1;
     }
     std::string timeString = getDate();
