@@ -1,5 +1,3 @@
-// "Copyright 2016 <Jobify>"
-
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
@@ -13,6 +11,9 @@ static const int MIN_SETS_DEFAULT = 3;
 static const int MAX_SETS_DEFAULT = 5;
 
 enum PCStatus {freeS=0, busyS, disableS};
+enum CommandType {addType=0, removeType=1};
+enum TideType {raiseType=0, lowType=1};
+
 
 struct Player {
     int id;

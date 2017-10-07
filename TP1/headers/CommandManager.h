@@ -4,21 +4,20 @@
 * 
 *
 */
-
+#ifndef COMMANDMANAGER_H
+#define COMMANDMANAGER_H
 
 #include <string>
 #include "fifos/FifoEscritura.h"
 #include "tools/Messages.h"
+#include "tools/Constants.h"
 
-#ifndef COMMANDMANAGER_H
-#define COMMANDMANAGER_H
-
-const std::string FILE_FIFO = "/tmp/file_fifo_CommandManager_PlayerManager";
+const std::string FILE_FIFO_MANAGER_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
+const std::string FILE_FIFO_TIDE = "/tmp/file_fifo_CommandManager_CourtManager";
 
 class CommandManager{
 
 private:
-
 
 	/*
 	* Pre: The Village has to be created and initialized
@@ -29,7 +28,6 @@ private:
 	*		else the player is in state of waiting to into to Village
 	*/
 	void addPlayer();
-
 
 	/*
 	* Pre: The Village has to be created and initialized
@@ -42,7 +40,6 @@ private:
 	*/
 	void removePlayer();
 
-
 	/*
 	* Pre: The Village, PlayerManager,CourtManager and all Courts  
 	*		have to be created and initialized
@@ -51,7 +48,6 @@ private:
 	*		finalizing to the courts' matches affected and disables them indefinitely
 	*/
 	void raiseTide();
-
 
 	/*
 	* Pre: The Village, PlayerManager,CourtManager and all Courts  
@@ -63,19 +59,17 @@ private:
 	*/	
 	void lowTide();
 
-
 	void receiveCommand(char command);
 
 	bool finalizedProcess;
 	FifoEscritura *fifoManagerPlayer;
+	FifoEscritura *fifoTide;
 
 public:
 
 	CommandManager();
+	~CommandManager();
 	void execute();
-
-
-
 
 };
 #endif // COMMANDMANAGER_H

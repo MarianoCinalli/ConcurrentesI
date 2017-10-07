@@ -3,6 +3,7 @@
 #ifndef MESSAGES_H_
 #define MESSAGES_H_
 
+#include "Constants.h"
 	/*
 	*	struct sent to fifoPlayerManager, used by PlayerManager.
 	*	CommandManager and Court send this type of struct
@@ -17,7 +18,7 @@
 	*/
 	struct messagePlayer {
 		int idPlayer;
-		std::string status;
+		CommandType status;
 	};
 
 
@@ -59,6 +60,13 @@
 
 		int setsWonTeam1;
 		int setsWonTeam2;
+	};
+
+	/*
+		* Mensaje de comunicación entre CommandManager y CourtManager
+	*/
+	struct messageTide {
+		TideType status;
 	};
 
 #endif // MESSAGES_H_
