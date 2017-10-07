@@ -1,5 +1,8 @@
 #include <vector>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include "tools/logger.h"
 
 #ifndef PROCESSSPAWNER_H

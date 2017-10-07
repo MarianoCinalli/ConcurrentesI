@@ -16,7 +16,7 @@ void CommandManager::execute(){
 	while (!finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);
-	}
+	}	
 
 }
 

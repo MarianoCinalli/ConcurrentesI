@@ -28,11 +28,11 @@ int main(int argc, char* argv[]) {
     // Main body
 
     //testChoto
-   // CommandManager *commandManager = new CommandManager();
-   // void (*f1)();
-   // f1 = commandManager->execute();
+    //CommandManager *commandManager = new CommandManager();
+   	// void (*f1)();
+    //f1 = commandManager->execute();
     ProcessSpawner *processSpawner = new ProcessSpawner();
-    processSpawner->spawnProcess(hacerAlgo);
+    processSpawner->spawnProcess(&hacerAlgo);
 
 
     // End Main body

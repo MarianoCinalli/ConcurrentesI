@@ -13,6 +13,7 @@ ProcessSpawner::~ProcessSpawner() {
 // Al terminar la ejecucion de la funcion el nuevo proceso finaliza. 
 int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 	pid_t pid;
+	int status=0;
 	flushLog(); // Flusheo al log, porque sino pueden aparecer logs repetidos.
 	pid = fork();
 	if ( pid == 0 ) {
@@ -23,6 +24,7 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 		// Padre
 		log("Proceso creado, su pid es ", pid, 3);
 		this->pids.push_back(pid);
+		wait(NULL);
 	}
 	return 0;
 }
