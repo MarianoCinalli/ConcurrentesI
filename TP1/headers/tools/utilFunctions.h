@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #ifndef UTILFUNCTIONS_H
 #define UTILFUNCTIONS_H
 
