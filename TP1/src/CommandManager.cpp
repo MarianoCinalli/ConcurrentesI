@@ -83,6 +83,8 @@ void CommandManager::lowTide(){
 }	
 
 CommandManager::~CommandManager(){
+	this->fifoManagerPlayer->cerrar();
+	this->fifoTide->cerrar();
 	delete this->fifoManagerPlayer;
 	delete this->fifoTide;
 }
