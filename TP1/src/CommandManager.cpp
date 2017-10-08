@@ -41,13 +41,14 @@ void CommandManager::receiveCommand(char command){
 			break;
 
 		//condición para testear
-		case 'q' :
+		case 'q' : {
 			this->finalizedProcess = true;
 			messagePlayer *player = new messagePlayer;
 			player->idPlayer = 0;
 			player->status = CommandType::killType;
 			this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
 			break;
+		}
 
 		default:
 			std::cout<<"loggear comando erroneo"<<std::endl;
