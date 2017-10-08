@@ -39,7 +39,7 @@ void PlayerManager::execute(){
 	while(!this->finalizedProcess){
 		struct messagePlayer *message = this->readFifoPlayerManager();
 		std::cout<<"leiiiiii "<<message->idPlayer<<std::endl;
-		if(message->status == CommandType::kill)
+		if(message->status == CommandType::killType)
 
 		this->writeFifoTeamManager();		
 	}
