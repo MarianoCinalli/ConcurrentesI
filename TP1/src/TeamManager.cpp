@@ -2,10 +2,8 @@
 
 TeamManager::TeamManager() {
     this->playsByPlayer = new std::map<int, std::vector<int>*>();
-}
-
-
-TeamManager::~TeamManager() {
+    this->fifoTeamManager = new FifoLectura(FILE_FIFO_PLAYER);
+    this->fifoTeamManager->abrir();
 }
 
 void TeamManager::execute() {
@@ -23,4 +21,19 @@ bool TeamManager::playersPlayBetween(int idPlayer1, int idPlayer2) {
     else
       // std::cout << "Element not found in myvector\n";    
       return false;
+}
+
+messagePlayer* TeamManager::readPlayer() {
+    //fifoManagerPlayer->leer();
+}
+
+TeamManager::~TeamManager() {
+    std::map<int, std::vector<int>*>::iterator it;
+    for(it = this->playsByPlayer->begin(); it != this->playsByPlayer->end(); it++) {
+        std::vector<int> *plays = (*it).second;
+        delete plays; 
+    }
+    delete this->playsByPlayer;
+    this->fifoTeamManager->cerrar();
+    delete this->fifoTeamManager;
 }

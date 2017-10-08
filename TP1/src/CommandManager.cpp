@@ -43,6 +43,10 @@ void CommandManager::receiveCommand(char command){
 		//condición para testear
 		case 'q' :
 			this->finalizedProcess = true;
+			messagePlayer *player = new messagePlayer;
+			player->idPlayer = 0;
+			player->status = CommandType::killType;
+			this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
 			break;
 
 		default:

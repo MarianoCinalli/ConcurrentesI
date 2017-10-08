@@ -12,7 +12,9 @@
 #include <vector>
 #include <algorithm>    // std::find
 #include "tools/Constants.h"
+#include "tools/Messages.h"
 #include "interfaces/Executable.h"
+#include "fifos/FifoLectura.h"
 
 const std::string FILE_FIFO_PLAYER = "/tmp/file_fifo_PlayerManager_TeamManager";
 const std::string FILE_FIFO_TEAM = "/tmp/file_fifo_TeamManager_MatchManager";
@@ -23,13 +25,14 @@ class TeamManager: public Executable {
         
         bool finalize = false;
         std::map<int, std::vector<int>*> *playsByPlayer;
-
+        FifoLectura *fifoTeamManager;
 
     public:
 
         TeamManager();
         ~TeamManager();
         bool playersPlayBetween(int idPlayer1, int idPlayer2);
+        messagePlayer* readPlayer();
         void execute();
 
 };
