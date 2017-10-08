@@ -19,6 +19,7 @@ public:
 	ProcessSpawner();
 	~ProcessSpawner();
 	int spawnProcess(functiontype functionPointer);
+	int spawnProcesses(std::vector<functiontype>*funtions);
 };
 
 #endif // PROCESSSPAWNER_H

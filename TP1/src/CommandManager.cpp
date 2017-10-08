@@ -6,13 +6,15 @@
 CommandManager::CommandManager(){
 	this->finalizedProcess = false;
 	this->fifoManagerPlayer = new FifoEscritura(FILE_FIFO_MANAGER_PLAYER);
-	this->fifoManagerPlayer->abrir();
+	//this->fifoManagerPlayer->abrir();
 	this->fifoTide = new FifoEscritura(FILE_FIFO_TIDE);
-	this->fifoTide->abrir();
+	//this->fifoTide->abrir();
+	std::cout<<"construi fifo lectura command"<<std::endl;
 }
 
 void CommandManager::execute(){
 	char value;
+	std::cout<<"ejecutando command "<<std::endl;
 	while (!finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);
@@ -22,6 +24,8 @@ void CommandManager::execute(){
 
 
 void CommandManager::receiveCommand(char command){
+
+	this->fifoManagerPlayer->abrir();
 
 	switch (command){
 		case 'a' :
@@ -44,9 +48,10 @@ void CommandManager::receiveCommand(char command){
 		case 'q' : {
 			this->finalizedProcess = true;
 			messagePlayer *player = new messagePlayer;
-			player->idPlayer = 0;
+			player->idPlayer = 10;
 			player->status = CommandType::killType;
 			this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+			std::cout<<"Termino command Mannager"<<std::endl;
 			break;
 		}
 

@@ -9,16 +9,28 @@
 #include "CommandManager.h"
 #include "TeamManager.h"
 
+#include "PlayerManager.h"
+
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
 std::ofstream LOG_FILE_POINTER;
 // Constants ------------------------------------------------------
 
 
+void hacerOtraCosa(){
+    PlayerManager *playerManager = new PlayerManager(10,5);
+    std::cout<<"construi hacer otra cosa"<<std::endl;
+	playerManager->execute();
+}
+
+
 void hacerAlgo(){
-	CommandManager *commandManager = new CommandManager();
+    CommandManager *commandManager = new CommandManager();
+    std::cout<<"construi hacer algo "<<std::endl;
 	commandManager->execute();
 }
+
+typedef void (*functiontype)();
 
 int main(int argc, char* argv[]) {
     // Initialization
@@ -32,11 +44,16 @@ int main(int argc, char* argv[]) {
     //CommandManager *commandManager = new CommandManager();
    	// void (*f1)();
     //f1 = commandManager->execute();
-    ProcessSpawner *processSpawner = new ProcessSpawner();
-    processSpawner->spawnProcess(&hacerAlgo);
 
+    std::vector<functiontype> *functions = new std::vector<functiontype>();
+    functions->push_back(hacerAlgo);
+    functions->push_back(hacerOtraCosa);
+    ProcessSpawner *processSpawner = new ProcessSpawner();
+    processSpawner->spawnProcesses(functions);
+    
+    delete functions;
     // Team Manager Test
-    TeamManager *teamManager = new TeamManager();
+    //TeamManager *teamManager = new TeamManager();
 
     // End Main body
 	logSessionFinished();

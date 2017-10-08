@@ -2,15 +2,16 @@
 
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->channelToRead = new FifoLectura(FILE_FIFO_READ);
-	this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);
-	this->channelToRead->abrir();
-	this->channelToWrite->abrir();	
+	//this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);
+	//this->channelToRead->abrir();
+	//this->channelToWrite->abrir();	
 	this->playersToGame = new std::vector<Player*>();
 	this->playersToWait = new std::vector<Player*>();
 	this->idPlayer = 0;
 	this->maxPlayersVillage = maxPlayersVillage;
 	this->maxMatchesPerPlayer = maxMatchesPerPlayer;
 	this->finalizedProcess = false;
+	std::cout<<"construi "<<std::endl;
 }
 
 PlayerManager::~PlayerManager(){
@@ -36,10 +37,12 @@ void PlayerManager::selectPlayerToRemove(){
 
 //falta terminar parser
 void PlayerManager::execute(){
+	this->channelToRead->abrir();
 	while(!this->finalizedProcess){
 		struct messagePlayer *message = this->readFifoPlayerManager();
-		std::cout<<"leiiiiii "<<message->idPlayer<<std::endl;
+		//std::cout<<"leiiiiii "<<message->idPlayer<<std::endl;
 		if(message->status == CommandType::killType)
+			this->finalizedProcess = true;
 
 		this->writeFifoTeamManager();		
 	}
@@ -81,7 +84,7 @@ struct messagePlayer* PlayerManager::readFifoPlayerManager(){
 	int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
 
 	if(result != -1){
-		std::cout<<"todo bien..... al leer bufferPlayerManager"<<std::endl;
+		std::cout<<"todo bien..... al leer bufferPlayerManager  "<<result<<std::endl;
 	}else{
 		//loggear Error
 		std::cout<<"Erro..... al leer bufferPlayerManager"<<std::endl;
