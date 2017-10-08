@@ -38,6 +38,7 @@
 	*	
 	*/
 	struct messageMatch {
+		std::string operation;
 		int idPlayer1_Team1;
 		int idPlayer2_team1;
 		int idPlayer1_Team2;
