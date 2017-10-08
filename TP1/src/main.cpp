@@ -9,7 +9,7 @@
 #include "CommandManager.h"
 #include "TeamManager.h"
 
-#include "PlayerManager.h"
+#include "../headers/playerManager/PlayerManager.h"
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;

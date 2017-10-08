@@ -30,8 +30,8 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 }
 
 
-// Ejecuta la funcion en un nuevo proceso.
-// Al terminar la ejecucion de la funcion el nuevo proceso finaliza. 
+// Ejecuta N cantidad de de funciones
+// Al terminar todas las ejecucion de cada funcion el nuevo proceso finaliza. 
 int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 
 	pid_t pid;

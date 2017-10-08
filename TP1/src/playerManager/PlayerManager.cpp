@@ -1,4 +1,4 @@
-#include "PlayerManager.h"
+#include "../headers/playerManager/PlayerManager.h"
 
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->channelToRead = new FifoLectura(FILE_FIFO_READ);
@@ -46,6 +46,7 @@ void PlayerManager::execute(){
 
 		this->writeFifoTeamManager();		
 	}
+	std::cout<<"termina el proceso player correctamente "<<std::endl;
 }
 
 

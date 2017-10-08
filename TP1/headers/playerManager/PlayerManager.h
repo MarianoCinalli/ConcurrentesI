@@ -1,10 +1,11 @@
-#include "fifos/FifoLectura.h"
-#include "fifos/FifoEscritura.h"
+#include "../fifos/FifoLectura.h"
+#include "../fifos/FifoEscritura.h"
 #include <vector>
 #include "Player.h"
-#include "tools/utilFunctions.h"
-#include "tools/Constants.h"
-#include "tools/Messages.h"
+#include <string.h>
+#include "../tools/utilFunctions.h"
+#include "../tools/Constants.h"
+#include "../tools/Messages.h"
 
 
 #ifndef PLAYERMANAGER_H

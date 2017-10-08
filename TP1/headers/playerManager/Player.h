@@ -1,5 +1,4 @@
-#include <string.h>
-#include "tools/Constants.h"
+#include "../tools/Constants.h"
 
 #ifndef PLAYER_H
 #define PLAYER_H

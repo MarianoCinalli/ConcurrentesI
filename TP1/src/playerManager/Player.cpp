@@ -1,5 +1,4 @@
-
-#include "Player.h"
+#include "../headers/playerManager/Player.h"
 
 Player::Player(int id){
 	this->id = id;
