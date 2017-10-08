@@ -7,6 +7,7 @@
 
 #include "tools/ProcessSpawner.h"
 #include "CommandManager.h"
+#include "TeamManager.h"
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
@@ -34,6 +35,8 @@ int main(int argc, char* argv[]) {
     ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcess(&hacerAlgo);
 
+    // Team Manager Test
+    TeamManager *teamManager = new TeamManager();
 
     // End Main body
 	logSessionFinished();
