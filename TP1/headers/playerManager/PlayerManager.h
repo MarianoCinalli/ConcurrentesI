@@ -34,7 +34,9 @@ private:
 	void addPlayerToGame();
 	struct messagePlayer* readFifoPlayerManager();
 	void writeFifoTeamManager();
-	void parseMessage(struct messagePlayer* message);	
+	void parseMessage(struct messagePlayer* message);
+	void writeMessagePlayer(struct messagePlayer* message);
+	void updateMatchesPlayer(int idPlayer);
 
 public:
 	PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayers);

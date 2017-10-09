@@ -2,7 +2,7 @@
 
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->channelToRead = new FifoLectura(FILE_FIFO_READ);
-	//this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);	
+	this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);	
 	this->playersToGame = new std::vector<Player*>();
 	this->playersToWait = new std::vector<Player*>();
 	this->idPlayer = 0;
@@ -12,8 +12,11 @@ PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 }
 
 PlayerManager::~PlayerManager(){
+	this->channelToRead->cerrar();
+	this->channelToWrite->cerrar();
+
 	delete this->channelToRead;
-	//delete this->channelToWrite;
+	delete this->channelToWrite;
 
 	std::vector<Player*>::iterator it;
 
@@ -36,13 +39,16 @@ int PlayerManager::generateId(){
 
 void PlayerManager::execute(){
 	this->channelToRead->abrir();
+	//this->channelToWrite->abrir();
 	struct messagePlayer* message;
 	while(!this->finalizedProcess){
 		message = this->readFifoPlayerManager();
 		this->parseMessage(message);
-		//this->writeFifoTeamManager();		
+		this->writeFifoTeamManager();		
 	}
 	log("El proceso PlayerManager finaliza correctamente ",INFORMATION);
+	log("la jugadores en predio ",this->playersToGame->size(),INFORMATION);
+	log("la jugadores en espera ",this->playersToWait->size(),INFORMATION);
 }
 
 
@@ -61,6 +67,18 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 
 		case CommandType::removeType :
 			this->removePlayerToGame();
+			break;
+
+		//mesage de Court notificando que el jugador no completo el partido	
+		//notifica a TeamManager que el ultimo equipo del jugador no jugó
+		case CommandType::gameCanceled :
+			this->writeMessagePlayer(message);
+			break;
+
+		//mesage de Court notificando que el jugador completo el partido
+		//incrementa la cantidad de partidos jugados del jugador
+		case CommandType::gameCompleted :
+			this->updateMatchesPlayer(message->idPlayer);
 			break;
 	}
 	
@@ -150,10 +168,11 @@ struct messagePlayer* PlayerManager::readFifoPlayerManager(){
 	int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
 
 	if(result == -1){
-		log("No se pudo realizar la lectura del fifo ",__FILE__,__LINE__);
+		log("No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
 	}else if (result != sizeof(messagePlayer)){
-		log("Se ha leido una cantidad erronea de bytes del fifo ",__FILE__,__LINE__);
+		log("Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
 	}
+	
 	return buff;
 }
 
@@ -166,19 +185,49 @@ void PlayerManager::writeFifoTeamManager(){
 	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
 		if((*it)->isFree()){
 			//envia un jugador al TeamManager
+			(*it)->playGame();
 			struct messagePlayer *buff = new messagePlayer;
 			memset(buff,0,sizeof(messagePlayer));
 			buff->idPlayer = (*it)->getId();
-		
-			int result = this->channelToWrite->escribir(buff,sizeof(messagePlayer));
-
-			if(result == -1){
-				log("No se pudo realizar la escritura en el fifo ",__FILE__,__LINE__);
-			}else if (result != sizeof(messagePlayer)){
-				log("Se ha escrito una cantidad erronea de bytes en el fifo ",__FILE__,__LINE__);
-			}
-
+			this->writeMessagePlayer(buff);
+			delete buff;
 		}
 	}
 }
 
+
+//para notificar a teamManager que no se completo el partido del jugador
+void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
+
+	int result = this->channelToWrite->escribir(message,sizeof(messagePlayer));
+
+		if(result == -1){
+			log("No se pudo realizar la escritura en el fifo ", "algo", __LINE__, ERROR);
+		}else if (result != sizeof(messagePlayer)){
+			log("Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+		}
+
+}
+
+
+/**
+ * 
+ * 
+ * tiene que ver con la eliminacion para implementarlo
+ * 
+ * falta ver.....
+ * **/
+void PlayerManager::updateMatchesPlayer(int idPlayer){
+	std::vector<Player*>::iterator it;
+	bool found = false;
+	Player* player;
+
+	while(it != this->playersToGame->end() || !found){
+		player = (*it);
+		it++;
+		if(player->getId() == idPlayer){
+			found = true;
+			player->addGamePlayed();
+		}
+	}
+}
