@@ -24,6 +24,6 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 		log("Proceso creado, su pid es ", pid, 3);
 		this->pids.push_back(pid);
 	}
-	return 0;
+	return pid;
 }
 
