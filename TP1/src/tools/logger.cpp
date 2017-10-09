@@ -100,3 +100,18 @@ int log(std::string messageToConcatenate, Loggable* classToConcatenate, int mess
     }
     return log(concatenatedMessage, messageLevel);
 }
+
+
+
+int log(std::string messageToConcatenate, int integerToConcatenate, int messageLevel, std::string file, int line){
+    std::string intToString = std::to_string(integerToConcatenate);
+    std::string intLineToString = std::to_string(line);
+    std::string concatenatedMessage = messageToConcatenate + intToString + " in file " + file + " line: " + intLineToString;
+    return log(concatenatedMessage, messageLevel);
+}
+
+int log(std::string messageToConcatenate, int messageLevel, std::string file, int line){
+    std::string intLineToString = std::to_string(line);
+    std::string concatenatedMessage = messageToConcatenate + " in file " + file + " line: " + intLineToString;
+    return log(concatenatedMessage, messageLevel);
+}

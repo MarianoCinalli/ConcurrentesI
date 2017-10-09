@@ -6,7 +6,7 @@
 #include "../tools/utilFunctions.h"
 #include "../tools/Constants.h"
 #include "../tools/Messages.h"
-
+#include "../tools/logger.h"
 
 #ifndef PLAYERMANAGER_H
 #define PLAYERMANAGER_H
@@ -30,10 +30,11 @@ private:
 	std::vector<Player*> *playersToWait;
 	int generateId();
 	void removePlayersWithGamesCompleted();
-	void selectPlayerToRemove();
-	void createPlayer();
+	void removePlayerToGame();
+	void addPlayerToGame();
 	struct messagePlayer* readFifoPlayerManager();
-	void writeFifoTeamManager();	
+	void writeFifoTeamManager();
+	void parseMessage(struct messagePlayer* message);	
 
 public:
 	PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayers);

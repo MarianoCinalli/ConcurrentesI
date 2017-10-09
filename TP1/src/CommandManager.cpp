@@ -19,6 +19,7 @@ void CommandManager::execute(){
 		std::cin>>value;
 		this->receiveCommand(value);
 	}	
+	log("El proceso CommandManager finaliza correctamente ",INFORMATION);
 }
 
 
@@ -51,7 +52,6 @@ void CommandManager::receiveCommand(char command){
 			player->idPlayer = 10;
 			player->status = CommandType::killType;
 			this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
-			std::cout<<"Termino command Mannager"<<std::endl;
 			break;
 		}
 

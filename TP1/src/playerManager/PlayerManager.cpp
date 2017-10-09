@@ -2,21 +2,29 @@
 
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->channelToRead = new FifoLectura(FILE_FIFO_READ);
-	//this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);
-	//this->channelToRead->abrir();
-	//this->channelToWrite->abrir();	
+	//this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);	
 	this->playersToGame = new std::vector<Player*>();
 	this->playersToWait = new std::vector<Player*>();
 	this->idPlayer = 0;
 	this->maxPlayersVillage = maxPlayersVillage;
 	this->maxMatchesPerPlayer = maxMatchesPerPlayer;
 	this->finalizedProcess = false;
-	std::cout<<"construi "<<std::endl;
 }
 
 PlayerManager::~PlayerManager(){
 	delete this->channelToRead;
-	delete this->channelToWrite;
+	//delete this->channelToWrite;
+
+	std::vector<Player*>::iterator it;
+
+	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
+		delete (*it);
+	}
+
+	for(it = this->playersToWait->begin();it != this->playersToWait->end();it++){
+		delete (*it);
+	}
+
 	delete this->playersToGame;
 	delete this->playersToWait;
 }
@@ -26,55 +34,112 @@ int PlayerManager::generateId(){
 }
 
 
-
-//retorno el id del player seleccionado para salir del predio
-//falta
-void PlayerManager::selectPlayerToRemove(){
-	int position = getRandomBetween(0,this->playersToGame->size());
-	std::cout<<"sale el jguador "<<position<<std::endl;
+void PlayerManager::execute(){
+	this->channelToRead->abrir();
+	struct messagePlayer* message;
+	while(!this->finalizedProcess){
+		message = this->readFifoPlayerManager();
+		this->parseMessage(message);
+		//this->writeFifoTeamManager();		
+	}
+	log("El proceso PlayerManager finaliza correctamente ",INFORMATION);
 }
 
 
 //falta terminar parser
-void PlayerManager::execute(){
-	this->channelToRead->abrir();
-	while(!this->finalizedProcess){
-		struct messagePlayer *message = this->readFifoPlayerManager();
-		//std::cout<<"leiiiiii "<<message->idPlayer<<std::endl;
-		if(message->status == CommandType::killType)
+void PlayerManager::parseMessage(struct messagePlayer* message){
+
+	switch (message->status){
+		
+		case CommandType::killType :
 			this->finalizedProcess = true;
+			break;
 
-		this->writeFifoTeamManager();		
+		case CommandType::addType :
+			this->addPlayerToGame();
+			break;
+
+		case CommandType::removeType :
+			this->removePlayerToGame();
+			break;
 	}
-	std::cout<<"termina el proceso player correctamente "<<std::endl;
-}
-
-
-void PlayerManager::createPlayer(){
-	Player *player =  new Player(this->generateId());
 	
+	delete message;
+}
+
+
+/*agrega un jugador, si el predio tiene capacidad se agrega al mismo
+*si el predio no tiene capacidad se pone en espera
+*/
+void PlayerManager::addPlayerToGame(){
+
 	if ((int)this->playersToGame->size() <= this->maxPlayersVillage){
-		this->playersToGame->push_back(player);
+
+		//si hay jugadores en espera se agregan al predio, sino se crea 1 nuevo
+		if(!this->playersToWait->empty()){
+			Player* playerToGame = this->playersToWait->back();
+			this->playersToWait->pop_back();
+			this->playersToGame->push_back(playerToGame);
+		}else{
+			Player* player =  new Player(this->generateId());
+			this->playersToGame->push_back(player);
+		}
+
 	}else{
-		this->playersToWait->push_back(player);
+		Player* playerToWait =  new Player(this->generateId());
+		this->playersToWait->push_back(playerToWait);
 	}
 }
 
 
 
+/*
+*
+*
+*
+*Falta definir el remove
+*
+*
+*/
+void PlayerManager::removePlayerToGame(){
+	if(!this->playersToGame->empty()){
+		int position = getRandomBetween(0,this->playersToGame->size());
+		std::cout<<"sale el jguador en la pos "<<position<<std::endl;		
+	}
+}
 
+
+
+/*
+* remueve a todos aquellos jugadores que alcanzaron la cantidad maxima de partidos
+*/
 void PlayerManager::removePlayersWithGamesCompleted(){
 	std::vector<Player*>::iterator it;
+	Player * player;
+
 	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
 		if((*it)->getGamesPlayed() == this->maxMatchesPerPlayer){
 			//sacar del predio definitivamente al jugador
-			(*it)->gameOver();
-		}else if((*it)->getGamesPlayed() > this->maxMatchesPerPlayer) {
-			//loggear error
-			std::cout<<"Erro..... se jugaron mas partidos de los que debe"<<std::endl;
+			player = (*it);
+
+			//opcion1
+			player->gameOver();
+			this->playersToWait->push_back(player);
+			this->playersToGame->erase(it);
+
+			//opcion 2
+			/*
+			this->playersToGame->erase(it);
+			delete player;
+			*/
+			log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);
+
+		}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer) {
+			log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
 		}
 	}
 }
+
 
 
 
@@ -84,16 +149,18 @@ struct messagePlayer* PlayerManager::readFifoPlayerManager(){
 
 	int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
 
-	if(result != -1){
-		std::cout<<"todo bien..... al leer bufferPlayerManager  "<<result<<std::endl;
-	}else{
-		//loggear Error
-		std::cout<<"Erro..... al leer bufferPlayerManager"<<std::endl;
+	if(result == -1){
+		log("No se pudo realizar la lectura del fifo ",__FILE__,__LINE__);
+	}else if (result != sizeof(messagePlayer)){
+		log("Se ha leido una cantidad erronea de bytes del fifo ",__FILE__,__LINE__);
 	}
 	return buff;
 }
 
 
+/*
+* escribe un jugador al teamManager si este se encuentra libre
+*/
 void PlayerManager::writeFifoTeamManager(){
 	std::vector<Player*>::iterator it;
 	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
@@ -102,14 +169,13 @@ void PlayerManager::writeFifoTeamManager(){
 			struct messagePlayer *buff = new messagePlayer;
 			memset(buff,0,sizeof(messagePlayer));
 			buff->idPlayer = (*it)->getId();
-			//buff->status = 0; //no importa
 		
 			int result = this->channelToWrite->escribir(buff,sizeof(messagePlayer));
-			if(result != -1){
-				std::cout<<"todo bien"<<std::endl;
-			}else{
-				//loggear Error
-				std::cout<<"Erro..... en esribir bufferTeamManager"<<std::endl;
+
+			if(result == -1){
+				log("No se pudo realizar la escritura en el fifo ",__FILE__,__LINE__);
+			}else if (result != sizeof(messagePlayer)){
+				log("Se ha escrito una cantidad erronea de bytes en el fifo ",__FILE__,__LINE__);
 			}
 
 		}

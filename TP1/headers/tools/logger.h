@@ -30,4 +30,7 @@ int log(Loggable* classToConcatenate, int messageLevel);
 
 void flushLog();
 
+int log(std::string messageToConcatenate, int integerToConcatenate, int messageLevel, int file, int line);
+int log(std::string messageToConcatenate, int messageLevel, int file, int line);
+
 #endif

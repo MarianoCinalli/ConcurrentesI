@@ -1,5 +1,6 @@
 #include "tools/ProcessSpawner.h"
 #include <vector>
+#include "tools/Constants.h"
 
 extern std::ofstream LOG_FILE_POINTER;
 
@@ -37,18 +38,18 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 	pid_t pid;
 	std::vector<functiontype>::iterator it;
 	int totalFunctions = funtions->size();
-	log("creando funciones ", totalFunctions, 3);
+	log("creando funciones hijo ", totalFunctions, 3);
+	bool isChild = false;
+
 	for(it = funtions->begin();it != funtions->end();it++){
 		functiontype function = (*it);
-		std::cout<<"funcion "<<function<<std::endl;
 		pid = fork();
-		if (pid == 0) {
+		isChild = pid == 0;
+		if (isChild) {
 			function(); 
 			exit ( 0 );
 		} 
 	}
-
-	std::cout<<"Soy el padre y este es mi id ---> "<<getpid()<<std::endl;
 
 	for(int i = 0; i < totalFunctions; i++) {
 		log("Proceso creado, su pid es ", pid, 3);
