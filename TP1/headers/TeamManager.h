@@ -17,8 +17,11 @@
 #include "fifos/FifoLectura.h"
 #include "fifos/FifoEscritura.h"
 #include "tools/logger.h"
+#include <typeinfo>
 
 class TeamManager{//: public Executable {
+
+    const std::string TEAM_MANAGER_NAME = typeid(TeamManager).name();
 
     private:
         

@@ -46,9 +46,9 @@ void PlayerManager::execute(){
 		this->parseMessage(message);
 		this->writeFifoTeamManager();		
 	}
-	log("El proceso PlayerManager finaliza correctamente ",INFORMATION);
-	log("la jugadores en predio ",this->playersToGame->size(),INFORMATION);
-	log("la jugadores en espera ",this->playersToWait->size(),INFORMATION);
+	log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
+	log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
+	log(PLAYER_MANAGER_NAME + " : la jugadores en espera ",this->playersToWait->size(),INFORMATION);
 }
 
 
@@ -150,10 +150,10 @@ void PlayerManager::removePlayersWithGamesCompleted(){
 			this->playersToGame->erase(it);
 			delete player;
 			*/
-			log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);
+			log(PLAYER_MANAGER_NAME + " : Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);
 
 		}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer) {
-			log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
+			log(PLAYER_MANAGER_NAME + " : Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
 		}
 	}
 }
@@ -168,9 +168,9 @@ struct messagePlayer* PlayerManager::readFifoPlayerManager(){
 	int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
 
 	if(result == -1){
-		log("No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
 	}else if (result != sizeof(messagePlayer)){
-		log("Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
 	}
 	
 	return buff;
@@ -202,9 +202,9 @@ void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 	int result = this->channelToWrite->escribir(message,sizeof(messagePlayer));
 
 		if(result == -1){
-			log("No se pudo realizar la escritura en el fifo ", "algo", __LINE__, ERROR);
+			log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifo ", "algo", __LINE__, ERROR);
 		}else if (result != sizeof(messagePlayer)){
-			log("Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+			log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
 		}
 
 }
