@@ -17,18 +17,26 @@ std::ofstream LOG_FILE_POINTER;
 // Constants ------------------------------------------------------
 
 
-void hacerOtraCosa(){
+void executePlayerManager(){
     PlayerManager *playerManager = new PlayerManager(10,5);
-    std::cout<<"construi hacer otra cosa"<<std::endl;
+    log("INICIO DEL PLAYER_MANAGER",INFORMATION);
 	playerManager->execute();
 }
 
 
-void hacerAlgo(){
+void executeCommandManager(){
     CommandManager *commandManager = new CommandManager();
-    std::cout<<"construi hacer algo "<<std::endl;
+    log("INICIO DEL COMMAND_MANAGER",INFORMATION);
 	commandManager->execute();
 }
+
+void executeTeamManager(){
+    TeamManager *teamManager = new TeamManager();
+    log("INICIO DEL TEAM_MANAGER",INFORMATION);
+	teamManager->execute();
+}
+
+
 
 typedef void (*functiontype)();
 
@@ -46,8 +54,10 @@ int main(int argc, char* argv[]) {
     //f1 = commandManager->execute();
 
     std::vector<functiontype> *functions = new std::vector<functiontype>();
-    functions->push_back(hacerAlgo);
-    functions->push_back(hacerOtraCosa);
+    functions->push_back(executeCommandManager);
+    functions->push_back(executePlayerManager);
+    functions->push_back(executeTeamManager);
+
     ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);
     

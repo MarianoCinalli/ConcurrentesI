@@ -5,16 +5,14 @@
 
 CommandManager::CommandManager(){
 	this->finalizedProcess = false;
-	this->fifoManagerPlayer = new FifoEscritura(FILE_FIFO_MANAGER_PLAYER);
+	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYER);
 	//this->fifoManagerPlayer->abrir();
-	this->fifoTide = new FifoEscritura(FILE_FIFO_TIDE);
+	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURT);
 	//this->fifoTide->abrir();
-	std::cout<<"construi fifo lectura command"<<std::endl;
 }
 
 void CommandManager::execute(){
 	char value;
-	std::cout<<"ejecutando command "<<std::endl;
 	while (!finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);
@@ -63,7 +61,7 @@ void CommandManager::receiveCommand(char command){
 }
 
 void CommandManager::addPlayer(){
-	std::cout<<"agregue un judador"<<std::endl;
+	std::cout<<"Comando agregar jugador"<<std::endl;
 	messagePlayer *player = new messagePlayer;
 	player->idPlayer = 0;
 	player->status = CommandType::addType;
@@ -71,7 +69,7 @@ void CommandManager::addPlayer(){
 }
 
 void CommandManager::removePlayer(){
-	std::cout<<"quite un judador"<<std::endl;
+	std::cout<<"Comando quitar un judador"<<std::endl;
 	messagePlayer *player = new messagePlayer;
 	player->idPlayer = 0;
 	player->status = CommandType::removeType;
@@ -79,14 +77,14 @@ void CommandManager::removePlayer(){
 }
 
 void CommandManager::raiseTide(){
-	std::cout<<"levanta la marea"<<std::endl;
+	std::cout<<"Comando levantar la marea"<<std::endl;
 	messageTide *tide = new messageTide;
 	tide->status = TideType::raiseType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
 }
 
 void CommandManager::lowTide(){
-	std::cout<<"baja la marea"<<std::endl;
+	std::cout<<"Comando baja la marea"<<std::endl;
 	messageTide *tide = new messageTide;
 	tide->status = TideType::lowType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));

@@ -4,21 +4,24 @@
 TeamManager::TeamManager() {
     this->players = new std::vector<int>();
     this->playsByPlayer = new std::map<int, std::vector<int>*>();
-    this->channelToRead = new FifoLectura(FILE_FIFO_READ);
-    this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);
+    this->channelToRead = new FifoLectura(FIFO_READ_TEAM_OF_PLAYER);
+    //this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCH);
     //this->fifoTeamManager->abrir();
 }
 
 void TeamManager::execute() {
     struct messageTeam* team;
     struct messagePlayer* message;
+    this->channelToRead->abrir();
 
     while (!this->finalize) {
         message = this->readPlayer();
         this->parseMessage(message);
         team = this->makeTeam();
-        this->writeTeam(team);
+        //this->writeTeam(team);
     }
+    log("El proceso TeamManager finaliza correctamente ",INFORMATION);
+    log("la jugadores para formar equipos",this->players->size(),INFORMATION);
 }
 
 void TeamManager::parseMessage(struct messagePlayer* message){
@@ -26,6 +29,7 @@ void TeamManager::parseMessage(struct messagePlayer* message){
         
         case CommandType::killType :
             this->finalize = true;
+            std::cout<<"llega kill"<<std::endl;
             break;
 
         case CommandType::gameCanceled :
@@ -44,9 +48,17 @@ void TeamManager::parseMessage(struct messagePlayer* message){
 void TeamManager::addPlayer(int idPlayer){
     std::vector<int>::iterator it = std::find(this->players->begin(), this->players->end(), idPlayer);
     if (it != this->players->end()){
-        log("se recibe un jugador que ya existe para formar equipo, jugador con id: ", idPlayer, ERROR);
+        log("se recibe un jugador que ya existe en espera para formar equipo, jugador con id: ", idPlayer, ERROR);
     }else{
         this->players->push_back(idPlayer);
+        try{
+            playsByPlayer->at(idPlayer);
+
+        }catch(std::out_of_range e){
+            //si no existe se agrega
+            std::vector<int>* playMates = new std::vector<int>(); 
+            (*playsByPlayer)[idPlayer] = playMates;
+        }
     }    
 }
 
@@ -62,19 +74,16 @@ struct messageTeam* TeamManager::makeTeam(){
         for(unsigned j = i+1; j < this->players->size();j++){
             idPlayer1 = this->players->at(i);
             idPlayer2 = this->players->at(j);
-            if(!this->playersPlayBetween(idPlayer1,idPlayer2)){
-                // falta remover jugadores
-                //
-                //
-                //
-                team = new messageTeam;
-                team->idPlayer1 = idPlayer1;
-                team->idPlayer2 = idPlayer2;
+            if(this->canPlayersFormTeam(idPlayer1,idPlayer2)){
+                team = this->formTeam(idPlayer1,idPlayer2);
+                this->removePlayer(idPlayer1);
+                this->removePlayer(idPlayer2);
+                log("se formo un equipo",INFORMATION);
                 return team;
             }
         }
     }
-    log("no se pudo formar equipo",INFORMATION);
+    log("NO se formo un equipo",INFORMATION);
     return NULL;
 }
 
@@ -82,15 +91,61 @@ void TeamManager::cancelLastGameOfPLayer(int idPlayer){
     
 }
 
-bool TeamManager::playersPlayBetween(int idPlayer1, int idPlayer2) {
-    std::vector<int> *plays = this->playsByPlayer->at(idPlayer1);
-    std::vector<int>::iterator it = std::find(plays->begin(), plays->end(), idPlayer2);
-    if (it != plays->end())
-      // std::cout << "Element found in myvector: " << *it << '\n';
-      return true;
-    else
-      // std::cout << "Element not found in myvector\n";    
-      return false;
+struct messageTeam* TeamManager::formTeam(int idPlayer1, int idPlayer2) {
+
+    struct messageTeam* team = NULL;
+
+    try{
+        std::vector<int> *playMates1 = this->playsByPlayer->at(idPlayer1);
+        std::vector<int> *playMates2 = this->playsByPlayer->at(idPlayer2);
+
+        //actualizacion de registro de compañeros
+        playMates1->push_back(idPlayer2);
+        playMates2->push_back(idPlayer1);
+
+        team = new messageTeam;
+        team->idPlayer1 = idPlayer1;
+        team->idPlayer2 = idPlayer2;
+
+    }catch(std::out_of_range e){
+
+        log("error al actualizar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
+        log("error al actualizar registro de equipos, jugador id: ",idPlayer2 ,ERROR);
+    }
+
+    return team;
+}
+
+
+void TeamManager::removePlayer(int idPlayer){
+    std::vector<int>::iterator it = std::find(this->players->begin(), players->end(), idPlayer);
+    if (it != players->end())
+        this->players->erase(it);
+    else{
+        log("no se pueden remover jugadores luego de crear un equipo",idPlayer,ERROR);
+        exit(1);
+    }
+}
+
+
+
+
+bool TeamManager::canPlayersFormTeam(int idPlayer1, int idPlayer2) {
+
+    try{
+        std::vector<int> *plays = this->playsByPlayer->at(idPlayer1);
+        std::vector<int>::iterator it = std::find(plays->begin(), plays->end(), idPlayer2);
+
+        if (it != plays->end())
+          //si ya esta asociado a su lista no se puede
+          return false;
+        else
+          //si no esta asociado pueden formar equipo  
+          return true;
+    }catch(std::out_of_range e){
+        log("error al buscar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
+        return false;  
+    }  
 }
 
 struct messagePlayer* TeamManager::readPlayer(){

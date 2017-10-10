@@ -32,6 +32,7 @@ class PlayerManager {
 		void parseMessage(struct messagePlayer* message);
 		void writeMessagePlayer(struct messagePlayer* message);
 		void updateMatchesPlayer(int idPlayer);
+		void evaluteGamesCompletedPlayer(std::vector<Player*>::iterator it);
 
 	public:
 		PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayers);

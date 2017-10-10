@@ -15,11 +15,24 @@ enum CommandType {addType=0, removeType=1, killType,gameCanceled,gameCompleted};
 enum TideType {raiseType=0, lowType=1};
 enum LevelsLog{INFORMATION=1,WARNING,ERROR};
 
-//fifo que se usa para comunicarse con el CommandManager y  Court
+//fifos usados por Command
+const std::string FIFO_WRITE_COMMAND_TO_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
+const std::string FIFO_WRITE_COMMAND_TO_COURT = "/tmp/file_fifo_CommandManager_CourtManager";
+
+//fifos usados por PlayerManager
+const std::string FIFO_READ_PLAYER_OF_COMMAND = FIFO_WRITE_COMMAND_TO_PLAYER;
+const std::string FIFO_WRITE_PLAYER_TO_TEAM = "/tmp/file_fifo_PlayerManager_TeamManager";
+
+//fifos usados por TeamManager
+const std::string FIFO_READ_TEAM_OF_PLAYER = FIFO_WRITE_PLAYER_TO_TEAM;
+const std::string FIFO_WRITE_TEAM_TO_MATCH = "/tmp/file_fifo_TeamManager_MatchManager";
+
+
+/*
 const std::string FILE_FIFO_READ = "/tmp/file_fifo_CommandManager_PlayerManager";
 const std::string FILE_FIFO_WRITE = "/tmp/file_fifo_PlayerManager_TeamManager";
 
 const std::string FILE_FIFO_TEAM_MANAGER_MATCH_MANAGER = "/tmp/file_fifo_PlayerManager_TeamManager";
 const std::string FILE_FIFO_MATCH_MANAGER_COURT_MANAGER = "/tmp/file_fifo_MatchManager_CourtManager";
-
+*/
 #endif // CONSTANTS_H_

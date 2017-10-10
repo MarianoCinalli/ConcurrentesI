@@ -33,7 +33,9 @@ class TeamManager{//: public Executable {
         struct messagePlayer* readPlayer();
         void writeTeam(struct messageTeam* team);
         void parseMessage(struct messagePlayer* message);
-        bool playersPlayBetween(int idPlayer1, int idPlayer2);
+        bool canPlayersFormTeam(int idPlayer1, int idPlayer2);
+        struct messageTeam* formTeam(int idPlayer1, int idPlayer2);
+        void removePlayer(int idPlayer);
 
     public:
 

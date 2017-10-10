@@ -1,8 +1,8 @@
 #include "../headers/playerManager/PlayerManager.h"
 
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
-	this->channelToRead = new FifoLectura(FILE_FIFO_READ);
-	this->channelToWrite = new FifoEscritura(FILE_FIFO_WRITE);	
+	this->channelToRead = new FifoLectura(FIFO_READ_PLAYER_OF_COMMAND);
+	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAM);	
 	this->playersToGame = new std::vector<Player*>();
 	this->playersToWait = new std::vector<Player*>();
 	this->idPlayer = 0;
@@ -39,7 +39,7 @@ int PlayerManager::generateId(){
 
 void PlayerManager::execute(){
 	this->channelToRead->abrir();
-	//this->channelToWrite->abrir();
+	this->channelToWrite->abrir();
 	struct messagePlayer* message;
 	while(!this->finalizedProcess){
 		message = this->readFifoPlayerManager();
@@ -59,6 +59,7 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 		
 		case CommandType::killType :
 			this->finalizedProcess = true;
+			this->writeMessagePlayer(message);
 			break;
 
 		case CommandType::addType :
@@ -91,9 +92,10 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 */
 void PlayerManager::addPlayerToGame(){
 
+	//si en el predio no esta lleno
 	if ((int)this->playersToGame->size() <= this->maxPlayersVillage){
 
-		//si hay jugadores en espera se agregan al predio, sino se crea 1 nuevo
+		//si hay jugadores en espera se agrega uno de ellos al predio, sino se crea 1 nuevo
 		if(!this->playersToWait->empty()){
 			Player* playerToGame = this->playersToWait->back();
 			this->playersToWait->pop_back();
@@ -112,25 +114,9 @@ void PlayerManager::addPlayerToGame(){
 
 
 /*
-*
-*
-*
-*Falta definir el remove
-*
-*
-*/
-void PlayerManager::removePlayerToGame(){
-	if(!this->playersToGame->empty()){
-		int position = getRandomBetween(0,this->playersToGame->size());
-		std::cout<<"sale el jguador en la pos "<<position<<std::endl;		
-	}
-}
-
-
-
-/*
 * remueve a todos aquellos jugadores que alcanzaron la cantidad maxima de partidos
 */
+/*
 void PlayerManager::removePlayersWithGamesCompleted(){
 	std::vector<Player*>::iterator it;
 	Player * player;
@@ -146,10 +132,9 @@ void PlayerManager::removePlayersWithGamesCompleted(){
 			this->playersToGame->erase(it);
 
 			//opcion 2
-			/*
-			this->playersToGame->erase(it);
-			delete player;
-			*/
+			//this->playersToGame->erase(it);
+			//delete player;
+			
 			log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);
 
 		}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer) {
@@ -158,7 +143,7 @@ void PlayerManager::removePlayersWithGamesCompleted(){
 	}
 }
 
-
+*/
 
 
 struct messagePlayer* PlayerManager::readFifoPlayerManager(){
@@ -185,7 +170,7 @@ void PlayerManager::writeFifoTeamManager(){
 	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
 		if((*it)->isFree()){
 			//envia un jugador al TeamManager
-			(*it)->playGame();
+			(*it)->playGame(); 	//el jugador esta ocupado 
 			struct messagePlayer *buff = new messagePlayer;
 			memset(buff,0,sizeof(messagePlayer));
 			buff->idPlayer = (*it)->getId();
@@ -202,11 +187,29 @@ void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 	int result = this->channelToWrite->escribir(message,sizeof(messagePlayer));
 
 		if(result == -1){
-			log("No se pudo realizar la escritura en el fifo ", "algo", __LINE__, ERROR);
+			log("No se pudo realizar la escritura en el fifo, ", __FILE__, __LINE__, ERROR);
 		}else if (result != sizeof(messagePlayer)){
-			log("Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+			log("Se ha escrito una cantidad erronea de bytes en el fifo, ", __FILE__, __LINE__, ERROR);
 		}
 
+}
+
+
+
+
+/*
+*
+*
+*
+*Falta definir el remove
+*
+*
+*/
+void PlayerManager::removePlayerToGame(){
+	if(!this->playersToGame->empty()){
+		int position = getRandomBetween(0,this->playersToGame->size());
+		std::cout<<"sale el jguador en la pos "<<position<<std::endl;		
+	}
 }
 
 
@@ -228,6 +231,36 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 		if(player->getId() == idPlayer){
 			found = true;
 			player->addGamePlayed();
+			player->endGame();	//el jugador esta libre para volver a jugar
+			this->evaluteGamesCompletedPlayer(it);
 		}
 	}
 }
+
+
+/**
+ * evalua si un jugador ha completado la maxima cantidad de partidos
+ * el jugador se encuentra en el predio osea en playersToGame
+ * si los ha completado se saca del predio
+ **/ 
+
+void PlayerManager::evaluteGamesCompletedPlayer(std::vector<Player*>::iterator it){
+
+	Player *player = (*it);
+	if(player->getGamesPlayed() == this->maxMatchesPerPlayer ){
+		//opcion1
+		//player->gameOver();
+		//this->playersToWait->push_back(player);
+		//this->playersToGame->erase(it);
+
+		//opcion 2
+		this->playersToGame->erase(it);
+		log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);		
+
+	}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer){
+		log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
+	}
+
+	delete player;
+}
+

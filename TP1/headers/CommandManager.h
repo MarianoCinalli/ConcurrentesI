@@ -14,9 +14,6 @@
 #include "interfaces/Executable.h"
 #include "tools/logger.h"
 
-const std::string FILE_FIFO_MANAGER_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
-const std::string FILE_FIFO_TIDE = "/tmp/file_fifo_CommandManager_CourtManager";
-
 class CommandManager : public Executable {
 
 private:
