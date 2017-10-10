@@ -2,7 +2,7 @@
 
 MatchManager::MatchManager() {
     this->channelToReadTeams = new FifoLectura(FIFO_READ_TEAM_OF_TEAMMANAGER);
-    //this->channelToWriteMatches = new FifoEscritura(FIFO_WRITE_MATCH_TO_MATCHES);
+    this->channelToWriteMatches = new FifoEscritura(FIFO_WRITE_MATCH_TO_MATCHES);
 }
 
 void MatchManager::execute() {
@@ -37,6 +37,7 @@ void MatchManager::execute() {
                 struct messageMatch *match = this->makeMatch(team1, team2);
                 delete team1;
                 delete team2;
+                //this->writeMatch();
                 delete match;
                 team1 = NULL;
                 team2 = NULL;
@@ -68,7 +69,6 @@ void MatchManager::writeMatch(struct messageMatch *match) {
     }else if (result != sizeof(messageMatch)){
         log(MATCH_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
     }
-    delete match;
 }
 
 messageTeam* MatchManager::readTeam() {
@@ -88,7 +88,7 @@ messageTeam* MatchManager::readTeam() {
 
 MatchManager::~MatchManager() {
     this->channelToReadTeams->cerrar();
-    this->channelToWriteMatches->cerrar();    
+    //this->channelToWriteMatches->cerrar();    
     delete this->channelToReadTeams;
     delete this->channelToWriteMatches;
 }

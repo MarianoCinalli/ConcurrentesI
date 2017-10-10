@@ -14,7 +14,9 @@ CommandManager::CommandManager(){
 
 void CommandManager::execute(){
 	char value;
-	while (!finalizedProcess){
+	this->fifoManagerPlayer->abrir();
+
+	while (!this->finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);
 	}	
@@ -24,8 +26,6 @@ void CommandManager::execute(){
 
 
 void CommandManager::receiveCommand(char command){
-
-	this->fifoManagerPlayer->abrir();
 
 	switch (command){
 		case 'a' :
@@ -52,6 +52,7 @@ void CommandManager::receiveCommand(char command){
 			player->idPlayer = 10;
 			player->status = CommandType::killType;
 			this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+			delete player;
 			break;
 		}
 
@@ -69,6 +70,7 @@ void CommandManager::addPlayer(){
 	player->idPlayer = 0;
 	player->status = CommandType::addType;
 	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+	delete player;
 }
 
 void CommandManager::removePlayer(){
@@ -78,6 +80,7 @@ void CommandManager::removePlayer(){
 	player->idPlayer = 0;
 	player->status = CommandType::removeType;
 	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+	delete player;
 }
 
 void CommandManager::raiseTide(){
@@ -86,6 +89,7 @@ void CommandManager::raiseTide(){
 	messageTide *tide = new messageTide;
 	tide->status = TideType::raiseType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
+	delete tide;
 }
 
 void CommandManager::lowTide(){
@@ -94,6 +98,7 @@ void CommandManager::lowTide(){
 	messageTide *tide = new messageTide;
 	tide->status = TideType::lowType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
+	delete tide;
 }	
 
 CommandManager::~CommandManager(){

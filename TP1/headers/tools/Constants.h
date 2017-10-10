@@ -13,7 +13,7 @@ static const int MAX_SETS_DEFAULT = 5;
 enum PCStatus {freeS=0, busyS, disableS,completedS};
 enum CommandType {addType=0, removeType=1, killType,gameCanceled,gameCompleted};
 enum TideType {raiseType=0, lowType=1};
-enum LevelsLog{INFORMATION=1,WARNING,ERROR};
+enum LevelsLog{ERROR=1, WARNING, INFORMATION};
 
 //fifos usados por Command
 const std::string FIFO_WRITE_COMMAND_TO_PLAYERMANAGER = "/tmp/file_fifo_CommandManager_PlayerManager";

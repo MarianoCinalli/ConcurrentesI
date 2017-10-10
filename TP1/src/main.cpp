@@ -20,26 +20,30 @@ std::ofstream LOG_FILE_POINTER;
 void executePlayerManager(){
     PlayerManager *playerManager = new PlayerManager(10,5);
     log("INICIO DEL PLAYER_MANAGER",INFORMATION);
-	playerManager->execute();
+    playerManager->execute();
+    delete playerManager;
 }
 
 
 void executeCommandManager(){
     CommandManager *commandManager = new CommandManager();
     log("INICIO DEL COMMAND_MANAGER",INFORMATION);
-	commandManager->execute();
+    commandManager->execute();
+    delete commandManager;
 }
 
 void executeTeamManager(){
     TeamManager *teamManager = new TeamManager();
     log("INICIO DEL TEAM_MANAGER",INFORMATION);
-	teamManager->execute();
+    teamManager->execute();
+    delete teamManager;
 }
 
 void executeMatchManager(){
     MatchManager *matchManager = new MatchManager();
     log("INICIO DEL MATCH_MANAGER",INFORMATION);
-	matchManager->execute();
+    matchManager->execute();
+    delete matchManager;
 }
 
 

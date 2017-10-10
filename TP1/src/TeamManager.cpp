@@ -19,6 +19,8 @@ void TeamManager::execute() {
         this->parseMessage(message);
         team = this->makeTeam();
         this->writeTeam(team);
+        delete message;
+        delete team;
     }
     log("El proceso TeamManager finaliza correctamente ",INFORMATION);
     log("la jugadores para formar equipos",this->players->size(),INFORMATION);
@@ -33,6 +35,7 @@ void TeamManager::parseMessage(struct messagePlayer* message){
             struct messageTeam *team = new messageTeam;
             team->idPlayer1 = -1;
             this->writeTeam(team);
+            delete team;
             break;
         }
 
@@ -44,8 +47,6 @@ void TeamManager::parseMessage(struct messagePlayer* message){
             //se agrega un player para formar equipo
             this->addPlayer(message->idPlayer);
     }
-    
-    delete message;
 }
 
 
@@ -179,8 +180,6 @@ void TeamManager::writeTeam(struct messageTeam * team){
     }else if (result != sizeof(messageTeam)){
         log(TEAM_MANAGER_NAME + "Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
     }
-
-    delete team;
 }
 
 
@@ -191,6 +190,7 @@ TeamManager::~TeamManager() {
         delete plays; 
     }
     delete this->playsByPlayer;
+    delete this->players;
     this->channelToRead->cerrar();
     this->channelToWrite->cerrar();    
     delete this->channelToRead;

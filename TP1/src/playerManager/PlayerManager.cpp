@@ -44,7 +44,8 @@ void PlayerManager::execute(){
 	while(!this->finalizedProcess){
 		message = this->readFifoPlayerManager();
 		this->parseMessage(message);
-		this->writeFifoTeamManager();		
+		this->writeFifoTeamManager();
+		delete message;		
 	}
 	log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
 	log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
@@ -82,8 +83,6 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 			this->updateMatchesPlayer(message->idPlayer);
 			break;
 	}
-	
-	delete message;
 }
 
 
@@ -93,7 +92,7 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 void PlayerManager::addPlayerToGame(){
 
 	//si en el predio no esta lleno
-	if ((int)this->playersToGame->size() <= this->maxPlayersVillage){
+	if ((int)this->playersToGame->size() < this->maxPlayersVillage){
 
 		//si hay jugadores en espera se agrega uno de ellos al predio, sino se crea 1 nuevo
 		if(!this->playersToWait->empty()){
@@ -110,46 +109,6 @@ void PlayerManager::addPlayerToGame(){
 		this->playersToWait->push_back(playerToWait);
 	}
 }
-
-
-
-/*
-* remueve a todos aquellos jugadores que alcanzaron la cantidad maxima de partidos
-*/
-/*
-void PlayerManager::removePlayersWithGamesCompleted(){
-	std::vector<Player*>::iterator it;
-	Player * player;
-
-	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
-		if((*it)->getGamesPlayed() == this->maxMatchesPerPlayer){
-			//sacar del predio definitivamente al jugador
-			player = (*it);
-
-			//opcion1
-			player->gameOver();
-			this->playersToWait->push_back(player);
-			this->playersToGame->erase(it);
-
-			//opcion 2
-			//this->playersToGame->erase(it);
-			//delete player;
-			
-			log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);
-
-		
-			//this->playersToGame->erase(it);
-			//delete player;
-			log(PLAYER_MANAGER_NAME + " : Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);
-
-
-		}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer) {
-			log(PLAYER_MANAGER_NAME + " : Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
-		}
-	}
-}
-
-*/
 
 
 struct messagePlayer* PlayerManager::readFifoPlayerManager(){
@@ -188,6 +147,7 @@ void PlayerManager::writeFifoTeamManager(){
 
 
 //para notificar a teamManager que no se completo el partido del jugador
+//o para informar un kill
 void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 
 	int result = this->channelToWrite->escribir(message,sizeof(messagePlayer));
@@ -258,12 +218,11 @@ void PlayerManager::evaluteGamesCompletedPlayer(std::vector<Player*>::iterator i
 
 		//opcion 2
 		this->playersToGame->erase(it);
+		delete player;
 		log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);		
-
 	}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer){
 		log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
 	}
 
-	delete player;
 }
 
