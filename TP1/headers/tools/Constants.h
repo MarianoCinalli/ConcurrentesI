@@ -15,4 +15,8 @@ enum CommandType {addType=0, removeType=1, killType,gameCanceled,gameCompleted};
 enum TideType {raiseType=0, lowType=1};
 enum LevelsLog{INFORMATION=1,WARNING,ERROR};
 
+//fifo que se usa para comunicarse con el CommandManager y  Court
+const std::string FILE_FIFO_READ = "/tmp/file_fifo_CommandManager_PlayerManager";
+const std::string FILE_FIFO_WRITE = "/tmp/file_fifo_PlayerManager_TeamManager";
+
 #endif // CONSTANTS_H_

@@ -18,9 +18,6 @@
 #include "fifos/FifoEscritura.h"
 #include "tools/logger.h"
 
-const std::string FILE_FIFO_READ = "/tmp/file_fifo_PlayerManager_TeamManager";
-const std::string FILE_FIFO_WRITE = "/tmp/file_fifo_TeamManager_MatchManager";
-
 class TeamManager{//: public Executable {
 
     private:
