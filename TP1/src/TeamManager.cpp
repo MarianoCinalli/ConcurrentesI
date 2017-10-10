@@ -5,20 +5,20 @@ TeamManager::TeamManager() {
     this->players = new std::vector<int>();
     this->playsByPlayer = new std::map<int, std::vector<int>*>();
     this->channelToRead = new FifoLectura(FIFO_READ_PLAYER_OF_PLAYERMANAGER);
-    //this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCHMANAGER);
+    this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCHMANAGER);
 }
 
 void TeamManager::execute() {
     struct messageTeam* team;
     struct messagePlayer* message;
     this->channelToRead->abrir();
-    //this->channelToWrite->abrir();
+    this->channelToWrite->abrir();
 
     while (!this->finalize) {
         message = this->readPlayer();
         this->parseMessage(message);
         team = this->makeTeam();
-        //this->writeTeam(team);
+        this->writeTeam(team);
     }
     log("El proceso TeamManager finaliza correctamente ",INFORMATION);
     log("la jugadores para formar equipos",this->players->size(),INFORMATION);
@@ -27,9 +27,14 @@ void TeamManager::execute() {
 void TeamManager::parseMessage(struct messagePlayer* message){
     switch (message->status){
         
-        case CommandType::killType :
+        case CommandType::killType :{
             this->finalize = true;
+            //agregado
+            struct messageTeam *team = new messageTeam;
+            team->idPlayer1 = -1;
+            this->writeTeam(team);
             break;
+        }
 
         case CommandType::gameCanceled :
             this->cancelLastGameOfPLayer(message->idPlayer);

@@ -8,7 +8,7 @@
 #include "tools/ProcessSpawner.h"
 #include "CommandManager.h"
 #include "TeamManager.h"
-
+#include "MatchManager.h"
 #include "../headers/playerManager/PlayerManager.h"
 
 // Constants ------------------------------------------------------
@@ -36,6 +36,11 @@ void executeTeamManager(){
 	teamManager->execute();
 }
 
+void executeMatchManager(){
+    MatchManager *matchManager = new MatchManager();
+    log("INICIO DEL MATCH_MANAGER",INFORMATION);
+	matchManager->execute();
+}
 
 
 typedef void (*functiontype)();
@@ -53,6 +58,7 @@ int main(int argc, char* argv[]) {
     functions->push_back(executeCommandManager);
     functions->push_back(executePlayerManager);
     functions->push_back(executeTeamManager);
+    functions->push_back(executeMatchManager);
 
     ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);

@@ -25,8 +25,6 @@ class MatchManager : public Executable {
         bool finalize = false;
         FifoLectura *channelToReadTeams;
         FifoEscritura *channelToWriteMatches;
-
-        
         messageMatch* makeMatch(struct messageTeam* team1, struct messageTeam* team2);
         void writeMatch(struct messageMatch *match);
         messageTeam* readTeam();
