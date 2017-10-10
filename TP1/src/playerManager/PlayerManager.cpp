@@ -220,11 +220,8 @@ void PlayerManager::removePlayerToGame(){
 
 
 /**
- * 
- * 
- * tiene que ver con la eliminacion para implementarlo
- * 
- * falta ver.....
+ * aumenta la cantidad de partidos jugados de un player
+ * y se evalua si completo todos sus partidos
  * **/
 void PlayerManager::updateMatchesPlayer(int idPlayer){
 	std::vector<Player*>::iterator it;
