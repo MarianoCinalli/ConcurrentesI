@@ -3,6 +3,7 @@
 Match::Match(Team* firstTeam, Team* secondTeam) {
 	this->firstTeam = firstTeam;
 	this->secondTeam = secondTeam;
+	this->wasCancelled = false;
 };
 
 Match::~Match() {
@@ -20,8 +21,14 @@ void Match::play() {
 }
 
 std::string Match::logMemberVariables() {
-	return "\nPrimer equipo: " + this->firstTeam->logMemberVariables()
-	+ "\nSegundo equipo: " + this->secondTeam->logMemberVariables();
+	if (this->wasCancelled) {
+		return "\nPARTIDO CANCELADO! \nPrimer equipo: " + this->firstTeam->logMemberVariables()
+		+ "\nSegundo equipo: " + this->secondTeam->logMemberVariables();
+	} else {
+		return "\nPrimer equipo: " + this->firstTeam->logMemberVariables()
+		+ "\nSegundo equipo: " + this->secondTeam->logMemberVariables();	
+	}
+
 };
 
 messageResult Match::getResultMessage() {
@@ -33,4 +40,35 @@ messageResult Match::getResultMessage() {
 	message.idPlayer2_team2 = this->secondTeam->getSecondPlayer();
 	message.setsWonTeam2 = this->secondTeam->getSetsWon();
 	return message;
-}
+};
+
+std::vector<messagePlayer> Match::getResultMessages() {
+	std::vector<messagePlayer> messages;
+	int matchStatus = this->getMatchStatus();
+	messages.push_back(this->getResultMessageForPlayer(this->firstTeam->getFirstPlayer(), matchStatus));
+	messages.push_back(this->getResultMessageForPlayer(this->firstTeam->getSecondPlayer(), matchStatus));
+	messages.push_back(this->getResultMessageForPlayer(this->secondTeam->getFirstPlayer(), matchStatus));
+	messages.push_back(this->getResultMessageForPlayer(this->secondTeam->getSecondPlayer(), matchStatus));
+	return messages;
+};
+
+int Match::getMatchStatus() {
+	int status = 0;
+	if (this->wasCancelled) {
+		status = gameCanceled;
+	} else {
+		status = gameCompleted;
+	}
+	return status;
+};
+
+messagePlayer Match::getResultMessageForPlayer(int player, int matchStatus) {
+	struct messagePlayer message;
+	message.idPlayer = player;
+	message.status = matchStatus;
+	return message;
+};
+
+void Match::cancelMatch() {
+	this->wasCancelled = true;
+};

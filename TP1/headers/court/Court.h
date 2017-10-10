@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <string.h>
+#include <vector>
 #include "tools/logger.h"
 #include "tools/Messages.h"
 #include "fifos/FifoLectura.h"
@@ -17,6 +18,8 @@ class Court {
 	private:
 		FifoLectura* fifoMatches;
 		FifoEscritura* fifoResults;
+		FifoEscritura* fifoPlayerManager;
+		bool matchShouldBeCancelled;
 
 	// Methods -----------------------------------------------
 	public:
@@ -28,6 +31,7 @@ class Court {
 		Message* getMessage();
 		bool processMessage(Message* message);
 		void playGame(Message* message);
+		void sendMessages(Match* match);
 };
 
 #endif // COURT_H

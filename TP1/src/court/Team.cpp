@@ -3,6 +3,7 @@
 Team::Team(int firstPlayer, int secondPlayer) {
 	this->firstPlayer = firstPlayer;
 	this->secondPlayer = secondPlayer;
+	this->setsWon = 0;
 };
 
 Team::~Team() {
@@ -26,8 +27,8 @@ void Team::setWonSets(int setsWon) {
 };
 
 std::string Team::logMemberVariables() {
-	return "Primer jugador: " + std::to_string(this->firstPlayer)
-	+ " Segundo jugador: " + std::to_string(this->secondPlayer)
-	+ " Sets ganados: " + std::to_string(this->setsWon);
+	return "Primer jugador = " + std::to_string(this->firstPlayer)
+	+ "- Segundo jugador = " + std::to_string(this->secondPlayer)
+	+ "- Sets ganados = " + std::to_string(this->setsWon);
 };
 

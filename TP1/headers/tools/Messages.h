@@ -17,7 +17,7 @@
 	*/
 	struct messagePlayer {
 		int idPlayer;
-		std::string status;
+		int status;
 	};
 
 
