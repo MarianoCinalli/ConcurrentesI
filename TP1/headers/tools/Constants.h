@@ -19,4 +19,7 @@ enum LevelsLog{INFORMATION=1,WARNING,ERROR};
 const std::string FILE_FIFO_READ = "/tmp/file_fifo_CommandManager_PlayerManager";
 const std::string FILE_FIFO_WRITE = "/tmp/file_fifo_PlayerManager_TeamManager";
 
+const std::string FILE_FIFO_TEAM_MANAGER_MATCH_MANAGER = "/tmp/file_fifo_PlayerManager_TeamManager";
+const std::string FILE_FIFO_MATCH_MANAGER_COURT_MANAGER = "/tmp/file_fifo_MatchManager_CourtManager";
+
 #endif // CONSTANTS_H_
