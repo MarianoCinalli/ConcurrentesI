@@ -45,14 +45,10 @@ int main(int argc, char* argv[]) {
     srand(time(NULL)); // Init seed for random
     LOG_FILE_POINTER.open("beachVoley.log", std::ofstream::app);
     // End Initialization
+
+    std::cout<<"COMIENZA EJECUCION"<<std::endl;
+
     logSessionStarted();
-    // Main body
-
-    //testChoto
-    //CommandManager *commandManager = new CommandManager();
-   	// void (*f1)();
-    //f1 = commandManager->execute();
-
     std::vector<functiontype> *functions = new std::vector<functiontype>();
     functions->push_back(executeCommandManager);
     functions->push_back(executePlayerManager);

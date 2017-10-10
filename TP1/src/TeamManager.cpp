@@ -48,7 +48,8 @@ void TeamManager::parseMessage(struct messagePlayer* message){
 void TeamManager::addPlayer(int idPlayer){
     std::vector<int>::iterator it = std::find(this->players->begin(), this->players->end(), idPlayer);
     if (it != this->players->end()){
-        log("se recibe un jugador que ya existe en espera para formar equipo, jugador con id: ", idPlayer, ERROR);
+        log(TEAM_MANAGER_NAME + "se recibe un jugador que ya existe para formar equipo, jugador con id: ", idPlayer, ERROR);
+
     }else{
         this->players->push_back(idPlayer);
         try{
@@ -83,7 +84,7 @@ struct messageTeam* TeamManager::makeTeam(){
             }
         }
     }
-    log("NO se formo un equipo",INFORMATION);
+    log(TEAM_MANAGER_NAME + "no se pudo formar equipo",INFORMATION);
     return NULL;
 }
 
@@ -155,9 +156,9 @@ struct messagePlayer* TeamManager::readPlayer(){
     int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
     
 	if(result == -1){
-		log("No se pudo realizar la lectura del fifo ","sss",100, 1);
+		log(TEAM_MANAGER_NAME + "No se pudo realizar la lectura del fifo ","sss",100, 1);
 	}else if (result != sizeof(messagePlayer)){
-		log("Se ha leido una cantidad erronea de bytes del fifo ","sss",100, 1);
+		log(TEAM_MANAGER_NAME + "Se ha leido una cantidad erronea de bytes del fifo ","sss",100, 1);
     }
     
     return buff;
@@ -169,9 +170,9 @@ void TeamManager::writeTeam(struct messageTeam * team){
     int result = this->channelToWrite->escribir(team,sizeof(messageTeam));
 
     if(result == -1){
-        log("No se pudo realizar la escritura en el fifo ", __FILE__, __LINE__, ERROR);
+        log(TEAM_MANAGER_NAME + "No se pudo realizar la escritura en el fifo ", __FILE__, __LINE__, ERROR);
     }else if (result != sizeof(messageTeam)){
-        log("Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+        log(TEAM_MANAGER_NAME + "Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
     }
 
     delete team;

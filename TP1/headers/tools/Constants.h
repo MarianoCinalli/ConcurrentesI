@@ -27,8 +27,11 @@ const std::string FIFO_WRITE_PLAYER_TO_TEAM = "/tmp/file_fifo_PlayerManager_Team
 const std::string FIFO_READ_TEAM_OF_PLAYER = FIFO_WRITE_PLAYER_TO_TEAM;
 const std::string FIFO_WRITE_TEAM_TO_MATCH = "/tmp/file_fifo_TeamManager_MatchManager";
 
-
 /*
+const std::string FILE_FIFO_MANAGER_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
+const std::string FILE_FIFO_TIDE = "/tmp/file_fifo_CommandManager_CourtManager";
+
+//fifo que se usa para comunicarse con el CommandManager y  Court
 const std::string FILE_FIFO_READ = "/tmp/file_fifo_CommandManager_PlayerManager";
 const std::string FILE_FIFO_WRITE = "/tmp/file_fifo_PlayerManager_TeamManager";
 

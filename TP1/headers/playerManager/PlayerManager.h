@@ -10,8 +10,11 @@
 #include "../tools/Constants.h"
 #include "../tools/Messages.h"
 #include "../tools/logger.h"
+#include <typeinfo>
 
 class PlayerManager {
+
+	const std::string PLAYER_MANAGER_NAME = typeid(PlayerManager).name();
 
 	private:
 

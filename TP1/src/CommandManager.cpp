@@ -6,9 +6,10 @@
 CommandManager::CommandManager(){
 	this->finalizedProcess = false;
 	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYER);
-	//this->fifoManagerPlayer->abrir();
+	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYER,INFORMATION);
 	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURT);
-	//this->fifoTide->abrir();
+	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_COURT,INFORMATION);
+
 }
 
 void CommandManager::execute(){
@@ -17,7 +18,7 @@ void CommandManager::execute(){
 		std::cin>>value;
 		this->receiveCommand(value);
 	}	
-	log("El proceso CommandManager finaliza correctamente ",INFORMATION);
+	log(COMMAND_MANAGER_NAME + " : El proceso CommandManager finaliza correctamente ",INFORMATION);
 }
 
 
@@ -46,6 +47,7 @@ void CommandManager::receiveCommand(char command){
 		//condición para testear
 		case 'q' : {
 			this->finalizedProcess = true;
+			log(COMMAND_MANAGER_NAME + " : Finaliza ",INFORMATION);
 			messagePlayer *player = new messagePlayer;
 			player->idPlayer = 10;
 			player->status = CommandType::killType;
@@ -62,6 +64,7 @@ void CommandManager::receiveCommand(char command){
 
 void CommandManager::addPlayer(){
 	std::cout<<"Comando agregar jugador"<<std::endl;
+	log(COMMAND_MANAGER_NAME + " : Se agrego un judador ",INFORMATION);
 	messagePlayer *player = new messagePlayer;
 	player->idPlayer = 0;
 	player->status = CommandType::addType;
@@ -70,6 +73,7 @@ void CommandManager::addPlayer(){
 
 void CommandManager::removePlayer(){
 	std::cout<<"Comando quitar un judador"<<std::endl;
+	log(COMMAND_MANAGER_NAME + " : Se quito un judador ",INFORMATION);
 	messagePlayer *player = new messagePlayer;
 	player->idPlayer = 0;
 	player->status = CommandType::removeType;
@@ -78,6 +82,7 @@ void CommandManager::removePlayer(){
 
 void CommandManager::raiseTide(){
 	std::cout<<"Comando levantar la marea"<<std::endl;
+	log(COMMAND_MANAGER_NAME + " : Se levanta la marea ",INFORMATION);
 	messageTide *tide = new messageTide;
 	tide->status = TideType::raiseType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
@@ -85,6 +90,7 @@ void CommandManager::raiseTide(){
 
 void CommandManager::lowTide(){
 	std::cout<<"Comando baja la marea"<<std::endl;
+	log(COMMAND_MANAGER_NAME + " : Se baja la marea ",INFORMATION);
 	messageTide *tide = new messageTide;
 	tide->status = TideType::lowType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
