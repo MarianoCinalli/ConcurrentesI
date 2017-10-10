@@ -1,8 +1,8 @@
 #include "MatchManager.h"
 
 MatchManager::MatchManager() {
-    this->channelToReadTeams = new FifoLectura(FILE_FIFO_TEAM_MANAGER_MATCH_MANAGER);
-    this->channelToWriteMatches = new FifoEscritura(FILE_FIFO_MATCH_MANAGER_COURT_MANAGER);
+    this->channelToReadTeams = new FifoLectura(FIFO_READ_TEAM_OF_TEAMMANAGER);
+    this->channelToWriteMatches = new FifoEscritura(FIFO_WRITE_MATCH_TO_MATCHES);
 }
 
 void MatchManager::execute() {

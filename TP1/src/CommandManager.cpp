@@ -5,10 +5,10 @@
 
 CommandManager::CommandManager(){
 	this->finalizedProcess = false;
-	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYER);
-	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYER,INFORMATION);
-	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURT);
-	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_COURT,INFORMATION);
+	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYERMANAGER);
+	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYERMANAGER,INFORMATION);
+	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURTMANAGER);
+	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_COURTMANAGER,INFORMATION);
 
 }
 

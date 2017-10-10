@@ -1,8 +1,8 @@
 #include "../headers/playerManager/PlayerManager.h"
 
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
-	this->channelToRead = new FifoLectura(FIFO_READ_PLAYER_OF_COMMAND);
-	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAM);	
+	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
+	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);	
 	this->playersToGame = new std::vector<Player*>();
 	this->playersToWait = new std::vector<Player*>();
 	this->idPlayer = 0;

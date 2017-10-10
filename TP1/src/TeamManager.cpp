@@ -4,15 +4,15 @@
 TeamManager::TeamManager() {
     this->players = new std::vector<int>();
     this->playsByPlayer = new std::map<int, std::vector<int>*>();
-    this->channelToRead = new FifoLectura(FIFO_READ_TEAM_OF_PLAYER);
-    //this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCH);
-    //this->fifoTeamManager->abrir();
+    this->channelToRead = new FifoLectura(FIFO_READ_PLAYER_OF_PLAYERMANAGER);
+    //this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCHMANAGER);
 }
 
 void TeamManager::execute() {
     struct messageTeam* team;
     struct messagePlayer* message;
     this->channelToRead->abrir();
+    //this->channelToWrite->abrir();
 
     while (!this->finalize) {
         message = this->readPlayer();
@@ -29,7 +29,6 @@ void TeamManager::parseMessage(struct messagePlayer* message){
         
         case CommandType::killType :
             this->finalize = true;
-            std::cout<<"llega kill"<<std::endl;
             break;
 
         case CommandType::gameCanceled :
@@ -51,12 +50,13 @@ void TeamManager::addPlayer(int idPlayer){
         log(TEAM_MANAGER_NAME + "se recibe un jugador que ya existe para formar equipo, jugador con id: ", idPlayer, ERROR);
 
     }else{
+        //se acola para formar equipos
         this->players->push_back(idPlayer);
         try{
             playsByPlayer->at(idPlayer);
 
         }catch(std::out_of_range e){
-            //si no existe se agrega
+            //si no existe resgistro del jugador se agrega su id
             std::vector<int>* playMates = new std::vector<int>(); 
             (*playsByPlayer)[idPlayer] = playMates;
         }
@@ -123,7 +123,7 @@ void TeamManager::removePlayer(int idPlayer){
     if (it != players->end())
         this->players->erase(it);
     else{
-        log("no se pueden remover jugadores luego de crear un equipo",idPlayer,ERROR);
+        log("no se puedo remover a un jugador de crear un equipo, jugador con id",idPlayer,ERROR);
         exit(1);
     }
 }

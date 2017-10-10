@@ -16,16 +16,23 @@ enum TideType {raiseType=0, lowType=1};
 enum LevelsLog{INFORMATION=1,WARNING,ERROR};
 
 //fifos usados por Command
-const std::string FIFO_WRITE_COMMAND_TO_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
-const std::string FIFO_WRITE_COMMAND_TO_COURT = "/tmp/file_fifo_CommandManager_CourtManager";
+const std::string FIFO_WRITE_COMMAND_TO_PLAYERMANAGER = "/tmp/file_fifo_CommandManager_PlayerManager";
+const std::string FIFO_WRITE_COMMAND_TO_COURTMANAGER = "/tmp/file_fifo_CommandManager_CourtManager";
 
 //fifos usados por PlayerManager
-const std::string FIFO_READ_PLAYER_OF_COMMAND = FIFO_WRITE_COMMAND_TO_PLAYER;
-const std::string FIFO_WRITE_PLAYER_TO_TEAM = "/tmp/file_fifo_PlayerManager_TeamManager";
+const std::string FIFO_READ_COMMAND_OF_COMMANDMANAGER = FIFO_WRITE_COMMAND_TO_PLAYERMANAGER;
+const std::string FIFO_WRITE_PLAYER_TO_TEAMMANAGER = "/tmp/file_fifo_PlayerManager_TeamManager";
 
 //fifos usados por TeamManager
-const std::string FIFO_READ_TEAM_OF_PLAYER = FIFO_WRITE_PLAYER_TO_TEAM;
-const std::string FIFO_WRITE_TEAM_TO_MATCH = "/tmp/file_fifo_TeamManager_MatchManager";
+const std::string FIFO_READ_PLAYER_OF_PLAYERMANAGER = FIFO_WRITE_PLAYER_TO_TEAMMANAGER;
+const std::string FIFO_WRITE_TEAM_TO_MATCHMANAGER = "/tmp/file_fifo_TeamManager_MatchManager";
+
+
+//fifos usados por MatchManager
+const std::string FIFO_READ_TEAM_OF_TEAMMANAGER = FIFO_WRITE_TEAM_TO_MATCHMANAGER;
+const std::string FIFO_WRITE_MATCH_TO_MATCHES = "/tmp/file_fifo_MatchManager_Matches";
+
+
 
 /*
 const std::string FILE_FIFO_MANAGER_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
