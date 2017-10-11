@@ -19,7 +19,6 @@ class Court {
 		FifoLectura* fifoMatches;
 		FifoEscritura* fifoResults;
 		FifoEscritura* fifoPlayerManager;
-		bool matchShouldBeCancelled;
 
 	// Methods -----------------------------------------------
 	public:
@@ -32,6 +31,9 @@ class Court {
 		bool processMessage(Message* message);
 		void playGame(Message* message);
 		void sendMessages(Match* match);
+		void handler_cleanAndExit();
+		void registerHandler();
+		Match* getMatchFromMessage(Message* message);
 };
 
 #endif // COURT_H

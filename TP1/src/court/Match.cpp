@@ -72,3 +72,7 @@ messagePlayer Match::getResultMessageForPlayer(int player, int matchStatus) {
 void Match::cancelMatch() {
 	this->wasCancelled = true;
 };
+
+bool Match::wasCancelled() {
+	return this->wasCancelled;
+};

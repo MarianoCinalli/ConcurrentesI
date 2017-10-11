@@ -28,6 +28,7 @@ public:
 	int getMatchStatus();
 	messagePlayer getResultMessageForPlayer(int player, int matchStatus);
 	void cancelMatch();
+	bool wasCancelled();
 };
 
 #endif // MATCH_H
