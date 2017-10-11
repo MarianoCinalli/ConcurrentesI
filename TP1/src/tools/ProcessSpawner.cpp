@@ -48,7 +48,6 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 		isChild = pid == 0;
 		if (isChild) {
 			function();
-			flushLog(); 
 			exit ( 0 );
 		}else{
 			log("Proceso creado, su pid es ", pid, 3);

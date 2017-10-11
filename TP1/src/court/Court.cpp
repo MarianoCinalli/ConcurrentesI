@@ -53,7 +53,7 @@ bool Court::processMessage(Message* message) {
 	log("Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == PLAY) {
 		log("Se recibio el mensaje de nuevo juego.", 3);
-		//this->playGame(message);
+		this->playGame(message);
 		moreMatchesToPlay = true;
 	} else if (operation == CLOSE) {
 		log("Se recibio el mensaje de cerrado de cancha.", 3);
@@ -79,7 +79,7 @@ void Court::playGame(Message* message) {
 		match->cancelMatch();
 	}
 	log("Partido finalizado. Resultado: ", match, 3);
-	this->sendMessages(match);
+	//this->sendMessages(match);
 	delete(match);
 }
 

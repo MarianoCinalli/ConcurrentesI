@@ -31,10 +31,8 @@ void MatchManager::parseMessage(struct messageTeam* team) {
             break;
         case CLOSE :
             this->finalize = true;
-            std::cout<<"-----antes de notificar el close------"<<std::endl;
-            flushLog(); //agregadoooooo
+            flushLog(); //agregadoooooo porque el proceso no termina.......
             this->notifyCloseMatches();
-            std::cout<<"-----llego un mensaje close------"<<std::endl;
             log("llega un close al matchManager",INFORMATION);
             break;
         
@@ -61,10 +59,11 @@ void MatchManager::notifyMatch(struct messageTeam* team){
 void MatchManager::notifyCloseMatches(){
     struct messageMatch * match = new messageMatch;
     match->operation = CLOSE;
-    std::cout<<"-----errro solo escribe en log con los couts------"<<std::endl;
-    //std::cout<<"-----antes del write-----"<<std::endl;
-    this->writeMatch(match);
-    //std::cout<<"-----despues del write------"<<std::endl;
+    std::cout<<"-----ERROR se tiene que imprimir dos mensajes antes y despues------"<<std::endl;
+    std::cout<<"----impresion-antes de notificar el close-----  "<<std::endl;
+    this->writeMatch(match); //se debe quedar loqueado.....
+    delete match;
+    std::cout<<"----impresion-despues de notificar el close------"<<std::endl;
 }
 
 
@@ -74,6 +73,7 @@ messageMatch* MatchManager::makeMatch(struct messageTeam* team1, struct messageT
     match->idPlayer2_team1 = team1->idPlayer2;
     match->idPlayer1_Team2 = team2->idPlayer1;
     match->idPlayer2_team2 = team2->idPlayer2;
+    match->operation = PLAY;
     log("se ha creado un match",INFORMATION);
     log("jugador ",team1->idPlayer1,INFORMATION);
     log("jugador ",team1->idPlayer2,INFORMATION);
