@@ -33,9 +33,8 @@ void TeamManager::parseMessage(struct messagePlayer* message){
         
         case CommandType::killType :{
             this->finalize = true;
-            //agregado
             struct messageTeam *team = new messageTeam;
-            team->idPlayer1 = -1;
+            team->operation = CLOSE;
             this->writeTeam(team);
             delete team;
             break;
@@ -115,6 +114,7 @@ struct messageTeam* TeamManager::formTeam(int idPlayer1, int idPlayer2) {
         team = new messageTeam;
         team->idPlayer1 = idPlayer1;
         team->idPlayer2 = idPlayer2;
+        team->operation = PLAY;
 
     }catch(std::out_of_range e){
 

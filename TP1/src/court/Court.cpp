@@ -3,10 +3,11 @@
 Court::Court() {
 	this->fifoMatches = new FifoLectura("/tmp/fifoMatches");	
 	this->fifoMatches->abrir();
-	this->fifoResults = new FifoEscritura("/tmp/fifoResultManager");
+	/*this->fifoResults = new FifoEscritura("/tmp/fifoResultManager");
 	this->fifoResults->abrir();
 	this->fifoPlayerManager = new FifoEscritura("/tmp/fifoPlayerManager");
 	this->fifoPlayerManager->abrir();
+	*/
 	this->matchShouldBeCancelled = false;
 };
 

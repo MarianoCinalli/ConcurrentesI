@@ -28,6 +28,12 @@ class MatchManager : public Executable {
         messageMatch* makeMatch(struct messageTeam* team1, struct messageTeam* team2);
         void writeMatch(struct messageMatch *match);
         messageTeam* readTeam();
+        struct messageTeam* team1;
+        struct messageTeam* team2;
+
+        void parseMessage(struct messageTeam* team);
+        void notifyMatch(struct messageTeam* team);
+        void notifyCloseMaches();
 
     public:
 

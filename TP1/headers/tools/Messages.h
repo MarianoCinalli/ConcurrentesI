@@ -31,6 +31,7 @@
 	struct messageTeam {
 		int idPlayer1;
 		int idPlayer2;
+		int operation;
 	};
 
 

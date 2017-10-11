@@ -3,50 +3,63 @@
 MatchManager::MatchManager() {
     this->channelToReadTeams = new FifoLectura(FIFO_READ_TEAM_OF_TEAMMANAGER);
     this->channelToWriteMatches = new FifoEscritura(FIFO_WRITE_MATCH_TO_MATCHES);
+    this->team1 = NULL;
+    this->team2 = NULL;
 }
 
 void MatchManager::execute() {
     this->channelToReadTeams->abrir();
-
-
-    struct messageTeam* team1 = NULL;
-    struct messageTeam* team2 = NULL;
-
-
-
+    
     while (!this->finalize) {
-/*        struct messageTeam* team1 = this->readTeam();
-        struct messageTeam* team2 = this->readTeam();
-        struct messageMatch *match = this->makeMatch(team1, team2);
-        delete team1;
-        delete team2;
-        //this->writeMatch(match);
-        delete match;
-*/
-
-        //agregado momentaneamente solo para finalizar felizmente
         struct messageTeam* team = this->readTeam();
-
-        if(team->idPlayer1 == -1){
-            this->finalize = true;
-        }else{
-            if(team1 == NULL){
-                team1 = team;
-            }else{
-                team2 = team;
-                struct messageMatch *match = this->makeMatch(team1, team2);
-                delete team1;
-                delete team2;
-                //this->writeMatch();
-                delete match;
-                team1 = NULL;
-                team2 = NULL;
-            }
-        }      
-
+        this->parseMessage(team);
     }
     log("MatchManager ha finalizado correctamente",INFORMATION);
 }
+
+
+
+
+void MatchManager::parseMessage(struct messageTeam* team) {
+    
+    switch(team->operation){
+
+        case PLAY :
+            this->notifyMatch(team);
+            log("llega un team al matchManager",INFORMATION);
+            break;
+        case CLOSE :
+            this->finalize = true;
+            //this->notifyCloseMaches();
+            log("llega un close al matchManager",INFORMATION);
+            break;
+        
+    }
+}
+
+
+void MatchManager::notifyMatch(struct messageTeam* team){
+    if(this->team1 == NULL){
+        this->team1 = team;
+    }else{
+        this->team2 = team;
+        struct messageMatch *match = this->makeMatch(team1, team2);
+        delete this->team1;
+        delete this->team2;
+        //this->writeMatch(match);
+        delete match;
+        this->team1 = NULL;
+        this->team2 = NULL;
+    }
+}
+
+
+void MatchManager::notifyCloseMaches(){
+    struct messageMatch * match = new messageMatch;
+    match->operation = CLOSE;
+    this->writeMatch(match);
+}
+
 
 messageMatch* MatchManager::makeMatch(struct messageTeam* team1, struct messageTeam* team2) {
     struct messageMatch *match = new messageMatch;
@@ -79,7 +92,7 @@ messageTeam* MatchManager::readTeam() {
     
 	if(result == -1){
 		log(MATCH_MANAGER_NAME + " : No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
-	}else if (result != sizeof(messagePlayer)){
+	}else if (result != sizeof(messageTeam)){
 		log(MATCH_MANAGER_NAME + " : Se ha leido una cantidad erronea de bytes del fifo ",__FILE__, __LINE__, ERROR);
     }
     
@@ -89,6 +102,7 @@ messageTeam* MatchManager::readTeam() {
 MatchManager::~MatchManager() {
     this->channelToReadTeams->cerrar();
     //this->channelToWriteMatches->cerrar();    
-    delete this->channelToReadTeams;
+  /*  delete this->channelToReadTeams;
     delete this->channelToWriteMatches;
+    */
 }
