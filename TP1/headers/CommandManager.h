@@ -63,6 +63,8 @@ class CommandManager : public Executable {
 
 		void receiveCommand(char command);
 
+		void finalize();
+
 		bool finalizedProcess;
 		FifoEscritura *fifoManagerPlayer;
 		FifoEscritura *fifoTide;

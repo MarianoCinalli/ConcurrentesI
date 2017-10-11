@@ -59,11 +59,8 @@ void MatchManager::notifyMatch(struct messageTeam* team){
 void MatchManager::notifyCloseMatches(){
     struct messageMatch * match = new messageMatch;
     match->operation = CLOSE;
-    std::cout<<"-----ERROR se tiene que imprimir dos mensajes antes y despues------"<<std::endl;
-    std::cout<<"----impresion-antes de notificar el close-----  "<<std::endl;
-    this->writeMatch(match); //se debe quedar loqueado.....
+    this->writeMatch(match); //debbugear si se queda lokeado.....
     delete match;
-    std::cout<<"----impresion-despues de notificar el close------"<<std::endl;
 }
 
 

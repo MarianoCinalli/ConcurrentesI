@@ -45,16 +45,9 @@ void CommandManager::receiveCommand(char command){
 			break;
 
 		//condición para testear
-		case 'q' : {
-			this->finalizedProcess = true;
-			log(COMMAND_MANAGER_NAME + " : Finaliza ",INFORMATION);
-			messagePlayer *player = new messagePlayer;
-			player->idPlayer = 10;
-			player->status = CommandType::killType;
-			this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
-			delete player;
+		case 'q' : 
+			this->finalize();
 			break;
-		}
 
 		default:
 			std::cout<<"loggear comando erroneo"<<std::endl;
@@ -62,6 +55,17 @@ void CommandManager::receiveCommand(char command){
 	}
 
 }
+
+void CommandManager::finalize(){
+	std::cout<<"Comando finalización, espere..."<<std::endl;
+	this->finalizedProcess = true;
+	log(COMMAND_MANAGER_NAME + " : Finaliza ",INFORMATION);
+	messagePlayer *player = new messagePlayer;
+	player->status = CommandType::killType;
+	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+	delete player;
+}
+
 
 void CommandManager::addPlayer(){
 	std::cout<<"Comando agregar jugador"<<std::endl;
