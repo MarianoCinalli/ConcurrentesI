@@ -68,10 +68,6 @@ int main(int argc, char* argv[]) {
     processSpawner->spawnProcesses(functions);
     
     delete functions;
-    // Team Manager Test
-    //TeamManager *teamManager = new TeamManager();
-
-    // End Main body
 	logSessionFinished();
 	return 0;
 }
