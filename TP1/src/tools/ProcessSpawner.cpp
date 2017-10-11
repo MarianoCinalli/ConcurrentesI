@@ -39,6 +39,7 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 	std::vector<functiontype>::iterator it;
 	int totalFunctions = funtions->size();
 	log("creando funciones hijo ", totalFunctions, 3);
+	flushLog();
 	bool isChild = false;
 
 	for(it = funtions->begin();it != funtions->end();it++){
@@ -46,14 +47,18 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 		pid = fork();
 		isChild = pid == 0;
 		if (isChild) {
-			function(); 
+			function();
+			flushLog(); 
 			exit ( 0 );
+		}else{
+			log("Proceso creado, su pid es ", pid, 3);
+			flushLog();
+			this->pids.push_back(pid);
 		} 
 	}
 
 	for(int i = 0; i < totalFunctions; i++) {
-		log("Proceso creado, su pid es ", pid, 3);
-		this->pids.push_back(pid);
+		//this->pids.push_back(pid);
 		wait(NULL);
 	}
 

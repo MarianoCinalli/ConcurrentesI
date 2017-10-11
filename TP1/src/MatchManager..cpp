@@ -61,9 +61,9 @@ void MatchManager::notifyCloseMatches(){
     struct messageMatch * match = new messageMatch;
     match->operation = CLOSE;
     std::cout<<"-----errro solo escribe en log con los couts------"<<std::endl;
-    std::cout<<"-----antes del write-----"<<std::endl;
+    //std::cout<<"-----antes del write-----"<<std::endl;
     this->writeMatch(match);
-    std::cout<<"-----despues del write------"<<std::endl;
+    //std::cout<<"-----despues del write------"<<std::endl;
 }
 
 
