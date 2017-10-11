@@ -74,6 +74,7 @@ int main(int argc, char* argv[]) {
     functions->push_back(executePlayerManager);
     functions->push_back(executeTeamManager);
     functions->push_back(executeMatchManager);
+    functions->push_back(openCourt);
 
     ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);

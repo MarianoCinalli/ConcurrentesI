@@ -31,7 +31,13 @@ const std::string FIFO_WRITE_TEAM_TO_MATCHMANAGER = "/tmp/file_fifo_TeamManager_
 
 //fifos usados por MatchManager
 const std::string FIFO_READ_TEAM_OF_TEAMMANAGER = FIFO_WRITE_TEAM_TO_MATCHMANAGER;
-const std::string FIFO_WRITE_MATCH_TO_MATCHES = "/tmp/file_fifo_MatchManager_Matches";
+const std::string FIFO_WRITE_MATCH_TO_MATCHES = "/tmp/fifoMatches";
+
+//fifos usados por Court
+const std::string FIFO_READ_MATCH_OF_MATCHMANAGER = FIFO_WRITE_MATCH_TO_MATCHES;
+const std::string FIFO_WRITE_RESULT_TO_RESULTMANAGER = "/tmp/fifoResultManager";
+const std::string FIFO_WRITE_STATUS_TO_PLAYERMANAGER = "/tmp/fifoPlayerManager";
+
 
 #endif // CONSTANTS_H_
 

@@ -9,7 +9,8 @@ MatchManager::MatchManager() {
 
 void MatchManager::execute() {
     this->channelToReadTeams->abrir();
-    
+    this->channelToWriteMatches->abrir();
+
     while (!this->finalize) {
         struct messageTeam* team = this->readTeam();
         this->parseMessage(team);
@@ -30,7 +31,9 @@ void MatchManager::parseMessage(struct messageTeam* team) {
             break;
         case CLOSE :
             this->finalize = true;
-            //this->notifyCloseMaches();
+            std::cout<<"-----antes de notificar el close------"<<std::endl;
+            this->notifyCloseMatches();
+            std::cout<<"-----llego un mensaje close------"<<std::endl;
             log("llega un close al matchManager",INFORMATION);
             break;
         
@@ -46,7 +49,7 @@ void MatchManager::notifyMatch(struct messageTeam* team){
         struct messageMatch *match = this->makeMatch(team1, team2);
         delete this->team1;
         delete this->team2;
-        //this->writeMatch(match);
+        this->writeMatch(match);
         delete match;
         this->team1 = NULL;
         this->team2 = NULL;
@@ -54,10 +57,12 @@ void MatchManager::notifyMatch(struct messageTeam* team){
 }
 
 
-void MatchManager::notifyCloseMaches(){
+void MatchManager::notifyCloseMatches(){
     struct messageMatch * match = new messageMatch;
     match->operation = CLOSE;
+    std::cout<<"-----antes del write-----"<<std::endl;
     this->writeMatch(match);
+    std::cout<<"-----despues del write------"<<std::endl;
 }
 
 
@@ -101,8 +106,8 @@ messageTeam* MatchManager::readTeam() {
 
 MatchManager::~MatchManager() {
     this->channelToReadTeams->cerrar();
-    //this->channelToWriteMatches->cerrar();    
-  /*  delete this->channelToReadTeams;
+    this->channelToWriteMatches->cerrar();    
+    delete this->channelToReadTeams;
     delete this->channelToWriteMatches;
-    */
+    
 }

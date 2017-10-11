@@ -33,7 +33,7 @@ class MatchManager : public Executable {
 
         void parseMessage(struct messageTeam* team);
         void notifyMatch(struct messageTeam* team);
-        void notifyCloseMaches();
+        void notifyCloseMatches();
 
     public:
 

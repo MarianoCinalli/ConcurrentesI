@@ -1,11 +1,10 @@
 #include "court/Court.h"
 
 Court::Court() {
-	this->fifoMatches = new FifoLectura("/tmp/fifoMatches");	
-	this->fifoMatches->abrir();
-	/*this->fifoResults = new FifoEscritura("/tmp/fifoResultManager");
+	this->fifoMatches = new FifoLectura(FIFO_READ_MATCH_OF_MATCHMANAGER);	
+	/*this->fifoResults = new FifoEscritura(FIFO_WRITE_RESULT_TO_RESULTMANAGER);
 	this->fifoResults->abrir();
-	this->fifoPlayerManager = new FifoEscritura("/tmp/fifoPlayerManager");
+	this->fifoPlayerManager = new FifoEscritura(FIFO_WRITE_STATUS_TO_PLAYERMANAGER);
 	this->fifoPlayerManager->abrir();
 	*/
 	this->matchShouldBeCancelled = false;
@@ -13,14 +12,15 @@ Court::Court() {
 
 Court::~Court() {
 	this->fifoMatches->cerrar();
-	this->fifoResults->cerrar();
-	this->fifoPlayerManager->cerrar();
+	//this->fifoResults->cerrar();
+	//this->fifoPlayerManager->cerrar();
 	delete(this->fifoMatches);
-	delete(this->fifoResults);
-	delete(this->fifoPlayerManager);
+	//delete(this->fifoResults);
+	//delete(this->fifoPlayerManager);
 };
 
 void Court::runUntilThereAreNoMatchesLeft() {
+	this->fifoMatches->abrir();
 	log("Se abrio la cancha", 3);
 	bool moreMatchesToPlay = true;
 	Message* readMessage;
@@ -53,7 +53,7 @@ bool Court::processMessage(Message* message) {
 	log("Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == PLAY) {
 		log("Se recibio el mensaje de nuevo juego.", 3);
-		this->playGame(message);
+		//this->playGame(message);
 		moreMatchesToPlay = true;
 	} else if (operation == CLOSE) {
 		log("Se recibio el mensaje de cerrado de cancha.", 3);
