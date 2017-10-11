@@ -32,6 +32,7 @@ void MatchManager::parseMessage(struct messageTeam* team) {
         case CLOSE :
             this->finalize = true;
             std::cout<<"-----antes de notificar el close------"<<std::endl;
+            flushLog(); //agregadoooooo
             this->notifyCloseMatches();
             std::cout<<"-----llego un mensaje close------"<<std::endl;
             log("llega un close al matchManager",INFORMATION);

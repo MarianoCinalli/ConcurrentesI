@@ -59,7 +59,13 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 
 	for(int i = 0; i < totalFunctions; i++) {
 		//this->pids.push_back(pid);
-		wait(NULL);
+		pid = wait(NULL);
+		if(pid != -1){
+			log("Proceso finalizado, su pid es ", pid, 3);
+		}else{
+			log("Error en la finalizacion del proceso ", 3);
+		}
+		flushLog();
 	}
 
 	return 0;
