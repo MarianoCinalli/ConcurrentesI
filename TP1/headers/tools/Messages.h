@@ -18,7 +18,8 @@
 	*/
 	struct messagePlayer {
 		int idPlayer;
-		CommandType status;
+		//CommandType status;
+		int status;
 	};
 
 
@@ -39,6 +40,7 @@
 	*	
 	*/
 	struct messageMatch {
+		int operation;
 		int idPlayer1_Team1;
 		int idPlayer2_team1;
 		int idPlayer1_Team2;

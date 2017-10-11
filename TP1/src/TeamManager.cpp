@@ -17,10 +17,12 @@ void TeamManager::execute() {
     while (!this->finalize) {
         message = this->readPlayer();
         this->parseMessage(message);
-        team = this->makeTeam();
-        this->writeTeam(team);
+        team = this->makeTeam(); //devuelve null si no crea un equipo
+        if(team != NULL){
+            this->writeTeam(team); 
+            delete team;
+        }
         delete message;
-        delete team;
     }
     log("El proceso TeamManager finaliza correctamente ",INFORMATION);
     log("la jugadores para formar equipos",this->players->size(),INFORMATION);
@@ -85,12 +87,12 @@ struct messageTeam* TeamManager::makeTeam(){
                 team = this->formTeam(idPlayer1,idPlayer2);
                 this->removePlayer(idPlayer1);
                 this->removePlayer(idPlayer2);
-                log("se formo un equipo",INFORMATION);
+                log(" se formo un equipo",INFORMATION);
                 return team;
             }
         }
     }
-    log(TEAM_MANAGER_NAME + "no se pudo formar equipo",INFORMATION);
+    //log(TEAM_MANAGER_NAME + " no se pudo formar equipo",INFORMATION);
     return NULL;
 }
 
@@ -162,9 +164,9 @@ struct messagePlayer* TeamManager::readPlayer(){
     int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
     
 	if(result == -1){
-		log(TEAM_MANAGER_NAME + "No se pudo realizar la lectura del fifo ","sss",100, 1);
+		log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo ","sss",100, 1);
 	}else if (result != sizeof(messagePlayer)){
-		log(TEAM_MANAGER_NAME + "Se ha leido una cantidad erronea de bytes del fifo ","sss",100, 1);
+		log(TEAM_MANAGER_NAME + " Se ha leido una cantidad erronea de bytes del fifo ","sss",100, 1);
     }
     
     return buff;
@@ -172,13 +174,13 @@ struct messagePlayer* TeamManager::readPlayer(){
 
 
 void TeamManager::writeTeam(struct messageTeam * team){
-			
+
     int result = this->channelToWrite->escribir(team,sizeof(messageTeam));
 
     if(result == -1){
-        log(TEAM_MANAGER_NAME + "No se pudo realizar la escritura en el fifo ", __FILE__, __LINE__, ERROR);
+        log(TEAM_MANAGER_NAME + " No se pudo realizar la escritura en el fifo ", __FILE__, __LINE__, ERROR);
     }else if (result != sizeof(messageTeam)){
-        log(TEAM_MANAGER_NAME + "Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+        log(TEAM_MANAGER_NAME + " Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
     }
 }
 

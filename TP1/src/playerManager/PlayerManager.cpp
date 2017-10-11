@@ -3,8 +3,8 @@
 PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
 	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);	
-	this->playersToGame = new std::vector<Player*>();
-	this->playersToWait = new std::vector<Player*>();
+	this->playersToGame = new std::vector<PlayerPM*>();
+	this->playersToWait = new std::vector<PlayerPM*>();
 	this->idPlayer = 0;
 	this->maxPlayersVillage = maxPlayersVillage;
 	this->maxMatchesPerPlayer = maxMatchesPerPlayer;
@@ -18,7 +18,7 @@ PlayerManager::~PlayerManager(){
 	delete this->channelToRead;
 	delete this->channelToWrite;
 
-	std::vector<Player*>::iterator it;
+	std::vector<PlayerPM*>::iterator it;
 
 	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
 		delete (*it);
@@ -96,16 +96,16 @@ void PlayerManager::addPlayerToGame(){
 
 		//si hay jugadores en espera se agrega uno de ellos al predio, sino se crea 1 nuevo
 		if(!this->playersToWait->empty()){
-			Player* playerToGame = this->playersToWait->back();
+			PlayerPM* playerToGame = this->playersToWait->back();
 			this->playersToWait->pop_back();
 			this->playersToGame->push_back(playerToGame);
 		}else{
-			Player* player =  new Player(this->generateId());
+			PlayerPM* player =  new PlayerPM(this->generateId());
 			this->playersToGame->push_back(player);
 		}
 
 	}else{
-		Player* playerToWait =  new Player(this->generateId());
+		PlayerPM* playerToWait =  new PlayerPM(this->generateId());
 		this->playersToWait->push_back(playerToWait);
 	}
 }
@@ -131,7 +131,7 @@ struct messagePlayer* PlayerManager::readFifoPlayerManager(){
 * escribe un jugador al teamManager si este se encuentra libre
 */
 void PlayerManager::writeFifoTeamManager(){
-	std::vector<Player*>::iterator it;
+	std::vector<PlayerPM*>::iterator it;
 	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
 		if((*it)->isFree()){
 			//envia un jugador al TeamManager
@@ -184,9 +184,9 @@ void PlayerManager::removePlayerToGame(){
  * y se evalua si completo todos sus partidos
  * **/
 void PlayerManager::updateMatchesPlayer(int idPlayer){
-	std::vector<Player*>::iterator it;
+	std::vector<PlayerPM*>::iterator it;
 	bool found = false;
-	Player* player;
+	PlayerPM* player;
 
 	while(it != this->playersToGame->end() || !found){
 		player = (*it);
@@ -207,9 +207,9 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
  * si los ha completado se saca del predio
  **/ 
 
-void PlayerManager::evaluteGamesCompletedPlayer(std::vector<Player*>::iterator it){
+void PlayerManager::evaluteGamesCompletedPlayer(std::vector<PlayerPM*>::iterator it){
 
-	Player *player = (*it);
+	PlayerPM *player = (*it);
 	if(player->getGamesPlayed() == this->maxMatchesPerPlayer ){
 		//opcion1
 		//player->gameOver();

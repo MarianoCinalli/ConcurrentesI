@@ -1,15 +1,26 @@
 #include <iostream>
 #include <string>
 #include "tools/logger.h"
-#include "tools/Constants.h"
 #include <unistd.h>
-
 
 #include "tools/ProcessSpawner.h"
 #include "CommandManager.h"
 #include "TeamManager.h"
 #include "MatchManager.h"
 #include "../headers/playerManager/PlayerManager.h"
+
+// TODO: Delete when finished.
+#include "tools/utilFunctions.h"
+#include <sys/wait.h>
+#include "tools/ProcessSpawner.h"
+#include "court/Court.h"
+
+void openCourt() {
+	Court* court = new Court();
+	court->runUntilThereAreNoMatchesLeft();
+	delete(court);
+}
+// -------------------------------
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
@@ -68,6 +79,19 @@ int main(int argc, char* argv[]) {
     processSpawner->spawnProcesses(functions);
     
     delete functions;
+/*
+    // Main body
+
+    // TODO: Delete when finished. -------------------------
+	ProcessSpawner* spawner = new ProcessSpawner();
+	pid_t newProcessPid = spawner->spawnProcess(&openCourt);
+	int status;
+	waitpid(newProcessPid, &status, WUNTRACED);
+	// -----------------------------------------------------
+
+    // End Main body
+*/
+
 	logSessionFinished();
 	return 0;
 }

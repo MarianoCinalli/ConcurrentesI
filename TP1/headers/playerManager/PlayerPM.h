@@ -1,9 +1,9 @@
 #include "../tools/Constants.h"
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLAYERPM_H
+#define PLAYERPM_H
 
-class Player{
+class PlayerPM{
 
 private:
 	// status valores adoctados de PCStatus en Constans.h 
@@ -12,9 +12,9 @@ private:
 	int gamesPlayed;
 
 public:
-	Player(int id, PCStatus status);
-	Player(int id);
-	~Player();
+	PlayerPM(int id, PCStatus status);
+	PlayerPM(int id);
+	~PlayerPM();
 
 	//obtiene la cantida de juegos jugados por el jugador
 	const int getGamesPlayed(){return this->gamesPlayed;}
@@ -48,4 +48,4 @@ public:
 
 };
 
-#endif // PLAYER_H
+#endif // PLAYERPM_H

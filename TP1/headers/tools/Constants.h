@@ -11,7 +11,8 @@ static const int MIN_SETS_DEFAULT = 3;
 static const int MAX_SETS_DEFAULT = 5;
 
 enum PCStatus {freeS=0, busyS, disableS,completedS};
-enum CommandType {addType=0, removeType=1, killType,gameCanceled,gameCompleted};
+enum CommandType {addType=0, removeType=1, killType=2,gameCanceled=3,gameCompleted=4};
+enum CourtCommands {PLAY = 0, CLOSE = 1};
 enum TideType {raiseType=0, lowType=1};
 enum LevelsLog{ERROR=1, WARNING, INFORMATION};
 
@@ -32,17 +33,5 @@ const std::string FIFO_WRITE_TEAM_TO_MATCHMANAGER = "/tmp/file_fifo_TeamManager_
 const std::string FIFO_READ_TEAM_OF_TEAMMANAGER = FIFO_WRITE_TEAM_TO_MATCHMANAGER;
 const std::string FIFO_WRITE_MATCH_TO_MATCHES = "/tmp/file_fifo_MatchManager_Matches";
 
-
-
-/*
-const std::string FILE_FIFO_MANAGER_PLAYER = "/tmp/file_fifo_CommandManager_PlayerManager";
-const std::string FILE_FIFO_TIDE = "/tmp/file_fifo_CommandManager_CourtManager";
-
-//fifo que se usa para comunicarse con el CommandManager y  Court
-const std::string FILE_FIFO_READ = "/tmp/file_fifo_CommandManager_PlayerManager";
-const std::string FILE_FIFO_WRITE = "/tmp/file_fifo_PlayerManager_TeamManager";
-
-const std::string FILE_FIFO_TEAM_MANAGER_MATCH_MANAGER = "/tmp/file_fifo_PlayerManager_TeamManager";
-const std::string FILE_FIFO_MATCH_MANAGER_COURT_MANAGER = "/tmp/file_fifo_MatchManager_CourtManager";
-*/
 #endif // CONSTANTS_H_
+

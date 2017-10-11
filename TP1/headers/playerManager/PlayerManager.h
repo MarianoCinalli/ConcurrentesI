@@ -4,7 +4,7 @@
 #include "../fifos/FifoLectura.h"
 #include "../fifos/FifoEscritura.h"
 #include <vector>
-#include "Player.h"
+#include "PlayerPM.h"
 #include <string.h>
 #include "../tools/utilFunctions.h"
 #include "../tools/Constants.h"
@@ -24,8 +24,8 @@ class PlayerManager {
 		int idPlayer;
 		int maxPlayersVillage;
 		int maxMatchesPerPlayer;
-		std::vector<Player*> *playersToGame;
-		std::vector<Player*> *playersToWait;
+		std::vector<PlayerPM*> *playersToGame;
+		std::vector<PlayerPM*> *playersToWait;
 		int generateId();
 		void removePlayersWithGamesCompleted();
 		void removePlayerToGame();
@@ -35,7 +35,7 @@ class PlayerManager {
 		void parseMessage(struct messagePlayer* message);
 		void writeMessagePlayer(struct messagePlayer* message);
 		void updateMatchesPlayer(int idPlayer);
-		void evaluteGamesCompletedPlayer(std::vector<Player*>::iterator it);
+		void evaluteGamesCompletedPlayer(std::vector<PlayerPM*>::iterator it);
 
 	public:
 		PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayers);

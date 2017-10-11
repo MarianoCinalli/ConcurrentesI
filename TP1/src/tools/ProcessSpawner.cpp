@@ -27,7 +27,7 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 		this->pids.push_back(pid);
 		wait(NULL);
 	}
-	return 0;
+	return pid;
 }
 
 
