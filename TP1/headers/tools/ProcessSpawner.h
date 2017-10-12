@@ -9,6 +9,7 @@
 #define PROCESSSPAWNER_H
 
 typedef void (*functiontype)();
+typedef void (*functionWithIntParametersType)(int parameters[]);
 
 class ProcessSpawner {
 
@@ -20,6 +21,7 @@ public:
 	~ProcessSpawner();
 	int spawnProcess(functiontype functionPointer);
 	int spawnProcesses(std::vector<functiontype>*funtions);
+	int spawnProcess(functionWithIntParametersType functionPointer, int parameters[]);
 };
 
 #endif // PROCESSSPAWNER_H

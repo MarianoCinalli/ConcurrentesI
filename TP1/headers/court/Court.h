@@ -1,16 +1,17 @@
+#ifndef COURT_H
+#define COURT_H
+
 #include <errno.h>
 #include <string.h>
 #include <vector>
 #include "tools/logger.h"
 #include "tools/Messages.h"
+#include "tools/Constants.h"
 #include "fifos/FifoLectura.h"
 #include "fifos/FifoEscritura.h"
 #include "court/Message.h"
 #include "court/Match.h"
 #include "court/Team.h"
-
-#ifndef COURT_H
-#define COURT_H
 
 class Court {
 

@@ -14,6 +14,15 @@
 #include <sys/wait.h>
 #include "tools/ProcessSpawner.h"
 #include "court/Court.h"
+#include "courtManager/CourtManager.h"
+
+
+void openCourtManager(int parameters[]) {
+	// 0 rows - 1 columns
+	CourtManager* courtManager = new CourtManager(parameters[0], parameters[1]);
+	courtManager->administrateCourts();
+	delete(courtManager);
+}
 
 void openCourt() {
     log("----------------",INFORMATION);
@@ -120,8 +129,9 @@ int main(int argc, char* argv[]) {
     // Main body
 
     // TODO: Delete when finished. -------------------------
+    int parameters[2] = { 1, 1 };
 	ProcessSpawner* spawner = new ProcessSpawner();
-	pid_t newProcessPid = spawner->spawnProcess(&openCourt);
+	pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
 	int status;
 	waitpid(newProcessPid, &status, WUNTRACED);
 	// -----------------------------------------------------

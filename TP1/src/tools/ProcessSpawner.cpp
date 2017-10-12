@@ -30,7 +30,6 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 	return pid;
 }
 
-
 // Ejecuta N cantidad de de funciones
 // Al terminar todas las ejecucion de cada funcion el nuevo proceso finaliza. 
 int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
@@ -68,5 +67,23 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 	}
 
 	return 0;
+}
+
+
+int ProcessSpawner::spawnProcess(functionWithIntParametersType functionPointer, int parameters[]) {
+	pid_t pid;
+	flushLog(); // Flusheo al log, porque sino pueden aparecer logs repetidos.
+	pid = fork();
+	if ( pid == 0 ) {
+		// Hijo
+		functionPointer(parameters);
+		exit ( 0 );
+	} else {
+		// Padre
+		log("Proceso creado, su pid es ", pid, 3);
+		this->pids.push_back(pid);
+	}
+	return pid;
+
 }
 

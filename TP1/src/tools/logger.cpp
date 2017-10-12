@@ -25,6 +25,7 @@ if (messageLevel < LOG_MIN_LEVEL) {
     std::string timeString = getDate();
     std::string toLog = "[" + getDate() + " - " + getPID() + "] : " + message + "\n";
     LOG_FILE_POINTER << toLog;
+    flushLog();
     return 0;
 }
 
