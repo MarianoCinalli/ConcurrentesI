@@ -45,6 +45,7 @@ void PlayerManager::execute(){
 	while(!this->finalizedProcess){
 		message = this->readFifoPlayerManager();
 		this->parseMessage(message);
+		this->evaluateFinishProcess();
 		this->writeFifoTeamManager();
 		delete message;		
 	}
@@ -53,6 +54,70 @@ void PlayerManager::execute(){
 	//log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
 	//log(PLAYER_MANAGER_NAME + " : la jugadores en espera ",this->playersToWait->size(),INFORMATION);
 }
+
+
+
+//condición de que k < M
+void PlayerManager::evaluateFinishProcess(){
+
+	std::vector<PlayerPM*>::iterator it = this->playersToWait->begin();
+	int maxGamesPossiblePlayer = this->playersToGame->size() + this->playersToWait->size();
+
+	//primera condicion es que ambas listas tengan mas de 3 jugadores
+	//mover al predio aquellos que estan en espera
+	if(this->playersToGame->size() < 3){
+		while(playersToGame->size() < this->maxPlayersVillage || it != this->playersToWait->end()){
+			this->playersToGame->push_back(*it);
+			this->playersToWait->erase(it);
+			it++;
+		}
+		if(this->playersToGame->size() < 3){
+			this->finalizedProcess = true;
+			struct messagePlayer* message =  new messagePlayer;
+			message->status = CommandType::killType;
+			this->writeMessagePlayer(message);
+			//escribimos al player manager
+		}
+	}
+	/*else{
+		//hay mas de 3 jugadores y no pueden completar la cantidad de juegos
+		//entonces se buscan jugadores en espera y se mueven al predio
+		//esto hasta que ambas listas estan vacias, osea que completaron
+		//o hasta que completen la maxima cantidad de partidos posibles
+
+		//primero se tiene que ver que no llegue información de jugadores completados
+
+		it = this->playersToWait->begin();
+		while(playersToGame->size() < this->maxPlayersVillage || it != this->playersToWait->end){
+			this->playersToGame->push_back(*it);
+			this->playersToWait->erase(it);
+		}
+		if(this->playersToGame->size() < 3){
+			//finaliza el proceso
+		}
+		
+	}
+*/
+}
+
+	int maxMatchesPerPlayer = this-> this->maxPlayersVillage -1;
+	std::vector<PlayerPM*>::iterator it;
+
+	if (this->playersToGame->size() <= 3){ // no se pueden jugar matches si hay solo 3
+		it = this->playerstoWait()->begin();
+		//agregamos jugadores en espera al predio
+		while(playersToGame->size() < this->maxPlayersVillage || it != this->playersToWait->end){
+			this->playersToGame->push_back(*it);
+			this->playersToWait->erase(it);
+		}
+
+		if (this->playersToGame->size() <= 3){
+			this->
+		}
+	}
+}
+
+
 
 void PlayerManager::loggearPlayers(){
 	log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
@@ -113,7 +178,6 @@ void PlayerManager::addPlayerToGame(){
 
 	//si en el predio no esta lleno
 	if ((int)this->playersToGame->size() < this->maxPlayersVillage){
-
 		//si hay jugadores en espera se agrega uno de ellos al predio, sino se crea 1 nuevo
 		if(!this->playersToWait->empty()){
 			PlayerPM* playerToGame = this->playersToWait->back();
@@ -123,7 +187,6 @@ void PlayerManager::addPlayerToGame(){
 			PlayerPM* player =  new PlayerPM(this->generateId());
 			this->playersToGame->push_back(player);
 		}
-
 	}else{
 		PlayerPM* playerToWait =  new PlayerPM(this->generateId());
 		this->playersToWait->push_back(playerToWait);

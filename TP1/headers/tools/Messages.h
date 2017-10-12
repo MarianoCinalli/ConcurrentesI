@@ -63,6 +63,8 @@
 
 		int setsWonTeam1;
 		int setsWonTeam2;
+
+		int operation;
 	};
 
 	/*
