@@ -19,7 +19,7 @@ class PlayerManager {
 	private:
 
 		bool finalizedProcess;
-		bool removePlayer;
+		int removePlayer;
 		FifoLectura *channelToRead;
 		FifoEscritura *channelToWrite;
 		int idPlayer;
@@ -39,6 +39,7 @@ class PlayerManager {
 		bool evaluteGamesCompletedPlayer(PlayerPM *player);
 		void removePlayerToGame();
 		void notifyGameCanceled(struct messagePlayer* message);
+		void loggearPlayers();
 
 
 	public:

@@ -1,9 +1,10 @@
 #include "../tools/Constants.h"
+#include "interfaces/Loggable.h"
 
 #ifndef PLAYERPM_H
 #define PLAYERPM_H
 
-class PlayerPM{
+class PlayerPM : public Loggable {
 
 private:
 	// status valores adoctados de PCStatus en Constans.h 
@@ -14,6 +15,7 @@ private:
 public:
 	PlayerPM(int id, PCStatus status);
 	PlayerPM(int id);
+	std::string logMemberVariables();
 	~PlayerPM();
 
 	//obtiene la cantida de juegos jugados por el jugador

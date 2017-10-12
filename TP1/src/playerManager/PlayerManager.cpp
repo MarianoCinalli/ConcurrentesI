@@ -9,7 +9,7 @@ PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->maxPlayersVillage = maxPlayersVillage;
 	this->maxMatchesPerPlayer = maxMatchesPerPlayer;
 	this->finalizedProcess = false;
-	this->removePlayer = false;
+	this->removePlayer = 0;
 }
 
 PlayerManager::~PlayerManager(){
@@ -49,9 +49,27 @@ void PlayerManager::execute(){
 		delete message;		
 	}
 	log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
+	this->loggearPlayers();
+	//log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
+	//log(PLAYER_MANAGER_NAME + " : la jugadores en espera ",this->playersToWait->size(),INFORMATION);
+}
+
+void PlayerManager::loggearPlayers(){
 	log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
 	log(PLAYER_MANAGER_NAME + " : la jugadores en espera ",this->playersToWait->size(),INFORMATION);
+	std::vector<PlayerPM*>::iterator it;
+
+	for(it = this->playersToGame->begin();it != this->playersToGame->end(); it++){
+		log((*it)->logMemberVariables(),INFORMATION);
+	}
+
+	for(it = this->playersToWait->begin();it != this->playersToWait->end(); it++){
+		log((*it)->logMemberVariables(),INFORMATION);
+	}
+
 }
+
+
 
 
 //falta terminar parser
@@ -186,7 +204,7 @@ void PlayerManager::removePlayerToGame(){
 
 	if (!found){
 		//remover el primero que llegue después de jugar
-		this->removePlayer = true;
+		this->removePlayer++;
 	}
 }
 
@@ -197,7 +215,7 @@ void PlayerManager::removePlayerToGame(){
  * cambia el estado del jugador a libre
  * */
 void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
-	if(this->removePlayer){
+	if(this->removePlayer > 0){
 		bool found = false;
 		std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
 
@@ -207,7 +225,7 @@ void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
 				this->playersToWait->push_back((*it));
 				this->playersToGame->erase(it);
 				found = true;
-				this->removePlayer = false;
+				this->removePlayer--;
 			}
 			it++;
 		}
@@ -245,11 +263,11 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 				//si completo el juego lo elimino definitivamente.
 				this->playersToGame->erase(it);
 				delete player;
-			}else if(this->removePlayer ){
+			}else if(this->removePlayer > 0){
 				//si NO completo el juego solo lo saco del predio
 				this->playersToWait->push_back(player);
 				this->playersToGame->erase(it);
-				this->removePlayer = false; 
+				this->removePlayer--; 
 			}
 
 			/*if(this->removePlayer || completedGames){

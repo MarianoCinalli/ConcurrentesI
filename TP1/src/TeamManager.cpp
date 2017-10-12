@@ -191,9 +191,9 @@ struct messagePlayer* TeamManager::readPlayer(){
     int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
     
 	if(result == -1){
-		log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo ","sss",100, 1);
+		log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo ", __FILE__, __LINE__, ERROR);
 	}else if (result != sizeof(messagePlayer)){
-		log(TEAM_MANAGER_NAME + " Se ha leido una cantidad erronea de bytes del fifo ","sss",100, 1);
+		log(TEAM_MANAGER_NAME + " Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
     }
     
     return buff;
