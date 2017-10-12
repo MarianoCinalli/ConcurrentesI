@@ -9,6 +9,7 @@ PlayerManager::PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayer){
 	this->maxPlayersVillage = maxPlayersVillage;
 	this->maxMatchesPerPlayer = maxMatchesPerPlayer;
 	this->finalizedProcess = false;
+	this->removePlayer = false;
 }
 
 PlayerManager::~PlayerManager(){
@@ -74,7 +75,8 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 		//mesage de Court notificando que el jugador no completo el partido	
 		//notifica a TeamManager que el ultimo equipo del jugador no jugó
 		case CommandType::gameCanceled :
-			this->writeMessagePlayer(message);
+			//this->writeMessagePlayer(message);
+			this->notifyGameCanceled(message);
 			break;
 
 		//mesage de Court notificando que el jugador completo el partido
@@ -146,8 +148,7 @@ void PlayerManager::writeFifoTeamManager(){
 }
 
 
-//para notificar a teamManager que no se completo el partido del jugador
-//o para informar un kill
+//escribe al fifo de teamManager
 void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 
 	int result = this->channelToWrite->escribir(message,sizeof(messagePlayer));
@@ -162,41 +163,107 @@ void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 
 
 
-
-/*
-*
-*
-*
-*Falta definir el remove
-*
-*
-*/
+/**
+ * saca a un player libre del predio, si no hay jugador libre 
+ * setea una variable para que se el proxmo libre salga del predio
+**/
 void PlayerManager::removePlayerToGame(){
-	if(!this->playersToGame->empty()){
-		int position = getRandomBetween(0,this->playersToGame->size());
-		std::cout<<"sale el jguador en la pos "<<position<<std::endl;		
+	std::vector<PlayerPM*>::iterator it;
+	bool found = false;
+
+	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
+		if((*it)->isFree()){
+			this->playersToWait->push_back((*it));
+			this->playersToGame->erase(it);
+			found = true;
+		}
+	}
+
+	/*
+	La busqueda es innecesaria porque nunca va a encontrar uno libre,
+	 dado que cuando llega uno se envia inmediatamente...
+	*/
+
+	if (!found){
+		//remover el primero que llegue después de jugar
+		this->removePlayer = true;
 	}
 }
 
 
 /**
+ * para notificar a teamManager que no se completo el partido del jugador
+ * evalua si es necesario sacar al jugador del predio, debido a un comando
+ * cambia el estado del jugador a libre
+ * */
+void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
+	if(this->removePlayer){
+		bool found = false;
+		std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
+
+		while(it != this->playersToGame->end() || !found){
+			if((*it)->getId() == message->idPlayer){
+				(*it)->endGame();//cambiamos el estado a libre
+				this->playersToWait->push_back((*it));
+				this->playersToGame->erase(it);
+				found = true;
+				this->removePlayer = false;
+			}
+			it++;
+		}
+
+		if(!found){
+			log("jugador no encontrado en el predio para actualizar su estado id jugador: ",message->idPlayer, ERROR);
+		}
+	}
+	this->writeMessagePlayer(message);
+}
+
+
+
+/**
  * aumenta la cantidad de partidos jugados de un player
- * y se evalua si completo todos sus partidos
+ * evalua si es necesario sacar al jugador si completo todos sus partidos
+ * evalua si es necesario sacar al jugador del predio, debido a un comando
+ * cambia el estado del jugador a libre
  * **/
 void PlayerManager::updateMatchesPlayer(int idPlayer){
-	std::vector<PlayerPM*>::iterator it;
+	std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
 	bool found = false;
+	bool completedGames = false;
 	PlayerPM* player;
 
 	while(it != this->playersToGame->end() || !found){
 		player = (*it);
-		it++;
 		if(player->getId() == idPlayer){
 			found = true;
 			player->addGamePlayed();
 			player->endGame();	//el jugador esta libre para volver a jugar
-			this->evaluteGamesCompletedPlayer(it);
+			completedGames = this->evaluteGamesCompletedPlayer(player);
+
+			if(completedGames){
+				//si completo el juego lo elimino definitivamente.
+				this->playersToGame->erase(it);
+				delete player;
+			}else if(this->removePlayer ){
+				//si NO completo el juego solo lo saco del predio
+				this->playersToWait->push_back(player);
+				this->playersToGame->erase(it);
+				this->removePlayer = false; 
+			}
+
+			/*if(this->removePlayer || completedGames){
+				this->playersToWait->push_back(player);
+				this->playersToGame->erase(it);
+				//si el jugador completo el juego no cuenta como removido por comando
+				this->removePlayer = completedGames; 
+			}*/
 		}
+		it++;
+	}
+
+	if(!found){
+		log("jugador no encontrado en el predio para actualizar su estado id jugador: ",idPlayer, ERROR);
 	}
 }
 
@@ -204,25 +271,19 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 /**
  * evalua si un jugador ha completado la maxima cantidad de partidos
  * el jugador se encuentra en el predio osea en playersToGame
- * si los ha completado se saca del predio
+ * si los ha completado se saca del predio definitivamente
  **/ 
 
-void PlayerManager::evaluteGamesCompletedPlayer(std::vector<PlayerPM*>::iterator it){
+bool PlayerManager::evaluteGamesCompletedPlayer(PlayerPM *player){
 
-	PlayerPM *player = (*it);
-	if(player->getGamesPlayed() == this->maxMatchesPerPlayer ){
-		//opcion1
-		//player->gameOver();
-		//this->playersToWait->push_back(player);
-		//this->playersToGame->erase(it);
+	bool completedGames = player->getGamesPlayed() == this->maxMatchesPerPlayer;
 
-		//opcion 2
-		this->playersToGame->erase(it);
-		delete player;
-		log("Jugador ha completado los partidos permitidos, jugador con id ",(*it)->getId(),INFORMATION);		
+	if(completedGames){
+		//player->gameOver(); //completo el juego
+		log("Jugador ha completado los partidos permitidos, jugador con id ",player->getId(),INFORMATION);
 	}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer){
-		log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",(*it)->getId(),ERROR);
+		log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",player->getId(),ERROR);
+		exit (1);
 	}
-
+	return completedGames;
 }
-

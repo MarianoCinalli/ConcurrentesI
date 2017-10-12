@@ -19,6 +19,7 @@ class PlayerManager {
 	private:
 
 		bool finalizedProcess;
+		bool removePlayer;
 		FifoLectura *channelToRead;
 		FifoEscritura *channelToWrite;
 		int idPlayer;
@@ -28,14 +29,17 @@ class PlayerManager {
 		std::vector<PlayerPM*> *playersToWait;
 		int generateId();
 		void removePlayersWithGamesCompleted();
-		void removePlayerToGame();
 		void addPlayerToGame();
 		struct messagePlayer* readFifoPlayerManager();
 		void writeFifoTeamManager();
 		void parseMessage(struct messagePlayer* message);
 		void writeMessagePlayer(struct messagePlayer* message);
 		void updateMatchesPlayer(int idPlayer);
-		void evaluteGamesCompletedPlayer(std::vector<PlayerPM*>::iterator it);
+		//void evaluteGamesCompletedPlayer(std::vector<PlayerPM*>::iterator it);
+		bool evaluteGamesCompletedPlayer(PlayerPM *player);
+		void removePlayerToGame();
+		void notifyGameCanceled(struct messagePlayer* message);
+
 
 	public:
 		PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayers);

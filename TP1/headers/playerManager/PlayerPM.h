@@ -28,9 +28,9 @@ public:
 	//pone al jugador en estado libre permaneciendo dentro del predio
 	void endGame() {this->status = freeS;}
 
-	//pone al jugador en estado desabilitado sacandolo fuera del predio
+/*	//pone al jugador en estado desabilitado sacandolo fuera del predio
 	void disable() {this->status = disableS;}
-
+*/
 	//pone al jugador en estado ocupado, jugando un match en el predio
 	void playGame() {this->status = busyS;}
 
@@ -42,10 +42,10 @@ public:
 
 	//devuelve true si el jugador esta libre 
 	bool isFree() {return this->status == freeS;}
-
+/*
 	//devuelve true si el jugador esta disponible 
 	bool isDisable() {return this->status == disableS;}
-
+*/
 };
 
 #endif // PLAYERPM_H
