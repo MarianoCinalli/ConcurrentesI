@@ -16,6 +16,13 @@ enum CourtCommands {PLAY = 0, CLOSE = 1};
 enum TideType {raiseType=0, lowType=1};
 enum LevelsLog{ERROR=1, WARNING, INFORMATION};
 
+struct initialParameter {
+    int rows;
+    int columns;
+    int maxPlayer;
+    int maxGamesByPlayer;
+};
+
 //fifos usados por Command
 const std::string FIFO_WRITE_COMMAND_TO_PLAYERMANAGER = "/tmp/file_fifo_CommandManager_PlayerManager";
 const std::string FIFO_WRITE_COMMAND_TO_COURTMANAGER = "/tmp/file_fifo_CommandManager_CourtManager";

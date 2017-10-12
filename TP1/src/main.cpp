@@ -86,6 +86,8 @@ void executeMatchManager(){
 
 typedef void (*functiontype)();
 
+const char INITIAL_PARAMETERS[] = "initialParameter.json";
+
 int main(int argc, char* argv[]) {
     // Initialization
     srand(time(NULL)); // Init seed for random
@@ -95,6 +97,7 @@ int main(int argc, char* argv[]) {
     std::cout<<"COMIENZA EJECUCION"<<std::endl;
 
     logSessionStarted();
+
     log("----------------------------",INFORMATION);
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
     log("----------------------------",INFORMATION);
@@ -113,7 +116,7 @@ int main(int argc, char* argv[]) {
     log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
     log("----------------------------",INFORMATION);
 
-/*
+
     // Main body
 
     // TODO: Delete when finished. -------------------------
@@ -124,8 +127,18 @@ int main(int argc, char* argv[]) {
 	// -----------------------------------------------------
 
     // End Main body
-*/
 
+/*
+    // EJEMPLO DE PARSER
+    
+    struct initialParameter* initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
+    log("rows : " + std::to_string(initialParameters->rows),INFORMATION);
+    log("columns : " + std::to_string(initialParameters->columns),INFORMATION);
+    log("maxPlayer : " + std::to_string(initialParameters->maxPlayer),INFORMATION);
+    log("maxGamesByPlayer : " + std::to_string(initialParameters->maxGamesByPlayer),INFORMATION);
+    delete initialParameters;
+
+*/
 	logSessionFinished();
 	return 0;
 }

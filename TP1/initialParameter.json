@@ -1,0 +1,6 @@
+{
+    "rows": 10,
+    "columns": 20,
+    "maxPlayer": 30,
+    "maxGamesByPlayer": 40
+}
