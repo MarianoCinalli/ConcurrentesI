@@ -27,3 +27,19 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 	return pid;
 }
 
+int ProcessSpawner::spawnProcess(functionWithIntParametersType functionPointer, int parameters[]) {
+	pid_t pid;
+	flushLog(); // Flusheo al log, porque sino pueden aparecer logs repetidos.
+	pid = fork();
+	if ( pid == 0 ) {
+		// Hijo
+		functionPointer(parameters);
+		exit ( 0 );
+	} else {
+		// Padre
+		log("Proceso creado, su pid es ", pid, 3);
+		this->pids.push_back(pid);
+	}
+	return pid;
+}
+

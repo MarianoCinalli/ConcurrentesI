@@ -9,6 +9,13 @@
 #include "tools/ProcessSpawner.h"
 #include "court/Court.h"
 
+void openCourtManager(int parameters[]) {
+	// 0 rows - 1 columns
+	CourtManager* courtManager = new CourtManager(parameters[0], parameters[1]);
+	courtManager->administrateCourts();
+	delete(courtManagerl);
+}
+
 void openCourt() {
 	Court* court = new Court();
 	court->runUntilThereAreNoMatchesLeft();
