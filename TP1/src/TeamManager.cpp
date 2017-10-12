@@ -95,8 +95,35 @@ struct messageTeam* TeamManager::makeTeam(){
     return NULL;
 }
 
+
+
+/**
+ * Al recibir un mensaje de cancelacion de juego, se elimina el ultimo compañero
+ * registrado, por lo tanto debe tener al menos un compañero ya registrado 
+ **/
 void TeamManager::cancelLastGameOfPLayer(int idPlayer){
-    
+
+    try{
+        std::vector<int>* playMates = playsByPlayer->at(idPlayer);
+        std::vector<int>::iterator it = playMates->begin();
+        bool found = false;
+        while(it != playMates->end() || !found){
+            if ((*it) == idPlayer){
+                found = true;
+                playMates->erase(it);
+            }
+            it++;
+        }
+
+        if(!found){
+            log("No existe registro a cancelar del ultimo compañero del jugador: ",idPlayer,ERROR);
+            exit(1);
+        }
+
+    }catch(std::out_of_range e){
+        log("No existe registro del jugador: ",idPlayer,ERROR);
+        exit(1);
+    }
 }
 
 struct messageTeam* TeamManager::formTeam(int idPlayer1, int idPlayer2) {
