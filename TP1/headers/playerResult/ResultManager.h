@@ -3,6 +3,7 @@
 
 #include "../fifos/FifoLectura.h"
 #include <map>
+#include <vector>
 #include "PlayerResult.h"
 #include <string.h>
 #include "../tools/Constants.h"
@@ -23,14 +24,19 @@ private:
 		bool finalizedProcess;
 		FifoLectura *channelToRead;
 		std::map<int, PlayerResult*> *playerResults;
+        int maxScore;
+        std::vector<PlayerResult*> *winners;
 
         struct messageResult* readFifoResultManager();
         PlayerResult* searchPlayerResult(int idPlayer);
+        void managerWinners(PlayerResult *player1Team1Result, PlayerResult *player2Team1Result, PlayerResult *player1Team2Result, PlayerResult *player2Team2Result);
+        void managerWinner(PlayerResult *playerResult);
 
 	public:
 		ResultManager();
 		~ResultManager();
-		void execute();
+        void execute();
+        void showWinners();
 };
 
 #endif // RESULTMANAGER_H

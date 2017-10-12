@@ -17,6 +17,8 @@ class PlayerResult{
         PlayerResult(int id);
         void showScore();
         void addScore(int score);
+        int getScore();
+        int getId();
         ~PlayerResult();
 
 };
