@@ -65,6 +65,6 @@
 	struct messageCourtManager {
 		int operation;
 		int operationValue;
-	}
+	};
 
 #endif // MESSAGES_H_

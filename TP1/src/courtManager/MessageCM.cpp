@@ -4,7 +4,7 @@ MessageCM::MessageCM() {
 	this->operation = 4;
 };
 
-MessageCM::MessageCM(struct messageMatch message) {
+MessageCM::MessageCM(struct messageCourtManager message) {
 	this->operation = message.operation;
 	this->operationValue = message.operationValue;
 };

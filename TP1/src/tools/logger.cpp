@@ -25,6 +25,7 @@ int log(std::string message, int messageLevel) {
     std::string timeString = getDate();
     std::string toLog = "[" + getDate() + " - " + getPID() + "] : " + message + "\n";
     LOG_FILE_POINTER << toLog;
+    flushLog();
     return 0;
 }
 

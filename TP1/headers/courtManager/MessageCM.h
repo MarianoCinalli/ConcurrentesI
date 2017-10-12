@@ -1,10 +1,9 @@
-#include "tools/Messages.h"
-
 #ifndef MESSAGECM_H
 #define MESSAGECM_H
 
-class MessageCM {
+#include "tools/Messages.h"
 
+class MessageCM {
 	private:
 		int operation;
 		int operationValue;
@@ -12,7 +11,7 @@ class MessageCM {
 	public:
 		MessageCM();
 		MessageCM(struct messageCourtManager message);
-		~Message();
+		~MessageCM();
 		int getOperation();
 		int getOperationValue();
 };

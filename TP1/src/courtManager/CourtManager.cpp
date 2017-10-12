@@ -5,17 +5,27 @@
 
 // Constructor
 CourtManager::CourtManager(int rows, int columns) : beach(rows, std::vector<CourtCM*>(columns)) {
+	log("CourtManager: Inicializando.", 3);
+	log("CourtManager: Columnas: ", columns, 3);
+	log("CourtManager: Filas: ", rows, 3);
 	this->rows = rows;
 	this->columns = columns;
+	this->tideLevel = 0;
+	log("CourtManager: Abriendo fifo", 3);
 	this->fifoCourtManager = new FifoLectura("/tmp/fifoCourtManager");	
 	this->fifoCourtManager->abrir();
+	log("CourtManager: Fifo abierto", 3);
+	log("CourtManager: Abriendo canchas.", 3);
 	this->initializeCourts();
+	log("CourtManager: Canchas abiertas.", 3);
+	log("CourtManager: Inicializacion finalizada.", 3);
 };
 
 void CourtManager::initializeCourts() {
 	for (int rowNumber = 0; rowNumber < this->rows; ++rowNumber) {
 		for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
 			// Crea y abre la cancha
+			log("CourtManager: Abriendo cancha nro.:" + std::to_string(rowNumber) + " " + std::to_string(columnNumber) , 3);
 			this->beach[rowNumber][columnNumber] = new CourtCM();
 		}
 	}
@@ -34,8 +44,8 @@ void CourtManager::administrateCourts() {
 };
 
 MessageCM* CourtManager::getMessage() {
-	struct messageMatch readMessage;
-	int readBytes = this->fifoMatches->leer(static_cast<void*>(&readMessage), sizeof(readMessage));
+	struct messageCourtManager readMessage;
+	int readBytes = this->fifoCourtManager->leer(static_cast<void*>(&readMessage), sizeof(readMessage));
 	if (readBytes < 0) {
 		log("** Error ** En la lectura. Errno: ", strerror(errno), 1);
 	} else if (readBytes == 0) {
@@ -53,11 +63,11 @@ bool CourtManager::processMessage(MessageCM* message) {
 	log("Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == raiseType) {
 		log("Se recibio el mensaje de incremento de marea.", 3);
-		this->raiseTideAndInformCourts(message->getValue());
+		this->raiseTideAndInformCourts(message->getOperationValue());
 		shouldEnd = false;
 	} else if (operation == lowType) {
 		log("Se recibio el mensaje de decremento de marea.", 3);
-		this->lowerTideAndInformCourts(message->getValue());
+		this->lowerTideAndInformCourts(message->getOperationValue());
 		shouldEnd = false;
 	} else if (operation == closeCourts) {
 		log("Se recibio el mensaje de cerrado de cancha.", 3);
@@ -114,20 +124,29 @@ int CourtManager::getUpdatedTideLevel(int amountToAdd) {
 };
 
 void CourtManager::shutDownCourts() {
-	FifoEscritura* fifo = new FifoEscritura("/tmp/fifoMatches");
+	log("CourtManager: Abriendo fifo para cerrar las canchas", 3);
+	FifoEscritura* fifoMatches = new FifoEscritura("/tmp/fifoMatches");
+	log("CourtManager: Fifo abierto", 3);
 	struct messageMatch closeMessage;
-	closeMessage.operation = 1;
-	for (int rowNumber = previousTideLevel; rowNumber > this->tideLevel; --rowNumber) {
+	closeMessage.idPlayer1_Team1 = 1;
+	closeMessage.idPlayer2_team1 = 1;
+	closeMessage.idPlayer1_Team2 = 1;
+	closeMessage.idPlayer2_team2 = 1;
+	log("CourtManager: Cerrando " + std::to_string(this->rows * this->columns) + " canchas.", 3);
+	for (int rowNumber = 0; rowNumber < this->rows; ++rowNumber) {
 		for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
-			CourtCM* court = this->beach[rowNumber][columnNumber]
-			if (court->isOpen()) {
-				int bytes = fifo->escribir(static_cast<void*>(&toWriteMessage), sizeof(toWriteMessage));
+			CourtCM* court = this->beach[rowNumber][columnNumber];
+			if (court->isCourtOpen()) {
+				log("CourtManager: Cancha abierta, cerrando. Cancha nro.:" + std::to_string(rowNumber) + " " + std::to_string(columnNumber) , 3);
+				int bytes = fifoMatches->escribir(static_cast<void*>(&closeMessage), sizeof(closeMessage));
 				if (bytes <= 0) {
 					log("** Error ** En la escritura. Errno: ", strerror(errno), 1);
 				} else {
 					log("Escritura correcta. Cantidad de bytes: ", bytes, 3);
 				}
 				delete(court);
+			} else {
+				log("CourtManager: Cancha cerrada, ignorando. Cancha nro.:" + std::to_string(rowNumber) + " " + std::to_string(columnNumber) , 3);
 			}
 		}
 	}
@@ -135,13 +154,21 @@ void CourtManager::shutDownCourts() {
 	// Y aumentar cuando se crean.
 	// Aca se espera a que sea cero y se puede seguir la ejecucion.
 	// Sino se va a cerrar el archivo y bloquear todas las canchas.
-	fifo->cerrar();
-	delete(fifo);
+	log("CourtManager: Cerrando fifo de canchas", 3);
+	fifoMatches->cerrar();
+	delete(fifoMatches);
+	log("CourtManager: Fifo de canchas cerrado", 3);
 };
 
 // Destructor
 CourtManager::~CourtManager() {
+	log("CourtManager: Liberando recursos.", 3);
+	log("CourtManager: Cerrando canchas.", 3);
 	this->shutDownCourts();
+	log("CourtManager: Canchas cerradas.", 3);
+	log("CourtManager: Cerrando fifo.", 3);
 	this->fifoCourtManager->cerrar();
 	delete(this->fifoCourtManager);
-};
+	log("CourtManager: Fifo cerrado.", 3);
+	log("CourtManager: Recursos liberados.", 3);
+}

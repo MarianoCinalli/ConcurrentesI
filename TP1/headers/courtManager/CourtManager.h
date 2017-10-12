@@ -1,3 +1,6 @@
+#ifndef COURTMANAGER_H
+#define COURTMANAGER_H
+
 #include <vector>
 #include <string.h>
 #include "tools/Constants.h"
@@ -5,17 +8,19 @@
 #include "tools/Messages.h"
 #include "fifos/FifoLectura.h"
 #include "fifos/FifoEscritura.h"
-#include "courtManager/courtCM.h"
-#include "courtManager/messageCM.h"
-
-#ifndef COURTMANAGER_H
-#define COURTMANAGER_H
+#include "semaforos/Semaforo.h"
+#include "courtManager/CourtCM.h"
+#include "courtManager/MessageCM.h"
 
 class CourtManager {
 
 	// Atributes ------------------------------------------------------
 	private:
 		std::vector<std::vector<CourtCM*>> beach;
+		int tideLevel;
+		int rows;
+		int columns;
+		FifoLectura* fifoCourtManager;
 
 	// Public methods -------------------------------------------------
 	public:
@@ -30,7 +35,7 @@ class CourtManager {
 		bool processMessage(MessageCM* message);
 		void raiseTideAndInformCourts(int amountToRaise);
 		void lowerTideAndInformCourts(int amountToLower);
-		int getUpdatedTideLevel();
+		int getUpdatedTideLevel(int amountToAdd);
 		void shutDownCourts();
 };
 

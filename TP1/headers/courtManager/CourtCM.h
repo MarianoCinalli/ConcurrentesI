@@ -1,9 +1,11 @@
+#ifndef COURTCM_H
+#define COURTCM_H
+
 #include "court/Court.h"
 #include <sys/types.h>
 #include <signal.h>
-
-#ifndef COURTCM_H
-#define COURTCM_H
+#include "tools/ProcessSpawner.h"
+#include "tools/logger.h"
 
 class CourtCM {
 
@@ -15,10 +17,17 @@ class CourtCM {
 	// Public methods -------------------------------------------------
 	public:
 		CourtCM();
-		bool isOpen();
+		bool isCourtOpen();
 		void openCourt();
 		void closeCourt();
 		~CourtCM();
+		
+		static void createCourt() {
+			Court* court = new Court();
+			court->runUntilThereAreNoMatchesLeft();
+			delete(court);
+		};
+
 };
 
 #endif // COURTCM_H

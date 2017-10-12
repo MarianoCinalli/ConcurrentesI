@@ -6,23 +6,21 @@ CourtCM::CourtCM(){
 };
 
 void CourtCM::openCourt() {
+	log("CourtCM: Abriendo cancha", 3);
 	ProcessSpawner* spawner = new ProcessSpawner();
-	this->courtPid = spawner->spawnProcess(&createCourt);
+	this->courtPid = spawner->spawnProcess(&(CourtCM::createCourt));
 	this->isOpen = true;
+	log("CourtCM: Cancha abierta. Nro de cancha", this->courtPid, 3);
 };
 
 void CourtCM::closeCourt() {
+	log("CourtCM: Clausurando cancha", 3);
 	kill(this->courtPid, SIGINT);
 	this->isOpen = false; 
+	log("CourtCM: Cancha clausurada. Nro de cancha", this->courtPid, 3);
 };
 
-void CourtCM::createCourt() {
-	Court* court = new Court();
-	court->runUntilThereAreNoMatchesLeft();
-	delete(court);
-};
-
-bool CourtCM::isOpen() {
+bool CourtCM::isCourtOpen() {
 	return this->isOpen;
 };
 
