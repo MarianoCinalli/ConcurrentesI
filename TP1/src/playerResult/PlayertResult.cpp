@@ -15,4 +15,6 @@ void PlayerResult::addScore(int score) {
     this->score += score;
 }
 
-PlayerResult::~PlayerResult() {}
+PlayerResult::~PlayerResult() {
+    log(PLAYER_RESULT_NAME + " Se liberan recursos ", INFORMATION);
+}

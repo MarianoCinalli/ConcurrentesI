@@ -106,6 +106,7 @@ void CommandManager::lowTide(){
 }	
 
 CommandManager::~CommandManager(){
+	log(COMMAND_MANAGER_NAME + " : Se liberan recursos ", INFORMATION);
 	this->fifoManagerPlayer->cerrar();
 	this->fifoTide->cerrar();
 	delete this->fifoManagerPlayer;
