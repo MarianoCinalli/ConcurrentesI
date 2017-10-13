@@ -15,16 +15,18 @@
 class PlayerManager {
 
 	const std::string PLAYER_MANAGER_NAME = typeid(PlayerManager).name();
+	const unsigned minPlayersToBeginGame = 10;
 
 	private:
 
 		bool finalizedProcess;
-		int removePlayer;
+		bool beginGame;
+		unsigned removePlayer;
 		FifoLectura *channelToRead;
 		FifoEscritura *channelToWrite;
 		int idPlayer;
-		int maxPlayersVillage;
-		int maxMatchesPerPlayer;
+		unsigned maxPlayersVillage;
+		unsigned maxMatchesPerPlayer;
 		std::vector<PlayerPM*> *playersToGame;
 		std::vector<PlayerPM*> *playersToWait;
 		int generateId();
@@ -40,10 +42,11 @@ class PlayerManager {
 		void removePlayerToGame();
 		void notifyGameCanceled(struct messagePlayer* message);
 		void loggearPlayers();
+		void evaluateEndGame();
 
 
 	public:
-		PlayerManager(int maxPlayersVillage, int maxMatchesPerPlayers);
+		PlayerManager(unsigned int maxPlayersVillage, unsigned int maxMatchesPerPlayers);
 		~PlayerManager();
 		void execute();
 };

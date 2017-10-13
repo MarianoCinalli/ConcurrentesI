@@ -25,15 +25,11 @@ void openCourtManager(int parameters[]) {
 }
 
 void openCourt() {
-    log("----------------",INFORMATION);
     log("INICIO DEL COURT",INFORMATION);
-    log("----------------",INFORMATION);
 	Court* court = new Court();
     court->runUntilThereAreNoMatchesLeft();
     delete(court);
-    log("----------------",INFORMATION);
     log("FIN DEL COURT",INFORMATION);
-    log("----------------",INFORMATION);
 }
 // -------------------------------
 
@@ -44,52 +40,36 @@ std::ofstream LOG_FILE_POINTER;
 
 
 void executePlayerManager(){
-    log("-------------------------",INFORMATION);
     log("INICIO DEL PLAYER_MANAGER",INFORMATION);
-    log("-------------------------",INFORMATION);
     PlayerManager *playerManager = new PlayerManager(10,5);
     playerManager->execute();
     delete playerManager;
-    log("-------------------------",INFORMATION);
     log("FIN DEL PLAYER_MANAGER",INFORMATION);
-    log("-------------------------",INFORMATION);
 }
 
 
 void executeCommandManager(){
-    log("--------------------------",INFORMATION);
     log("INICIO DEL COMMAND_MANAGER",INFORMATION);
-    log("--------------------------",INFORMATION);
     CommandManager *commandManager = new CommandManager();
     commandManager->execute();
     delete commandManager;
-    log("--------------------------",INFORMATION);
     log("FIN DEL COMMAND_MANAGER",INFORMATION);
-    log("--------------------------",INFORMATION);
 }
 
 void executeTeamManager(){
-    log("-----------------------",INFORMATION);    
     log("INICIO DEL TEAM_MANAGER",INFORMATION);
-    log("-----------------------",INFORMATION);
     TeamManager *teamManager = new TeamManager();
     teamManager->execute();
     delete teamManager;
-    log("-----------------------",INFORMATION);    
     log("FIN DEL TEAM_MANAGER",INFORMATION);
-    log("-----------------------",INFORMATION);  
 }
 
 void executeMatchManager(){
-    log("------------------------",INFORMATION);    
     log("INICIO DEL MATCH_MANAGER",INFORMATION);
-    log("------------------------",INFORMATION);
     MatchManager *matchManager = new MatchManager();
     matchManager->execute();
     delete matchManager;
-    log("------------------------",INFORMATION);    
     log("FIN DEL MATCH_MANAGER",INFORMATION);
-    log("------------------------",INFORMATION);
 }
 
 
@@ -105,11 +85,14 @@ int main(int argc, char* argv[]) {
 
     std::cout<<"COMIENZA EJECUCION"<<std::endl;
 
+//    static const string NOMBRE1 = "PlayerManagerCourt";
+ //   Semaforo semaforoPlayerCourt ( NOMBRE1,0 );
+
     logSessionStarted();
 
-    log("----------------------------",INFORMATION);
+   // log("----------------------------",INFORMATION);
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
-    log("----------------------------",INFORMATION);
+   // log("----------------------------",INFORMATION);
     std::vector<functiontype> *functions = new std::vector<functiontype>();
     functions->push_back(executeCommandManager);
     functions->push_back(executePlayerManager);
@@ -121,21 +104,21 @@ int main(int argc, char* argv[]) {
     processSpawner->spawnProcesses(functions);
     
     delete functions;
-    log("----------------------------",INFORMATION);
+    //log("----------------------------",INFORMATION);
     log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
-    log("----------------------------",INFORMATION);
+    //log("----------------------------",INFORMATION);
 
 
     // Main body
 
     // TODO: Delete when finished. -------------------------
-    int parameters[2] = { 1, 1 };
+  /*  int parameters[2] = { 1, 1 };
 	ProcessSpawner* spawner = new ProcessSpawner();
 	pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
 	int status;
 	waitpid(newProcessPid, &status, WUNTRACED);
 	// -----------------------------------------------------
-
+*/
     // End Main body
 
 /*

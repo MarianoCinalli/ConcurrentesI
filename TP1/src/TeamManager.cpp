@@ -86,7 +86,10 @@ struct messageTeam* TeamManager::makeTeam(){
                 team = this->formTeam(idPlayer1,idPlayer2);
                 this->removePlayer(idPlayer1);
                 this->removePlayer(idPlayer2);
-                log(" se formo un equipo",INFORMATION);
+
+                std::string messageLog ="players: "+std::to_string(idPlayer1) + " - "+std::to_string(idPlayer2);
+                log(" se formo un equipo: " + messageLog,INFORMATION);
+                std::cout<<" se formo un equipo: " + messageLog<<std::endl;
                 return team;
             }
         }
@@ -221,7 +224,9 @@ TeamManager::~TeamManager() {
     delete this->playsByPlayer;
     delete this->players;
     this->channelToRead->cerrar();
-    this->channelToWrite->cerrar();    
+    this->channelToWrite->cerrar();  
+    this->channelToRead->eliminar();
+	this->channelToWrite->eliminar();  
     delete this->channelToRead;
     delete this->channelToWrite;
 }

@@ -9,8 +9,10 @@ Court::Court() {
 
 Court::~Court() {
 	this->fifoMatches->cerrar();
+	this->fifoMatches->eliminar();
 	//this->fifoResults->cerrar();
 	this->fifoPlayerManager->cerrar();
+	this->fifoPlayerManager->eliminar();
 	delete(this->fifoMatches);
 	//delete(this->fifoResults);
 	delete(this->fifoPlayerManager);
@@ -49,6 +51,7 @@ Message* Court::getMessage() {
 bool Court::processMessage(Message* message) {
 	bool moreMatchesToPlay = false;
 	int operation = message->getOperation();
+	std::cout<<"Se recibio un mensaje. Operacion: "<<operation<<std::endl;
 	log("Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == PLAY) {
 		log("Se recibio el mensaje de nuevo juego.", 3);

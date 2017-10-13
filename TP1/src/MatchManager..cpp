@@ -71,11 +71,6 @@ messageMatch* MatchManager::makeMatch(struct messageTeam* team1, struct messageT
     match->idPlayer1_Team2 = team2->idPlayer1;
     match->idPlayer2_team2 = team2->idPlayer2;
     match->operation = PLAY;
-    log("se ha creado un match",INFORMATION);
-    log("jugador ",team1->idPlayer1,INFORMATION);
-    log("jugador ",team1->idPlayer2,INFORMATION);
-    log("jugador ",team2->idPlayer1,INFORMATION);
-    log("jugador ",team2->idPlayer2,INFORMATION);
     return match;
 }
 
@@ -105,7 +100,9 @@ messageTeam* MatchManager::readTeam() {
 
 MatchManager::~MatchManager() {
     this->channelToReadTeams->cerrar();
-    this->channelToWriteMatches->cerrar();    
+    this->channelToWriteMatches->cerrar(); 
+    this->channelToReadTeams->eliminar();
+	this->channelToWriteMatches->eliminar();   
     delete this->channelToReadTeams;
     delete this->channelToWriteMatches;
     
