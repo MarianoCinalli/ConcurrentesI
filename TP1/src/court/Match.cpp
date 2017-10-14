@@ -39,6 +39,7 @@ messageResult Match::getResultMessage() {
 	message.idPlayer1_Team2 = this->secondTeam->getFirstPlayer();
 	message.idPlayer2_team2 = this->secondTeam->getSecondPlayer();
 	message.setsWonTeam2 = this->secondTeam->getSetsWon();
+	message.operation = ResultCommands::CONTINUE;
 	return message;
 };
 

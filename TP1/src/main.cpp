@@ -7,7 +7,8 @@
 #include "CommandManager.h"
 #include "TeamManager.h"
 #include "MatchManager.h"
-#include "../headers/playerManager/PlayerManager.h"
+#include "playerManager/PlayerManager.h"
+#include "playerResult/ResultManager.h"
 
 // TODO: Delete when finished.
 #include "tools/utilFunctions.h"
@@ -72,6 +73,16 @@ void executeMatchManager(){
     log("FIN DEL MATCH_MANAGER",INFORMATION);
 }
 
+void executeResultManager(){
+    log("INICIO DEL RESULT_MANAGER",INFORMATION);
+    ResultManager *resultManager = new ResultManager();
+    resultManager->execute();
+    delete resultManager;
+    log("FIN DEL RESULT_MANAGER",INFORMATION);
+}
+
+
+
 
 typedef void (*functiontype)();
 
@@ -99,6 +110,7 @@ int main(int argc, char* argv[]) {
     functions->push_back(executeTeamManager);
     functions->push_back(executeMatchManager);
     functions->push_back(openCourt);
+    functions->push_back(executeResultManager);
 
     ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);

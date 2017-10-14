@@ -6,9 +6,12 @@ PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerP
 		exit(1); 
 	}
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
-	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);	
+	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);
+	this->channelToWriteResult = new FifoEscritura(FIFO_READ_RESULT_TO_RESULTMANAGER);	
 	this->channelToRead->abrir();
 	this->channelToWrite->abrir();
+	this->channelToWriteResult->abrir();
+
 	this->playersToGame = new std::vector<PlayerPM*>();
 	this->playersToWait = new std::vector<PlayerPM*>();
 	this->idPlayer = 0;
@@ -22,8 +25,12 @@ PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerP
 PlayerManager::~PlayerManager(){
 	this->channelToRead->cerrar();
 	this->channelToWrite->cerrar();
+	this->channelToWriteResult->cerrar();
 	this->channelToRead->eliminar();
 	this->channelToWrite->eliminar();
+	this->channelToWriteResult->eliminar();
+
+	this->channelToWriteResult->abrir();
 	delete this->channelToRead;
 	delete this->channelToWrite;
 
@@ -88,6 +95,7 @@ void PlayerManager::evaluateEndGame(){
 		struct messagePlayer message;
 		message.status = CommandType::killType; 
 		this->writeMessagePlayer(&message);
+		this->writeEndGameToResultManager();
 	}
 }
 
@@ -213,12 +221,31 @@ void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 
 	int result = this->channelToWrite->escribir(message,sizeof(messagePlayer));
 	if(result == -1){
-		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifo ", __FILE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifoTeam ", __FILE__, ERROR);
+		exit(1);
 	}else if (result != sizeof(messagePlayer)){
-		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifoTeam ", __FILE__, __LINE__, ERROR);
 	}
 
 }
+
+
+//escribe al fifo de ResultManager
+void PlayerManager::writeEndGameToResultManager(){
+
+	struct messageResult message;
+	message.operation = ResultCommands::EXIT;
+
+	int result = this->channelToWriteResult->escribir(&message,sizeof(messageResult));
+	if(result == -1){
+		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifoResult ", __FILE__, ERROR);
+		exit(1);
+	}else if (result != sizeof(messagePlayer)){
+		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifoResult ", __FILE__, __LINE__, ERROR);
+	}
+	
+}
+
 
 
 

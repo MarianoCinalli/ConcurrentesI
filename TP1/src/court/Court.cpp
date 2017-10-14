@@ -2,7 +2,7 @@
 
 Court::Court() {
 	this->fifoMatches = new FifoLectura(FIFO_READ_MATCH_OF_MATCHMANAGER);	
-	//this->fifoResults = new FifoEscritura(FIFO_WRITE_RESULT_TO_RESULTMANAGER);
+	this->fifoResults = new FifoEscritura(FIFO_WRITE_RESULT_TO_RESULTMANAGER);
 	this->fifoPlayerManager = new FifoEscritura(FIFO_WRITE_STATUS_TO_PLAYERMANAGER);
 	this->matchShouldBeCancelled = false;
 };
@@ -10,17 +10,17 @@ Court::Court() {
 Court::~Court() {
 	this->fifoMatches->cerrar();
 	this->fifoMatches->eliminar();
-	//this->fifoResults->cerrar();
+	this->fifoResults->cerrar();
 	this->fifoPlayerManager->cerrar();
 	this->fifoPlayerManager->eliminar();
 	delete(this->fifoMatches);
-	//delete(this->fifoResults);
+	delete(this->fifoResults);
 	delete(this->fifoPlayerManager);
 };
 
 void Court::runUntilThereAreNoMatchesLeft() {
 	this->fifoMatches->abrir();
-	//this->fifoResults->abrir();
+	this->fifoResults->abrir();
 	this->fifoPlayerManager->abrir();
 	log("Se abrio la cancha", 3);
 	bool moreMatchesToPlay = true;
@@ -51,7 +51,6 @@ Message* Court::getMessage() {
 bool Court::processMessage(Message* message) {
 	bool moreMatchesToPlay = false;
 	int operation = message->getOperation();
-	std::cout<<"Se recibio un mensaje. Operacion: "<<operation<<std::endl;
 	log("Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == PLAY) {
 		log("Se recibio el mensaje de nuevo juego.", 3);
@@ -87,8 +86,8 @@ void Court::playGame(Message* message) {
 
 void Court::sendMessages(Match* match) {
 	log("Enviando mensajes de resultados.", 3);
-	//struct messageResult resultMessage = match->getResultMessage();
-	//this->fifoResults->escribir(static_cast<void*>(&resultMessage), sizeof(resultMessage));
+	struct messageResult resultMessage = match->getResultMessage();
+	this->fifoResults->escribir(static_cast<void*>(&resultMessage), sizeof(resultMessage));
 	log("Enviando mensajes de estado de finalizacion del partido.", 3);
 	std::vector<messagePlayer> matchStateMessages = match->getResultMessages();
 	for(messagePlayer matchStateMessage : matchStateMessages) {

@@ -24,6 +24,7 @@ class PlayerManager {
 		unsigned removePlayer;
 		FifoLectura *channelToRead;
 		FifoEscritura *channelToWrite;
+		FifoEscritura *channelToWriteResult;
 		int idPlayer;
 		unsigned maxPlayersVillage;
 		unsigned maxMatchesPerPlayer;
@@ -43,6 +44,7 @@ class PlayerManager {
 		void notifyGameCanceled(struct messagePlayer* message);
 		void loggearPlayers();
 		void evaluateEndGame();
+		void writeEndGameToResultManager();
 
 
 	public:

@@ -31,6 +31,8 @@ private:
         PlayerResult* searchPlayerResult(int idPlayer);
         void managerWinners(PlayerResult *player1Team1Result, PlayerResult *player2Team1Result, PlayerResult *player1Team2Result, PlayerResult *player2Team2Result);
         void managerWinner(PlayerResult *playerResult);
+        void proccesResult(struct messageResult *result);
+        void parseMessage(struct messageResult *result);
 
 	public:
 		ResultManager();
