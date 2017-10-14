@@ -10,7 +10,7 @@ private:
 	// status valores adoctados de PCStatus en Constans.h 
 	PCStatus status;
 	int id;
-	int gamesPlayed;
+	unsigned gamesPlayed;
 
 public:
 	PlayerPM(int id, PCStatus status);
@@ -19,7 +19,7 @@ public:
 	~PlayerPM();
 
 	//obtiene la cantida de juegos jugados por el jugador
-	const int getGamesPlayed(){return this->gamesPlayed;}
+	const unsigned getGamesPlayed(){return this->gamesPlayed;}
 
 	//obtiene id del jugador
 	const int getId(){return this->id;}

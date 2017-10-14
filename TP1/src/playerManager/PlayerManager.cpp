@@ -2,7 +2,7 @@
 
 PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerPlayer){
 	if(minPlayersToBeginGame < maxPlayersVillage){
-		log("cantidad maxima de jugadores en el predio es menor a 10",INFORMATION);
+		log("cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
 		exit(1); 
 	}
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
@@ -47,6 +47,7 @@ int PlayerManager::generateId(){
 
 void PlayerManager::execute(){
 	struct messagePlayer* message;
+	std::cout<<"DEBEN INGRESAR AL MENOS "<<this->minPlayersToBeginGame<<" JUGADORES PARA INICIAR EL JUEGO"<<std::endl;
 	while(!this->finalizedProcess){
 		message = this->readFifoPlayerManager();
 		this->parseMessage(message);
@@ -65,7 +66,7 @@ void PlayerManager::execute(){
  **/
 void PlayerManager::evaluateEndGame(){
 	std::vector<PlayerPM*>::iterator it;
-	unsigned maxPossibleMatches = this->maxMatchesPerPlayer -1;
+	//unsigned maxPossibleMatches = this->maxMatchesPerPlayer -1;
 	bool isVillageFull	= this->playersToGame->size() == this->maxPlayersVillage;
 
 	//primero se evalua si hay jugadores en espera
@@ -77,12 +78,11 @@ void PlayerManager::evaluateEndGame(){
 			isVillageFull = this->playersToGame->size() == this->maxPlayersVillage;
 			it++;
 		}
-		this->loggearPlayers();
 	}
 
 	if(this->playersToGame->size() <= 3){
 		std::cout<<"FINALIZACIÓN DEL JUEGO"<<std::endl;
-		//MANDAR UNA SIGNAL A COMMANDMANAGER
+		//MANDAR UNA SIGNAL A COMMANDMANAGERqq
 		this->finalizedProcess = true;
 		this->beginGame = false;
 		struct messagePlayer message;
