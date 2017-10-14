@@ -24,7 +24,6 @@ void ResultManager::parseMessage(struct messageResult *result){
     switch(result->operation){
         case ResultCommands::CONTINUE:
             this->proccesResult(result);
-            std::cout<<"sets ganados "<<result->setsWonTeam1<<"sets ganados otro"<<result->setsWonTeam2<<std::endl;
             break;
         
         case ResultCommands::EXIT:

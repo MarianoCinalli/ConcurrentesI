@@ -101,9 +101,7 @@ int main(int argc, char* argv[]) {
 
     logSessionStarted();
 
-   // log("----------------------------",INFORMATION);
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
-   // log("----------------------------",INFORMATION);
     std::vector<functiontype> *functions = new std::vector<functiontype>();
     functions->push_back(executeCommandManager);
     functions->push_back(executePlayerManager);
@@ -116,9 +114,7 @@ int main(int argc, char* argv[]) {
     processSpawner->spawnProcesses(functions);
     
     delete functions;
-    //log("----------------------------",INFORMATION);
     log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
-    //log("----------------------------",INFORMATION);
 
 
     // Main body
