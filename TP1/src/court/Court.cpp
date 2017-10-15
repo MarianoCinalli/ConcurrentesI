@@ -3,7 +3,7 @@
 Court::Court() {
 	log("Court: Inicializando.", 3);
 	log("Court: Abriendo /tmp/fifoMatches.", 3);
-	this->fifoMatches = new FifoLectura("/tmp/fifoMatches");	
+	this->fifoMatches = new FifoLecturaBloqueante("/tmp/fifoMatches");
 	this->fifoMatches->abrir();
 	log("Court: /tmp/fifoResultManager abierto.", 3);
 	log("Court: Abriendo /tmp/fifoResultManager.", 3);
@@ -29,7 +29,6 @@ Court::~Court() {
 	log("Court: Cerrando /tmp/fifoResultManager.", 3);
 	this->fifoPlayerManager->cerrar();
 	log("Court: /tmp/fifoResultManager cerrado.", 3);
-	log("Court: Abriendo /tmp/fifoResultManager.", 3);
 	delete(this->fifoMatches);
 	delete(this->fifoResults);
 	delete(this->fifoPlayerManager);
