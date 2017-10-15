@@ -15,9 +15,13 @@ void Match::play() {
 	int matchLength = getRandomBetween(1, 5);
 	sleep(matchLength);
 	log("El partido duro: ", matchLength, 3);
-	int firstTeamWonSets = getRandomBetween(1, 5);
+	int firstTeamWonSets = getRandomBetween(0, 3);
 	this->firstTeam->setWonSets(firstTeamWonSets);
-	this->secondTeam->setWonSets(5 - firstTeamWonSets);
+	if (firstTeamWonSets < 3) {
+		this->secondTeam->setWonSets(3);
+	} else {
+		this->secondTeam->setWonSets(5 - firstTeamWonSets);
+	}
 }
 
 std::string Match::logMemberVariables() {
@@ -73,6 +77,6 @@ void Match::cancelMatch() {
 	this->wasCancelled = true;
 };
 
-bool Match::wasCancelled() {
+bool Match::wasMatchCancelled() {
 	return this->wasCancelled;
 };

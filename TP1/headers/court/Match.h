@@ -1,3 +1,6 @@
+#ifndef MATCH_H
+#define MATCH_H
+
 #include <unistd.h>
 #include <string>
 #include <vector>
@@ -7,9 +10,6 @@
 #include "tools/logger.h"
 #include "tools/Messages.h"
 #include "tools/Constants.h"
-
-#ifndef MATCH_H
-#define MATCH_H
 
 class Match : public Loggable {
 
@@ -28,7 +28,7 @@ public:
 	int getMatchStatus();
 	messagePlayer getResultMessageForPlayer(int player, int matchStatus);
 	void cancelMatch();
-	bool wasCancelled();
+	bool wasMatchCancelled();
 };
 
 #endif // MATCH_H
