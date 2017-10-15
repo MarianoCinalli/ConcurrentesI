@@ -57,7 +57,6 @@
 		int idPlayer2_team1;
 		int idPlayer1_Team2;
 		int idPlayer2_team2;
-
 		int setsWonTeam1;
 		int setsWonTeam2;
 	};
