@@ -8,8 +8,8 @@
 #include "tools/logger.h"
 #include "tools/Messages.h"
 #include "tools/Constants.h"
-#include "fifos/FifoLectura.h"
 #include "fifos/FifoEscritura.h"
+#include "fifos/FifoLecturaBloqueante.h"
 #include "court/Message.h"
 #include "court/Match.h"
 #include "court/Team.h"
@@ -18,7 +18,7 @@ class Court {
 
 	// Atributes ---------------------------------------------
 	private:
-		FifoLectura* fifoMatches;
+		FifoLecturaBloqueante* fifoMatches;
 		FifoEscritura* fifoResults;
 		FifoEscritura* fifoPlayerManager;
 		bool matchShouldBeCancelled;
