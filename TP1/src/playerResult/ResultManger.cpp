@@ -43,21 +43,25 @@ void ResultManager::proccesResult(struct messageResult *result){
     PlayerResult *player1Team2Result = searchPlayerResult(result->idPlayer1_Team2);
     PlayerResult *player2Team2Result = searchPlayerResult(result->idPlayer2_team2);
     if (case1ToTeam1) {
+        log(RESULT_MANAGER_NAME + " : Equipo 1 gano por caso uno", INFORMATION);
         player1Team1Result->addScore(THREE);
         player2Team1Result->addScore(THREE);
         player1Team2Result->addScore(ZERO);
         player2Team2Result->addScore(ZERO);
     } else if (case2ToTeam1) {
+        log(RESULT_MANAGER_NAME + " : Equipo 1 gano por caso dos", INFORMATION);
         player1Team1Result->addScore(TWO);
         player2Team1Result->addScore(TWO);
         player1Team2Result->addScore(ONE);
         player2Team2Result->addScore(ONE);
     } else if (case1ToTeam2) {
+        log(RESULT_MANAGER_NAME + " : Equipo 2 gano por caso uno", INFORMATION);
         player1Team1Result->addScore(ZERO);
         player2Team1Result->addScore(ZERO);
         player1Team2Result->addScore(THREE);
         player2Team2Result->addScore(THREE);
     } else if (case2ToTeam2) {
+        log(RESULT_MANAGER_NAME + " : Equipo 2 gano por caso dos", INFORMATION);
         player1Team1Result->addScore(ONE);
         player2Team1Result->addScore(ONE);
         player1Team2Result->addScore(TWO);
@@ -83,7 +87,11 @@ void ResultManager::managerWinner(PlayerResult *playerResult) {
         this->winners->clear();
         this->winners->push_back(playerResult);
     } else if (playerResult->getScore() == this->maxScore) {
-        this->winners->push_back(playerResult);
+        std::vector<PlayerResult*>::iterator it = std::find(this->winners->begin(), this->winners->end(), playerResult);
+        bool alreadyExitsWinner = it != this->winners->end();
+        if (!alreadyExitsWinner) {
+            this->winners->push_back(playerResult);
+        }
     }
 }
 
@@ -92,8 +100,8 @@ void ResultManager::showWinners() {
     std::vector<PlayerResult*>::iterator it;
     for(it = this->winners->begin(); it != this->winners->end(); it++) {
         PlayerResult *playerResult = *it;
-        std::cout<< "Ganador jugador " + std::to_string(playerResult->getId()) + " with score " + std::to_string(playerResult->getScore())<<std::endl;
-        log(RESULT_MANAGER_NAME + " : Ganador jugador " + std::to_string(playerResult->getId()) + " with score " + std::to_string(playerResult->getScore()), INFORMATION);
+        std::cout<< "Ganador jugador " + std::to_string(playerResult->getId()) + " con puntaje " + std::to_string(playerResult->getScore())<<std::endl;
+        log(RESULT_MANAGER_NAME + " : Ganador jugador " + std::to_string(playerResult->getId()) + " con puntaje " + std::to_string(playerResult->getScore()), INFORMATION);
     }
 }
 
@@ -101,6 +109,8 @@ PlayerResult* ResultManager::searchPlayerResult(int idPlayer) {
     std::map<int, PlayerResult*>::iterator it = this->playerResults->find(idPlayer);
     if (it != this->playerResults->end()) {
         log(RESULT_MANAGER_NAME + " : Se encontro al playerResult " + std::to_string(idPlayer), __FILE__, __LINE__, ERROR);
+        PlayerResult *playerResult = it->second;
+        playerResult->showScore();
         return it->second;
     }
     log(RESULT_MANAGER_NAME + " : No se encontro al playerResult " + std::to_string(idPlayer), __FILE__, __LINE__, ERROR);
