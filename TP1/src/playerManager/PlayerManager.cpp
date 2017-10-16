@@ -2,7 +2,7 @@
 
 PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerPlayer){
 	if(minPlayersToBeginGame < maxPlayersVillage){
-		log("cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
+		log("PlayerManager: PlayerManager: cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
 		exit(1); 
 	}
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
@@ -179,7 +179,7 @@ void PlayerManager::addPlayerToGame(){
 	if(this->playersToGame->size() >= minPlayersToBeginGame && !this->beginGame){	
 		this->beginGame = true;
 		std::cout<<"COMIENZA EL JUEGO"<<std::endl;
-		log("Se completa la cantidad minima de jugadores para comenzar el juego",INFORMATION);
+		log("PlayerManager: Se completa la cantidad minima de jugadores para comenzar el juego",INFORMATION);
 	}
 
 }
@@ -225,6 +225,7 @@ void PlayerManager::writeMessagePlayer(struct messagePlayer* message){
 		exit(1);
 	}else if (result != sizeof(messagePlayer)){
 		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifoTeam ", __FILE__, __LINE__, ERROR);
+		exit(1);
 	}
 
 }
@@ -238,10 +239,11 @@ void PlayerManager::writeEndGameToResultManager(){
 
 	int result = this->channelToWriteResult->escribir(&message,sizeof(messageResult));
 	if(result == -1){
-		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifoResult ", __FILE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifoResult ", __FILE__, __LINE__, ERROR);
 		exit(1);
 	}else if (result != sizeof(messagePlayer)){
 		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifoResult ", __FILE__, __LINE__, ERROR);
+		exit(1);
 	}
 	
 }
@@ -306,7 +308,8 @@ void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
 		}
 
 		if(!found){
-			log("jugador no encontrado en el predio para actualizar su estado id jugador: ",message->idPlayer, ERROR);
+			log("PlayerManager: jugador no encontrado en el predio para notificar partido cancelado su estado id jugador: ",message->idPlayer, ERROR);
+			exit(1);
 		}
 	}
 	this->writeMessagePlayer(message);
@@ -349,7 +352,8 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 	}
 
 	if(!found){
-		log("jugador no encontrado en el predio para actualizar su estado id jugador: ",idPlayer, ERROR);
+		log("PlayerManager: jugador no encontrado en el predio para actualizar su estado id jugador: ",idPlayer, ERROR);
+		exit(1);
 	}
 }
 
@@ -366,9 +370,9 @@ bool PlayerManager::evaluteGamesCompletedPlayer(PlayerPM *player){
 
 	if(completedGames){
 		//player->gameOver(); //completo el juego
-		log("Jugador ha completado los partidos permitidos, jugador con id ",player->getId(),INFORMATION);
+		log("PlayerManager: Jugador ha completado los partidos permitidos, jugador con id ",player->getId(),INFORMATION);
 	}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer){
-		log("Jugador ha jugado mas partidos de los permitidos, jugador con id ",player->getId(),ERROR);
+		log("PlayerManager: Jugador ha jugado mas partidos de los permitidos, jugador con id ",player->getId(),ERROR);
 		exit (1); 
 	}
 	return completedGames;

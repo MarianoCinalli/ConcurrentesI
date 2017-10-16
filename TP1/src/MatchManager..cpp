@@ -15,7 +15,7 @@ void MatchManager::execute() {
         struct messageTeam* team = this->readTeam();
         this->parseMessage(team);
     }
-    log("MatchManager ha finalizado correctamente",INFORMATION);
+    log("MatchManager: MatchManager: el proceso ha finalizado correctamente",INFORMATION);
 }
 
 
@@ -27,13 +27,13 @@ void MatchManager::parseMessage(struct messageTeam* team) {
 
         case PLAY :
             this->notifyMatch(team);
-            log("llega un team al matchManager",INFORMATION);
+            log("MatchManager: llega un team ",INFORMATION);
             break;
         case CLOSE :
             this->finalize = true;
             flushLog(); //agregadoooooo porque el proceso no termina.......
             this->notifyCloseMatches();
-            log("llega un close al matchManager",INFORMATION);
+            log("MatchManager: llega un close ",INFORMATION);
             break;
         
     }

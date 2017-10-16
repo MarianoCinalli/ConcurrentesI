@@ -24,8 +24,8 @@ void TeamManager::execute() {
         }
         delete message;
     }
-    log("El proceso TeamManager finaliza correctamente ",INFORMATION);
-    log("la jugadores para formar equipos",this->players->size(),INFORMATION);
+    log("TeamManager: El proceso finaliza correctamente ",INFORMATION);
+    log("TeamManager: la jugadores que quedaron para formar equipos",this->players->size(),INFORMATION);
 }
 
 void TeamManager::parseMessage(struct messagePlayer* message){
@@ -55,7 +55,7 @@ void TeamManager::addPlayer(int idPlayer){
     std::vector<int>::iterator it = std::find(this->players->begin(), this->players->end(), idPlayer);
     if (it != this->players->end()){
         log(TEAM_MANAGER_NAME + "se recibe un jugador que ya existe para formar equipo, jugador con id: ", idPlayer, ERROR);
-
+        exit(1);
     }else{
         //se acola para formar equipos
         this->players->push_back(idPlayer);
@@ -88,7 +88,7 @@ struct messageTeam* TeamManager::makeTeam(){
                 this->removePlayer(idPlayer2);
 
                 std::string messageLog ="players: "+std::to_string(idPlayer1) + " - "+std::to_string(idPlayer2);
-                log(" se formo un equipo: " + messageLog,INFORMATION);
+                log("TeamManager:  se formo un equipo: " + messageLog,INFORMATION);
                 std::cout<<" se formo un equipo: " + messageLog<<std::endl;
                 return team;
             }
@@ -119,12 +119,12 @@ void TeamManager::cancelLastGameOfPLayer(int idPlayer){
         }
 
         if(!found){
-            log("No existe registro a cancelar del ultimo compañero del jugador: ",idPlayer,ERROR);
+            log("TeamManager: No existe registro a cancelar del ultimo compañero del jugador con id: ",idPlayer,ERROR);
             exit(1);
         }
 
     }catch(std::out_of_range e){
-        log("No existe registro del jugador: ",idPlayer,ERROR);
+        log("TeamManager: No existe registro del jugador con id: ",idPlayer,ERROR);
         exit(1);
     }
 }
@@ -148,8 +148,9 @@ struct messageTeam* TeamManager::formTeam(int idPlayer1, int idPlayer2) {
 
     }catch(std::out_of_range e){
 
-        log("error al actualizar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
-        log("error al actualizar registro de equipos, jugador id: ",idPlayer2 ,ERROR);
+        log("TeamManager: error al actualizar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
+        log("TeamManager: error al actualizar registro de equipos, jugador id: ",idPlayer2 ,ERROR);
+        exit(1);
     }
 
     return team;
@@ -161,7 +162,7 @@ void TeamManager::removePlayer(int idPlayer){
     if (it != players->end())
         this->players->erase(it);
     else{
-        log("no se puedo remover a un jugador de crear un equipo, jugador con id",idPlayer,ERROR);
+        log("TeamManager: no se puedo remover a un jugador luego de crear un equipo, jugador con id",idPlayer,ERROR);
         exit(1);
     }
 }
@@ -182,8 +183,8 @@ bool TeamManager::canPlayersFormTeam(int idPlayer1, int idPlayer2) {
           //si no esta asociado pueden formar equipo  
           return true;
     }catch(std::out_of_range e){
-        log("error al buscar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
-        return false;  
+        log("TeamManager: error al buscar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
+        exit(1); 
     }  
 }
 
@@ -209,8 +210,10 @@ void TeamManager::writeTeam(struct messageTeam * team){
 
     if(result == -1){
         log(TEAM_MANAGER_NAME + " No se pudo realizar la escritura en el fifo ", __FILE__, __LINE__, ERROR);
+        exit(1);
     }else if (result != sizeof(messageTeam)){
         log(TEAM_MANAGER_NAME + " Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+        exit(1);
     }
 }
 
