@@ -1,69 +1,94 @@
 #include "court/Court.h"
 
 Court::Court() {
-	this->fifoMatches = new FifoLectura(FIFO_READ_MATCH_OF_MATCHMANAGER);	
+	log("Court: Inicializando.", 3);
+	log("Court: Abriendo /tmp/fifoMatches.", 3);
+	this->fifoMatches = new FifoLecturaBloqueante(FIFO_READ_MATCH_OF_MATCHMANAGER);
+	this->fifoMatches->abrir();
+	log("Court: /tmp/fifoResultManager abierto.", 3);
+	log("Court: Abriendo /tmp/fifoResultManager.", 3);
 	this->fifoResults = new FifoEscritura(FIFO_WRITE_RESULT_TO_RESULTMANAGER);
+	this->fifoResults->abrir();
+	log("Court: /tmp/fifoResultManager abierto.", 3);
+	log("Court: Abriendo /tmp/fifoPlayerManager.", 3);
 	this->fifoPlayerManager = new FifoEscritura(FIFO_WRITE_STATUS_TO_PLAYERMANAGER);
+	this->fifoPlayerManager->abrir();
+	log("Court: /tmp/fifoResultManager abierto.", 3);
 	this->matchShouldBeCancelled = false;
+	log("Court: Fin Inicializacion.", 3);
 };
 
 Court::~Court() {
+	log("Court: Liberando recursos.", 3);
+	log("Court: Cerrando /tmp/fifoMatches.", 3);
 	this->fifoMatches->cerrar();
 	this->fifoMatches->eliminar();
+	log("Court: /tmp/fifoResultManager cerrado.", 3);
+	log("Court: Cerrando /tmp/fifoResultManager.", 3);
 	this->fifoResults->cerrar();
+	this->fifoResults->eliminar();
+	log("Court: /tmp/fifoPlayerManager cerrado.", 3);
+	log("Court: Cerrando /tmp/fifoPlayerManager.", 3);
 	this->fifoPlayerManager->cerrar();
 	this->fifoPlayerManager->eliminar();
 	delete(this->fifoMatches);
 	delete(this->fifoResults);
 	delete(this->fifoPlayerManager);
+	log("Court: Recursos liberados.", 3);
 };
 
 void Court::runUntilThereAreNoMatchesLeft() {
-	this->fifoMatches->abrir();
-	this->fifoResults->abrir();
-	this->fifoPlayerManager->abrir();
-	log("Se abrio la cancha", 3);
+	log("Court: Se abrio la cancha", 3);
 	bool moreMatchesToPlay = true;
 	Message* readMessage;
 	while(moreMatchesToPlay) {
-		log("Esperando nuevo juego.", 3);
+		log("Court: Esperando nuevo juego.", 3);
 		readMessage = this->getMessage();
 		moreMatchesToPlay = this->processMessage(readMessage);
 		delete(readMessage);
 	}
-	log("Cerrando cancha", 3);
+	log("Court: Cerrando cancha", 3);
 };
 
 Message* Court::getMessage() {
 	struct messageMatch readMessage;
 	int readBytes = this->fifoMatches->leer(static_cast<void*>(&readMessage), sizeof(readMessage));
 	if (readBytes < 0) {
-		log("** Error ** En la lectura. Errno: ", strerror(errno), 1);
+		log("Court: ** Error ** En la lectura. Errno: ", strerror(errno), 1);
 	} else if (readBytes == 0) {
-		log("** Warning ** Se leyeron 0 bytes. Ignorando.", 2);
+		log("Court: ** Warning ** Se leyeron 0 bytes. Ignorando.", 2);
 	} else {
-		log("Mensaje leido correctamente. Cantidad de bytes: ", readBytes, 3);
+		log("Court: Mensaje leido correctamente. Cantidad de bytes: ", readBytes, 3);
 		return (new Message(readMessage));
 	}
 	return (new Message());
-}
+};
 
 bool Court::processMessage(Message* message) {
 	bool moreMatchesToPlay = false;
 	int operation = message->getOperation();
-	log("Se recibio un mensaje. Operacion: ", operation, 3);
+	log("Court: Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == PLAY) {
-		log("Se recibio el mensaje de nuevo juego.", 3);
+		log("Court: Se recibio el mensaje de nuevo juego.", 3);
 		this->playGame(message);
 		moreMatchesToPlay = true;
 	} else if (operation == CLOSE) {
-		log("Se recibio el mensaje de cerrado de cancha.", 3);
+		log("Court: Se recibio el mensaje de cerrado de cancha.", 3);
 		moreMatchesToPlay = false;
 	}
 	return moreMatchesToPlay;
-}
+};
 
 void Court::playGame(Message* message) {
+	Match* match = this->getMatchFromMessage(message);
+	log("Court: Conzando a jugar el partido.", 3);
+	match->play();
+	log("Court: Partido finalizado. Resultado: ", match, 3);
+	this->sendMessages(match);
+	delete(match);
+};
+
+Match* Court::getMatchFromMessage(Message* message) {
 	Team* firstTeam = new Team(
 		message->getFirstTeamFirstPlayer(),
 		message->getFirstTeamSecondPlayer()
@@ -73,24 +98,20 @@ void Court::playGame(Message* message) {
 		message->getSecondTeamFirstPlayer(),
 		message->getSecondTeamSecondPlayer()
 	);
-	Match* match = new Match(firstTeam, secondTeam);
-	log("Conzando a jugar el partido.", 3);
-	match->play();
-	if (this->matchShouldBeCancelled) {
-		match->cancelMatch();
-	}
-	log("Partido finalizado. Resultado: ", match, 3);
-	this->sendMessages(match);
-	delete(match);
-}
+	return (new Match(firstTeam, secondTeam));
+};
 
 void Court::sendMessages(Match* match) {
-	log("Enviando mensajes de resultados.", 3);
-	struct messageResult resultMessage = match->getResultMessage();
-	this->fifoResults->escribir(static_cast<void*>(&resultMessage), sizeof(resultMessage));
-	log("Enviando mensajes de estado de finalizacion del partido.", 3);
+	if (!match->wasMatchCancelled()) {
+		log("Court: Enviando mensajes de resultados.", 3);
+		struct messageResult resultMessage = match->getResultMessage();
+		this->fifoResults->escribir(static_cast<void*>(&resultMessage), sizeof(resultMessage));
+	}
+	log("Court: Enviando mensajes de estado de finalizacion del partido.", 3);
 	std::vector<messagePlayer> matchStateMessages = match->getResultMessages();
 	for(messagePlayer matchStateMessage : matchStateMessages) {
 		this->fifoPlayerManager->escribir(static_cast<void*>(&matchStateMessage), sizeof(matchStateMessage));
 	}
-}
+};
+
+

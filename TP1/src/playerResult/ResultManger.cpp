@@ -22,7 +22,7 @@ void ResultManager::execute() {
 
 void ResultManager::parseMessage(struct messageResult *result){
     switch(result->operation){
-        case ResultCommands::CONTINUE:
+        case ResultCommands::RESULT:
             this->proccesResult(result);
             break;
         

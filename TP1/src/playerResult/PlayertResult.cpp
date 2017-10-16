@@ -4,6 +4,7 @@
 PlayerResult::PlayerResult(int id) {
     log(PLAYER_RESULT_NAME + " Se crea nuevo Player Result ", INFORMATION);
     this->id = id;
+    this->score = 0;
 }
 
 void PlayerResult::showScore() {

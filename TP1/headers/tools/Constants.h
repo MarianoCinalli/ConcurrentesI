@@ -13,7 +13,7 @@ const int MAX_SETS_DEFAULT = 5;
 enum PCStatus {freeS=0, busyS, disableS,completedS};
 enum CommandType {addType=0, removeType=1, killType=2,gameCanceled=3,gameCompleted=4};
 enum CourtCommands {PLAY = 0, CLOSE = 1};
-enum ResultCommands {CONTINUE = 0, EXIT = 1};
+enum ResultCommands {RESULT = 0, EXIT = 1};
 enum LevelsLog{ERROR=1, WARNING, INFORMATION};
 enum TideType {raiseType=0, lowType=1, closeCourts=3};
 

@@ -28,7 +28,7 @@ void Team::setWonSets(int setsWon) {
 
 std::string Team::logMemberVariables() {
 	return "Primer jugador = " + std::to_string(this->firstPlayer)
-	+ "- Segundo jugador = " + std::to_string(this->secondPlayer)
-	+ "- Sets ganados = " + std::to_string(this->setsWon);
+	+ " - Segundo jugador = " + std::to_string(this->secondPlayer)
+	+ " - Sets ganados = " + std::to_string(this->setsWon);
 };
 
