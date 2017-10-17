@@ -6,7 +6,7 @@
 
 PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerPlayer){
 	if(minPlayersToBeginGame < maxPlayersVillage){
-		log("PlayerManager: PlayerManager: cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
+		log("PlayerManager: cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
 		exit(1); 
 	}
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
@@ -289,36 +289,6 @@ void PlayerManager::writeEndGameToResultManager(){
 }
 
 
-
-
-/**
- * saca a un player libre del predio, si no hay jugador libre 
- * setea una variable para que se el proxmo libre salga del predio
-**/
-/*
-void PlayerManager::removePlayerToGame(){
-	std::vector<PlayerPM*>::iterator it;
-	bool found = false;
-
-	for(it = this->playersToGame->begin();it != this->playersToGame->end();it++){
-		if((*it)->isFree()){
-			this->playersToWait->push_back((*it));
-			this->playersToGame->erase(it);
-			found = true;
-		}
-	}
-
-	
-	//La busqueda es innecesaria porque nunca va a encontrar uno libre,
-	// dado que cuando llega uno se envia inmediatamente...
-	
-
-	if (!found){
-		//remover el primero que llegue después de jugar
-		this->removePlayer++;
-	}
-}
-*/
 void PlayerManager::removePlayerToGame(){
 	this->removePlayer++;
 }
