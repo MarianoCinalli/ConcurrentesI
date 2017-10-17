@@ -17,6 +17,7 @@ private:
 	Team* firstTeam;
 	Team* secondTeam;
 	bool wasCancelled;
+	bool matchFinished;
 
 public:
 	Match(Team* firstTeam, Team* secondTeam);
@@ -29,6 +30,7 @@ public:
 	messagePlayer getResultMessageForPlayer(int player, int matchStatus);
 	void cancelMatch();
 	bool wasMatchCancelled();
+	bool isFinished();
 };
 
 #endif // MATCH_H

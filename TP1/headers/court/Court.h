@@ -13,6 +13,7 @@
 #include "court/Message.h"
 #include "court/Match.h"
 #include "court/Team.h"
+#include "court/signal/SignalHandler.h"
 
 class Court {
 
@@ -22,21 +23,24 @@ class Court {
 		FifoEscritura* fifoResults;
 		FifoEscritura* fifoPlayerManager;
 		bool matchShouldBeCancelled;
+		bool moreMatchesToPlay;
+		struct messageMatch readMessage;
+		Match* match;
 
 	// Methods -----------------------------------------------
 	public:
 		Court();
 		~Court();
 		void runUntilThereAreNoMatchesLeft();
+		Match* getMatchFromMessage(Message* message);
+		void sendMessages(Match* match);
+		messageMatch getReadMessage();
+		Match* getMatch();
 
 	private:
 		Message* getMessage();
 		bool processMessage(Message* message);
 		void playGame(Message* message);
-		void sendMessages(Match* match);
-		static void handler_cleanAndExit(int signum);
-		void registerHandler();
-		Match* getMatchFromMessage(Message* message);
 };
 
 #endif // COURT_H
