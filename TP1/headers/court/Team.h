@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include "interfaces/Loggable.h"
-#include "Player.h"
 
 #ifndef TEAM_H
 #define TEAM_H
