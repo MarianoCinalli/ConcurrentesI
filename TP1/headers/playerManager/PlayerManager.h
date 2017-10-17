@@ -45,6 +45,7 @@ class PlayerManager {
 		void loggearPlayers();
 		void evaluateEndGame();
 		void writeEndGameToResultManager();
+		void executeCommandManager();
 
 
 	public:

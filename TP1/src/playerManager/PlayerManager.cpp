@@ -1,4 +1,8 @@
 #include "../headers/playerManager/PlayerManager.h"
+#include "CommandManager.h"
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
 
 PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerPlayer){
 	if(minPlayersToBeginGame < maxPlayersVillage){
@@ -8,9 +12,6 @@ PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerP
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
 	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);
 	this->channelToWriteResult = new FifoEscritura(FIFO_READ_RESULT_TO_RESULTMANAGER);	
-	this->channelToRead->abrir();
-	this->channelToWrite->abrir();
-	this->channelToWriteResult->abrir();
 
 	this->playersToGame = new std::vector<PlayerPM*>();
 	this->playersToWait = new std::vector<PlayerPM*>();
@@ -51,21 +52,60 @@ int PlayerManager::generateId(){
 	return this->idPlayer++;
 }
 
+void PlayerManager::executeCommandManager(){
+    log("INICIO DEL COMMAND_MANAGER",INFORMATION);
+    CommandManager *commandManager = new CommandManager();
+    commandManager->execute();
+    delete commandManager;
+    log("FIN DEL COMMAND_MANAGER",INFORMATION);
+}
+
 
 void PlayerManager::execute(){
-	struct messagePlayer* message;
-	std::cout<<"DEBEN INGRESAR AL MENOS "<<this->minPlayersToBeginGame<<" JUGADORES PARA INICIAR EL JUEGO"<<std::endl;
-	while(!this->finalizedProcess){
-		message = this->readFifoPlayerManager();
-		this->parseMessage(message);
-		if(this->beginGame){
-			this->writeFifoTeamManager();
-			this->evaluateEndGame();
+
+	pid_t pid = fork();
+	bool isChild = pid == 0;
+	if( isChild ){
+		this->executeCommandManager();
+		exit ( 0 );
+	}else{
+		this->channelToRead->abrir();
+		this->channelToWrite->abrir();
+		this->channelToWriteResult->abrir();
+
+		struct messagePlayer* message;
+		std::cout<<"DEBEN INGRESAR AL MENOS "<<this->minPlayersToBeginGame<<" JUGADORES PARA INICIAR EL JUEGO"<<std::endl;
+		while(!this->finalizedProcess){
+			message = this->readFifoPlayerManager();
+			this->parseMessage(message);
+			if(this->beginGame){
+				this->writeFifoTeamManager();
+				this->evaluateEndGame();
+			}
+			delete message;		
 		}
-		delete message;		
+		log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
+		flushLog();
+
+		int ss = kill(pid,SIGINT);
+		if (ss == 0){
+			log("PlayerManager: señal de kill enviada a CommandManager correctamente ",INFORMATION);
+		}else if(ss == -1){
+			log("PlayerManager: error al enviar señal de kill a CommandManager",ERROR);
+			exit(1);
+		}
+
+		this->loggearPlayers();
 	}
-	log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
-	this->loggearPlayers();
+
+	pid = wait(NULL);
+	if(pid != -1){
+		log("Proceso finalizado, su pid es ", pid, INFORMATION);
+	}else{
+		log("Error en la finalizacion del proceso ", INFORMATION);
+	}
+	flushLog();
+
 }
 
 /**
@@ -236,12 +276,12 @@ void PlayerManager::writeEndGameToResultManager(){
 
 	struct messageResult message;
 	message.operation = ResultCommands::EXIT;
-
+	
 	int result = this->channelToWriteResult->escribir(&message,sizeof(messageResult));
 	if(result == -1){
 		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifoResult ", __FILE__, __LINE__, ERROR);
 		exit(1);
-	}else if (result != sizeof(messagePlayer)){
+	}else if (result != sizeof(messageResult)){
 		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifoResult ", __FILE__, __LINE__, ERROR);
 		exit(1);
 	}

@@ -87,14 +87,12 @@ struct messageTeam* TeamManager::makeTeam(){
                 this->removePlayer(idPlayer1);
                 this->removePlayer(idPlayer2);
 
-                std::string messageLog ="players: "+std::to_string(idPlayer1) + " - "+std::to_string(idPlayer2);
-                log("TeamManager:  se formo un equipo: " + messageLog,INFORMATION);
-                std::cout<<" se formo un equipo: " + messageLog<<std::endl;
+                std::string messageLog =" IdJugador1: "+std::to_string(idPlayer1) + ", IdJugador2: "+std::to_string(idPlayer2);
+                log("TeamManager:  se formo un equipo, " + messageLog,INFORMATION);
                 return team;
             }
         }
     }
-    //log(TEAM_MANAGER_NAME + " no se pudo formar equipo",INFORMATION);
     return NULL;
 }
 

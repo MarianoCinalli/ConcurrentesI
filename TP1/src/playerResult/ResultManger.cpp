@@ -27,6 +27,7 @@ void ResultManager::parseMessage(struct messageResult *result){
             break;
         
         case ResultCommands::EXIT:
+            log("ResultManager: llego mensaje de fin de partido",INFORMATION);
             this->finalizedProcess = true;
             break;
     }

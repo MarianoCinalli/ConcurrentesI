@@ -48,15 +48,6 @@ void executePlayerManager(){
     log("FIN DEL PLAYER_MANAGER",INFORMATION);
 }
 
-
-void executeCommandManager(){
-    log("INICIO DEL COMMAND_MANAGER",INFORMATION);
-    CommandManager *commandManager = new CommandManager();
-    commandManager->execute();
-    delete commandManager;
-    log("FIN DEL COMMAND_MANAGER",INFORMATION);
-}
-
 void executeTeamManager(){
     log("INICIO DEL TEAM_MANAGER",INFORMATION);
     TeamManager *teamManager = new TeamManager();
@@ -103,7 +94,6 @@ int main(int argc, char* argv[]) {
 
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
     std::vector<functiontype> *functions = new std::vector<functiontype>();
-    functions->push_back(executeCommandManager);
     functions->push_back(executePlayerManager);
     functions->push_back(executeTeamManager);
     functions->push_back(executeMatchManager);

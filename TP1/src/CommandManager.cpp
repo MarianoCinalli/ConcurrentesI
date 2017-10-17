@@ -1,10 +1,19 @@
 #include "CommandManager.h"
 #include <iostream>
 
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <memory.h>
+
+
+
 //include "log.h"
 
+bool CommandManager::finalizedProcess =  false;
+
 CommandManager::CommandManager(){
-	this->finalizedProcess = false;
+	//finalizedProcess = false;
 	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYERMANAGER);
 	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYERMANAGER,INFORMATION);
 	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURTMANAGER);
@@ -15,12 +24,30 @@ CommandManager::CommandManager(){
 void CommandManager::execute(){
 	char value;
 	this->fifoManagerPlayer->abrir();
+	this->registerFunction();
 
-	while (!this->finalizedProcess){
+	while (!finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);
-	}	
-	log(COMMAND_MANAGER_NAME + " : El proceso CommandManager finaliza correctamente ",INFORMATION);
+		value = '\0';
+	}
+	this->finalize();	
+}
+
+void CommandManager::sigInt_handler(int signum){
+	if(signum == SIGINT){
+		finalizedProcess = true;
+	}
+}
+
+
+void CommandManager::registerFunction(){
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = CommandManager::sigInt_handler;
+	sigemptyset ( &sa.sa_mask );	// inicializa la mascara de seniales a bloquear durante la ejecucion del handler como vacio
+	sigaddset ( &sa.sa_mask,SIGINT );
+	sigaction ( SIGINT,&sa,0 );	// cambiar accion de la senial
 }
 
 
@@ -43,23 +70,13 @@ void CommandManager::receiveCommand(char command){
 		case '2' :
 			this->lowTide();
 			break;
-
-		//condición para testear
-		case 'q' : 
-			this->finalize();
-			break;
-
-		default:
-			std::cout<<"loggear comando erroneo"<<std::endl;
-
 	}
 
 }
 
 void CommandManager::finalize(){
-	std::cout<<"Comando finalización, espere..."<<std::endl;
-	this->finalizedProcess = true;
-	log(COMMAND_MANAGER_NAME + " : Finaliza ",INFORMATION);
+	//finalizedProcess = true;
+	log(COMMAND_MANAGER_NAME + " : El proceso CommandManager finaliza correctamente ",INFORMATION);
 	messagePlayer *player = new messagePlayer;
 	player->status = CommandType::killType;
 	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
@@ -69,7 +86,7 @@ void CommandManager::finalize(){
 
 void CommandManager::addPlayer(){
 	std::cout<<"Comando agregar jugador"<<std::endl;
-	log(COMMAND_MANAGER_NAME + " : Se agrego un judador ",INFORMATION);
+	log(COMMAND_MANAGER_NAME + " : Se agrego un jugador ",INFORMATION);
 	messagePlayer *player = new messagePlayer;
 	player->idPlayer = 0;
 	player->status = CommandType::addType;

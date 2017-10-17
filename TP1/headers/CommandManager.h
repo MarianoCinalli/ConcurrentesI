@@ -65,9 +65,11 @@ class CommandManager : public Executable {
 
 		void finalize();
 
-		bool finalizedProcess;
+		static bool finalizedProcess;
 		FifoEscritura *fifoManagerPlayer;
 		FifoEscritura *fifoTide;
+		void registerFunction();
+		static void sigInt_handler(int signum);
 
 	public:
 
