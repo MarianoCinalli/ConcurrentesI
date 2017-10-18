@@ -8,22 +8,20 @@ SIGINT_Handler::SIGINT_Handler(Court* court) : gracefulQuit(0) {
 SIGINT_Handler::~SIGINT_Handler() {
 }
 
-/*
- *	Si el partido no termino (Se informa que no termino):
- *		Si se leyó un un mensaje de partido. Y no se creo el partido o si el partido fue interrumpido.
- *		
- *		Marcar el partido como no finalido (crearlo de ser necesario). Y enviar los mensajes.
- *		
- *	Si el partido termino, (se envian los mensajes con los resultados):
- *
- *  	Continua la ejecucion, para enviar los mensajes, y termina.
- *
- */
 sig_atomic_t SIGINT_Handler::getGracefulQuit () const {
 	return this->gracefulQuit;
 }
 
-void SIGINT_Handler::handler_cleanAndExit() {
+/*
+ *	Si el partido no termino (Se informa que no termino):
+ *		Si se leyó un mensaje de partido. Y no se creo el partido o si el partido fue interrumpido.
+ *		Se marca el partido como no finalizado (crearlo de ser necesario). Y enviar los mensajes.
+ *		
+ *	Si el partido termino, (se envian los mensajes con los resultados):
+ *  	Continua la ejecucion de codigo, para enviar los mensajes, y termina por graceful quit.
+ *
+ */
+void SIGINT_Handler::handle() {
 	log("SIGINT HANDLER: Manejando marea.", 3);
 	bool shouldExit = true;
 	messageMatch courtMessage = this->court->getReadMessage();

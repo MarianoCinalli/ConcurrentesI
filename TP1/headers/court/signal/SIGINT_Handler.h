@@ -27,14 +27,14 @@ class SIGINT_Handler : public EventHandler {
 		virtual int handleSignal(int signum) {
 			assert ( signum == SIGINT );
 			this->gracefulQuit = 1;
-			this->handler_cleanAndExit();
+			this->handle();
 			return 0;
 		};
 
 		sig_atomic_t getGracefulQuit() const;
 
 	private:
-		void handler_cleanAndExit();
+		void handle();
 
 };
 
