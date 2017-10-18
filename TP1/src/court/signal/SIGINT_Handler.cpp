@@ -26,8 +26,8 @@ void SIGINT_Handler::handle() {
 	bool shouldExit = true;
 	messageMatch courtMessage = this->court->getReadMessage();
 	Match* courtMatch = this->court->getMatch();
-	// Si no esta instanciado el mensaje leido del fifo. Salgo.
-	if (courtMessage.operation == IGNORE) {
+	// Si no esta instanciado el mensaje leido del fifo (valor de inicializacion). Salgo.
+	if (courtMessage.operation != IGNORE) {
 		// Si la operacion no es jugar salgo.
 		if (courtMessage.operation == PLAY) {
 			// Valido el estado del juego.
