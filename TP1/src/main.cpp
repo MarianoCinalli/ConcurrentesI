@@ -1,29 +1,19 @@
 #include <iostream>
 #include <string>
-#include "tools/logger.h"
 #include <unistd.h>
-
-// TODO: Delete when finished.
+#include "tools/logger.h"
 #include "tools/utilFunctions.h"
-#include <sys/wait.h>
 #include "tools/ProcessSpawner.h"
-#include "court/Court.h"
 #include "courtManager/CourtManager.h"
 
-
+// Del branch courtManager ------------------------------
 void openCourtManager(int parameters[]) {
 	// 0 rows - 1 columns
 	CourtManager* courtManager = new CourtManager(parameters[0], parameters[1]);
 	courtManager->administrateCourts();
 	delete(courtManager);
 }
-
-void openCourt() {
-	Court* court = new Court();
-	court->runUntilThereAreNoMatchesLeft();
-	delete(court);
-}
-// -------------------------------
+// ------------------------------------------------------
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
@@ -37,15 +27,12 @@ int main(int argc, char* argv[]) {
     // End Initialization
     logSessionStarted();
     // Main body
-
-    // TODO: Delete when finished. -------------------------
-    int parameters[2] = { 1, 1 };
+    // Del branch courtManager ------------------------------
+    int parsedRows = 3; // Reemplazar por el valor parseado
+    int parsedColumns = 3; // Reemplazar por el valor parseado
+    int parameters[2] = {parsedRows, parsedColumns};
 	ProcessSpawner* spawner = new ProcessSpawner();
 	pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
-	int status;
-	waitpid(newProcessPid, &status, WUNTRACED);
-	// -----------------------------------------------------
-
     // End Main body
 	logSessionFinished();
 	return 0;
