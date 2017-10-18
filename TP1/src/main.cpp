@@ -102,7 +102,8 @@ int main(int argc, char* argv[]) {
 
     ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);
-    
+    delete processSpawner;
+    functions->clear();
     delete functions;
     log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
 

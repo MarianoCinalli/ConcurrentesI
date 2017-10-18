@@ -31,6 +31,7 @@ void MatchManager::parseMessage(struct messageTeam* team) {
             break;
         case CLOSE :
             this->finalize = true;
+            delete team;
             flushLog(); //agregadoooooo porque el proceso no termina.......
             this->notifyCloseMatches();
             log("MatchManager: llega un close ",INFORMATION);
