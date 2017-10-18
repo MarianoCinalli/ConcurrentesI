@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
     processSpawner->spawnProcesses(functions);
 
 
-    // Del branch courtManager ------------------------------
+    // Del branch courtManager ------------------------------   
     int parsedRows = 3; // Reemplazar por el valor parseado
     int parsedColumns = 3; // Reemplazar por el valor parseado
     int parameters[2] = {parsedRows, parsedColumns};

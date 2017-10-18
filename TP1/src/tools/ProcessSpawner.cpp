@@ -25,7 +25,7 @@ int ProcessSpawner::spawnProcess(functiontype functionPointer) {
 		// Padre
 		log("Proceso creado, su pid es ", pid, 3);
 		this->pids.push_back(pid);
-		wait(NULL);
+		//wait(NULL);
 	}
 	return pid;
 }
@@ -89,7 +89,7 @@ int ProcessSpawner::spawnProcess(functionWithIntParametersType functionPointer, 
 
 void ProcessSpawner::waitChilds(){
 	pid_t pid;
-	for(int i = 0; i < this->pids.size(); i++) {
+	for(unsigned i = 0; i < this->pids.size(); i++) {
 		//this->pids.push_back(pid);
 		pid = wait(NULL);
 		if(pid != -1){

@@ -27,7 +27,7 @@ void CommandManager::execute(){
 //	this->fifoManagerPlayer->abrir();
 //	this->fifoTide->abrir();
 	this->registerFunction();
-	
+
 	while (!finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);
@@ -82,6 +82,12 @@ void CommandManager::finalize(){
 	messagePlayer *player = new messagePlayer;
 	player->status = CommandType::killType;
 	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+
+	messageCourtManager* messageCourt = new messageCourtManager;
+	messageCourt->operation = TideType::closeCourts;
+	this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));
+
+	delete messageCourt;
 	delete player;
 }
 
@@ -107,21 +113,35 @@ void CommandManager::removePlayer(){
 }
 
 void CommandManager::raiseTide(){
-	std::cout<<"Comando levantar la marea"<<std::endl;
+/*	std::cout<<"Comando levantar la marea"<<std::endl;
 	log(COMMAND_MANAGER_NAME + " : Se levanta la marea ",INFORMATION);
 	messageTide *tide = new messageTide;
 	tide->status = TideType::raiseType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
 	delete tide;
+*/
+	std::cout<<"Comando levantar la marea"<<std::endl;
+	log(COMMAND_MANAGER_NAME + " : Se levanta la marea ",INFORMATION);
+	messageCourtManager* messageCourt = new messageCourtManager;
+	messageCourt->operation = TideType::raiseType;
+	this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));	
+	delete messageCourt;
 }
 
 void CommandManager::lowTide(){
-	std::cout<<"Comando baja la marea"<<std::endl;
+/*	std::cout<<"Comando baja la marea"<<std::endl;
 	log(COMMAND_MANAGER_NAME + " : Se baja la marea ",INFORMATION);
 	messageTide *tide = new messageTide;
 	tide->status = TideType::lowType;
 	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
 	delete tide;
+*/
+	std::cout<<"Comando bajar la marea"<<std::endl;
+	log(COMMAND_MANAGER_NAME + " : Se baja la marea ",INFORMATION);
+	messageCourtManager* messageCourt = new messageCourtManager;
+	messageCourt->operation = TideType::lowType;
+	this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));	
+	delete messageCourt;
 }	
 
 CommandManager::~CommandManager(){
