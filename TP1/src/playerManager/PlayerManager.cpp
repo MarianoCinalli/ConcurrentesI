@@ -35,7 +35,7 @@ PlayerManager::~PlayerManager(){
 	this->channelToWrite->eliminar();
 	this->channelToWriteResult->eliminar();
 
-	this->channelToWriteResult->abrir();
+//	this->channelToWriteResult->abrir();
 	delete this->channelToRead;
 	delete this->channelToWrite;
 
@@ -287,11 +287,13 @@ void PlayerManager::writeEndGameToResultManager(){
 	
 	int result = this->channelToWriteResult->escribir(&message,sizeof(messageResult));
 	if(result == -1){
-		log(PLAYER_MANAGER_NAME + " : No se pudo realizar la escritura en el fifoResult ", __FILE__, __LINE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : **ERROR***  no se pudo mandar finalización de juego a ResultManager ", __FILE__, __LINE__, ERROR);
 		exit(1);
 	}else if (result != sizeof(messageResult)){
-		log(PLAYER_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifoResult ", __FILE__, __LINE__, ERROR);
+		log(PLAYER_MANAGER_NAME + " : **ERROR***  no se pudo mandar se mando correctamente finalización de juego a ResultManager", __FILE__, __LINE__, ERROR);
 		exit(1);
+	}else{
+		log("PlayerManager: se mando correctamente finalización de juego a ResultManager ", INFORMATION);
 	}
 	
 }

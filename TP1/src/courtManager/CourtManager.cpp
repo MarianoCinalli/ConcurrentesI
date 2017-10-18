@@ -166,6 +166,7 @@ CourtManager::~CourtManager() {
 	log("CourtManager: Canchas cerradas.", 3);
 	log("CourtManager: Cerrando fifo.", 3);
 	this->fifoCourtManager->cerrar();
+	this->fifoCourtManager->eliminar();	
 	delete(this->fifoCourtManager);
 	log("CourtManager: Fifo cerrado.", 3);
 	log("CourtManager: Recursos liberados.", 3);

@@ -81,11 +81,26 @@ void CommandManager::finalize(){
 	log(COMMAND_MANAGER_NAME + " : El proceso CommandManager finaliza correctamente ",INFORMATION);
 	messagePlayer *player = new messagePlayer;
 	player->status = CommandType::killType;
-	this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+	int status;
+	status = this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
+	if(status == -1){
+		log("CommandManager:**ERROR** no se pudo mandar fin de juego a PlayerManager",__FILE__, __LINE__, ERROR);
+	}else if(status != sizeof(player)){
+		log("CommandManager:**ERROR** no se pudo mandar correctamente el fin de juego a PlayerManager",__FILE__, __LINE__, ERROR);
+	}else{
+		log("CommandManager: se mando correctamente fin de juego a PlayerManager",INFORMATION);
+	}
 
 	messageCourtManager* messageCourt = new messageCourtManager;
 	messageCourt->operation = TideType::closeCourts;
-	this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));
+	status = this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));
+	if(status == -1){
+		log("CommandManager:**ERROR** no se pudo mandar fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
+	}else if(status != sizeof(messageCourt)){
+		log("CommandManager:**ERROR** no se pudo mandar correctamente el fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
+	}else{
+		log("CommandManager: se mando correctamente fin de juego a CourtManager",INFORMATION);
+	}
 
 	delete messageCourt;
 	delete player;
@@ -148,6 +163,8 @@ CommandManager::~CommandManager(){
 	log(COMMAND_MANAGER_NAME + " : Se liberan recursos ", INFORMATION);
 	this->fifoManagerPlayer->cerrar();
 	this->fifoTide->cerrar();
+	//this->fifoManagerPlayer->eliminar();
+	//this->fifoTide->eliminar();
 	delete this->fifoManagerPlayer;
 	delete this->fifoTide;
 }

@@ -84,6 +84,8 @@ void MatchManager::writeMatch(struct messageMatch *match) {
         log(MATCH_MANAGER_NAME + " : No se pudo realizar la escritura en el fifo ", __FILE__, __LINE__, ERROR);
     }else if (result != sizeof(messageMatch)){
         log(MATCH_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
+    }else{
+        log("MatchManager : Se escribio un match Correctamente ", INFORMATION);
     }
 }
 
