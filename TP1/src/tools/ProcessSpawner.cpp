@@ -54,7 +54,7 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 			this->pids.push_back(pid);
 		} 
 	}
-
+/*
 	for(int i = 0; i < totalFunctions; i++) {
 		//this->pids.push_back(pid);
 		pid = wait(NULL);
@@ -65,7 +65,7 @@ int ProcessSpawner::spawnProcesses(std::vector<functiontype>*funtions) {
 		}
 		flushLog();
 	}
-
+*/
 	return 0;
 }
 
@@ -87,3 +87,19 @@ int ProcessSpawner::spawnProcess(functionWithIntParametersType functionPointer, 
 
 }
 
+void ProcessSpawner::waitChilds(){
+	pid_t pid;
+	for(int i = 0; i < this->pids.size(); i++) {
+		//this->pids.push_back(pid);
+		pid = wait(NULL);
+		if(pid != -1){
+			log("Proceso finalizado, su pid es ", pid, 3);
+		}else{
+			log("Error en la finalizacion del proceso ", 3);
+		}
+		flushLog();
+	}
+
+	std::cout<<"-------------finalizaron todos los procesos"<<std::endl;
+
+}

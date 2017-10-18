@@ -22,6 +22,7 @@ public:
 	int spawnProcess(functiontype functionPointer);
 	int spawnProcesses(std::vector<functiontype>*funtions);
 	int spawnProcess(functionWithIntParametersType functionPointer, int parameters[]);
+	void waitChilds();
 };
 
 #endif // PROCESSSPAWNER_H

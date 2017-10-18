@@ -13,6 +13,10 @@ PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerP
 	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);
 	this->channelToWriteResult = new FifoEscritura(FIFO_READ_RESULT_TO_RESULTMANAGER);	
 
+/*	this->channelToRead->abrir();
+	this->channelToWrite->abrir();
+	this->channelToWriteResult->abrir();
+*/
 	this->playersToGame = new std::vector<PlayerPM*>();
 	this->playersToWait = new std::vector<PlayerPM*>();
 	this->idPlayer = 0;
@@ -72,6 +76,10 @@ void PlayerManager::execute(){
 		this->channelToRead->abrir();
 		this->channelToWrite->abrir();
 		this->channelToWriteResult->abrir();
+		log("PlayerManager: Se abrio FIFO de lectura " + FIFO_READ_COMMAND_OF_COMMANDMANAGER,INFORMATION);
+		log("PlayerManager: Se abrio FIFO de escritura " + FIFO_WRITE_PLAYER_TO_TEAMMANAGER,INFORMATION);
+		log("PlayerManager: Se abrio FIFO de escritura " + FIFO_READ_RESULT_TO_RESULTMANAGER,INFORMATION);
+		
 
 		struct messagePlayer* message;
 		std::cout<<"DEBEN INGRESAR AL MENOS "<<this->minPlayersToBeginGame<<" JUGADORES PARA INICIAR EL JUEGO"<<std::endl;

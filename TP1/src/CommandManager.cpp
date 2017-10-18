@@ -15,17 +15,19 @@ bool CommandManager::finalizedProcess =  false;
 CommandManager::CommandManager(){
 	//finalizedProcess = false;
 	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYERMANAGER);
-	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYERMANAGER,INFORMATION);
 	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURTMANAGER);
-	log(COMMAND_MANAGER_NAME + " Se construyo FIFO de escritura " + FIFO_WRITE_COMMAND_TO_COURTMANAGER,INFORMATION);
-
+	this->fifoManagerPlayer->abrir();
+	this->fifoTide->abrir();
+	log(COMMAND_MANAGER_NAME + " Se abrio FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYERMANAGER,INFORMATION);
+	log(COMMAND_MANAGER_NAME + " Se abrio FIFO de escritura " + FIFO_WRITE_COMMAND_TO_COURTMANAGER,INFORMATION);
 }
 
 void CommandManager::execute(){
 	char value;
-	this->fifoManagerPlayer->abrir();
+//	this->fifoManagerPlayer->abrir();
+//	this->fifoTide->abrir();
 	this->registerFunction();
-
+	
 	while (!finalizedProcess){
 		std::cin>>value;
 		this->receiveCommand(value);

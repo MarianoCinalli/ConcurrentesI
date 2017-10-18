@@ -5,13 +5,15 @@ ResultManager::ResultManager() {
     this->finalizedProcess = false;
     this->playerResults = new std::map<int, PlayerResult*>();
     this->channelToRead = new FifoLectura(FIFO_READ_RESULT_TO_RESULTMANAGER);
+    this->channelToRead->abrir();
+    log("ResultManager: Se abrio FIFO de lectura " + FIFO_READ_RESULT_TO_RESULTMANAGER,INFORMATION);
     this->maxScore = -1;
     this->winners = new std::vector<PlayerResult*>();
 	log(RESULT_MANAGER_NAME + " Se construyo FIFO de lectura " + FIFO_READ_RESULT_TO_RESULTMANAGER, INFORMATION);
 }
 
 void ResultManager::execute() {
-    this->channelToRead->abrir();
+//    this->channelToRead->abrir();
     while (!this->finalizedProcess) {
         struct messageResult *result = readFifoResultManager();
         this->parseMessage(result);

@@ -1,23 +1,20 @@
 #include <iostream>
 #include <string>
-#include "tools/logger.h"
 #include <unistd.h>
 
 #include "tools/ProcessSpawner.h"
-#include "CommandManager.h"
 #include "TeamManager.h"
 #include "MatchManager.h"
 #include "playerManager/PlayerManager.h"
 #include "playerResult/ResultManager.h"
 
 // TODO: Delete when finished.
+#include "tools/logger.h"
 #include "tools/utilFunctions.h"
-#include <sys/wait.h>
 #include "tools/ProcessSpawner.h"
-#include "court/Court.h"
 #include "courtManager/CourtManager.h"
 
-
+// Del branch courtManager ------------------------------
 void openCourtManager(int parameters[]) {
 	// 0 rows - 1 columns
 	CourtManager* courtManager = new CourtManager(parameters[0], parameters[1]);
@@ -32,7 +29,8 @@ void openCourt() {
     delete(court);
     log("FIN DEL COURT",INFORMATION);
 }
-// -------------------------------
+// ------------------------------------------------------
+
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
@@ -77,7 +75,7 @@ void executeResultManager(){
 
 typedef void (*functiontype)();
 
-const char INITIAL_PARAMETERS[] = "initialParameter.json";
+//const char INITIAL_PARAMETERS[] = "initialParameter.json";
 
 int main(int argc, char* argv[]) {
     // Initialization
@@ -93,16 +91,33 @@ int main(int argc, char* argv[]) {
     logSessionStarted();
 
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
+
+    ProcessSpawner *processSpawner = new ProcessSpawner();
     std::vector<functiontype> *functions = new std::vector<functiontype>();
+    
     functions->push_back(executePlayerManager);
     functions->push_back(executeTeamManager);
     functions->push_back(executeMatchManager);
-    functions->push_back(openCourt);
+    //functions->push_back(openCourt);
     functions->push_back(executeResultManager);
-
-    ProcessSpawner *processSpawner = new ProcessSpawner();
+ //   ProcessSpawner *processSpawner = new ProcessSpawner();
+//    ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);
+
+
+    // Del branch courtManager ------------------------------
+    int parsedRows = 3; // Reemplazar por el valor parseado
+    int parsedColumns = 3; // Reemplazar por el valor parseado
+    int parameters[2] = {parsedRows, parsedColumns};
+    //ProcessSpawner* spawner = new ProcessSpawner();
+    //pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
+    processSpawner->spawnProcess(&openCourtManager, parameters);
+
+    // End Main body
+
     
+    processSpawner->waitChilds();
+
     delete functions;
     log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
 
@@ -117,7 +132,18 @@ int main(int argc, char* argv[]) {
 	waitpid(newProcessPid, &status, WUNTRACED);
 	// -----------------------------------------------------
 */
+
+
+/*
+// Del branch courtManager ------------------------------
+    int parsedRows = 3; // Reemplazar por el valor parseado
+    int parsedColumns = 3; // Reemplazar por el valor parseado
+    int parameters[2] = {parsedRows, parsedColumns};
+	ProcessSpawner* spawner = new ProcessSpawner();
+	pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
     // End Main body
+*/
+
 
 /*
     // EJEMPLO DE PARSER

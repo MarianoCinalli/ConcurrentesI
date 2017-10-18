@@ -5,11 +5,15 @@ MatchManager::MatchManager() {
     this->channelToWriteMatches = new FifoEscritura(FIFO_WRITE_MATCH_TO_MATCHES);
     this->team1 = NULL;
     this->team2 = NULL;
+    this->channelToReadTeams->abrir();
+    this->channelToWriteMatches->abrir();
+    log("MatchManager: Se abrio FIFO de lectura " + FIFO_READ_TEAM_OF_TEAMMANAGER,INFORMATION);
+    log("MatchManager: Se abrio FIFO de escritura " + FIFO_WRITE_MATCH_TO_MATCHES,INFORMATION);
 }
 
 void MatchManager::execute() {
-    this->channelToReadTeams->abrir();
-    this->channelToWriteMatches->abrir();
+//    this->channelToReadTeams->abrir();
+//    this->channelToWriteMatches->abrir();
 
     while (!this->finalize) {
         struct messageTeam* team = this->readTeam();

@@ -1,4 +1,5 @@
 #include "court/Court.h"
+#include "court/signal/SIGINT_Handler.h"
 
 Court::Court() {
 	log("Court: Inicializando.", 3);
@@ -14,7 +15,9 @@ Court::Court() {
 	this->fifoPlayerManager = new FifoEscritura(FIFO_WRITE_STATUS_TO_PLAYERMANAGER);
 	this->fifoPlayerManager->abrir();
 	log("Court: /tmp/fifoResultManager abierto.", 3);
-	this->matchShouldBeCancelled = false;
+	this->readMessage = (const struct messageMatch){ IGNORE };
+	this->match = NULL;
+	this->moreMatchesToPlay = true;
 	log("Court: Fin Inicializacion.", 3);
 };
 
@@ -38,30 +41,36 @@ Court::~Court() {
 };
 
 void Court::runUntilThereAreNoMatchesLeft() {
+	log("Court: Registrando SIGINT handler.", 3);
+	SIGINT_Handler sigint_handler(this);
+	SignalHandler::getInstance()->registrarHandler(SIGINT, &sigint_handler);
 	log("Court: Se abrio la cancha", 3);
-	bool moreMatchesToPlay = true;
-	Message* readMessage;
-	while(moreMatchesToPlay) {
+	Message* message;
+	while(this->moreMatchesToPlay || sigint_handler.getGracefulQuit()) {
 		log("Court: Esperando nuevo juego.", 3);
-		readMessage = this->getMessage();
-		moreMatchesToPlay = this->processMessage(readMessage);
-		delete(readMessage);
+		message = this->getMessage();
+		this->moreMatchesToPlay = this->processMessage(message);		
+		delete(message);
+		// Reseting data ----------------------------------------------------------------
+		this->readMessage = (const struct messageMatch){ IGNORE };
+		Match* playedMatch = this->match; // Para no tener riezgo de un null pointer exep.
+		this->match = NULL;
+		delete(playedMatch);
+		// Reseting data ----------------------------------------------------------------
 	}
 	log("Court: Cerrando cancha", 3);
 };
 
 Message* Court::getMessage() {
-	struct messageMatch readMessage;
-	int readBytes = this->fifoMatches->leer(static_cast<void*>(&readMessage), sizeof(readMessage));
+	int readBytes = this->fifoMatches->leer(static_cast<void*>(&(this->readMessage)), sizeof(this->readMessage));
 	if (readBytes < 0) {
 		log("Court: ** Error ** En la lectura. Errno: ", strerror(errno), 1);
 	} else if (readBytes == 0) {
 		log("Court: ** Warning ** Se leyeron 0 bytes. Ignorando.", 2);
 	} else {
 		log("Court: Mensaje leido correctamente. Cantidad de bytes: ", readBytes, 3);
-		return (new Message(readMessage));
 	}
-	return (new Message());
+	return (new Message(this->readMessage));
 };
 
 bool Court::processMessage(Message* message) {
@@ -75,17 +84,19 @@ bool Court::processMessage(Message* message) {
 	} else if (operation == CLOSE) {
 		log("Court: Se recibio el mensaje de cerrado de cancha.", 3);
 		moreMatchesToPlay = false;
+	} else {
+		log("Court: Se ignora la operacion.", 3);
+		moreMatchesToPlay = true;
 	}
 	return moreMatchesToPlay;
 };
 
 void Court::playGame(Message* message) {
-	Match* match = this->getMatchFromMessage(message);
+	this->match = this->getMatchFromMessage(message);
 	log("Court: Conzando a jugar el partido.", 3);
-	match->play();
-	log("Court: Partido finalizado. Resultado: ", match, 3);
-	this->sendMessages(match);
-	delete(match);
+	this->match->play();
+	log("Court: Partido finalizado. Resultado: ", this->match, 3);
+	this->sendMessages(this->match);
 };
 
 Match* Court::getMatchFromMessage(Message* message) {
@@ -103,6 +114,7 @@ Match* Court::getMatchFromMessage(Message* message) {
 
 void Court::sendMessages(Match* match) {
 	if (!match->wasMatchCancelled()) {
+		// Solo se envian si el partido termino.
 		log("Court: Enviando mensajes de resultados.", 3);
 		struct messageResult resultMessage = match->getResultMessage();
 		this->fifoResults->escribir(static_cast<void*>(&resultMessage), sizeof(resultMessage));
@@ -114,4 +126,10 @@ void Court::sendMessages(Match* match) {
 	}
 };
 
+messageMatch Court::getReadMessage() {
+	return this->readMessage;
+};
 
+Match* Court::getMatch() {
+ 	return this->match;
+};

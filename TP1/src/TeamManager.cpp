@@ -6,13 +6,17 @@ TeamManager::TeamManager() {
     this->playsByPlayer = new std::map<int, std::vector<int>*>();
     this->channelToRead = new FifoLectura(FIFO_READ_PLAYER_OF_PLAYERMANAGER);
     this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCHMANAGER);
+    this->channelToRead->abrir();
+    this->channelToWrite->abrir();
+    log("TeamManager: Se abrio FIFO de lectura " + FIFO_READ_PLAYER_OF_PLAYERMANAGER,INFORMATION);
+    log("TeamManager: Se abrio FIFO de escritura " + FIFO_WRITE_TEAM_TO_MATCHMANAGER,INFORMATION);
 }
 
 void TeamManager::execute() {
     struct messageTeam* team;
     struct messagePlayer* message;
-    this->channelToRead->abrir();
-    this->channelToWrite->abrir();
+//    this->channelToRead->abrir();
+//    this->channelToWrite->abrir();
 
     while (!this->finalize) {
         message = this->readPlayer();

@@ -2,6 +2,7 @@
 #define CONSTANTS_H_
 
 #include <iostream>
+//#include "tools/Messages.h"
 
 const int F_DEFAULT = 4;
 const int C_DEFAULT = 4;
@@ -12,9 +13,9 @@ const int MAX_SETS_DEFAULT = 5;
 
 enum PCStatus {freeS=0, busyS, disableS,completedS};
 enum CommandType {addType=0, removeType=1, killType=2,gameCanceled=3,gameCompleted=4};
-enum CourtCommands {PLAY = 0, CLOSE = 1};
 enum ResultCommands {RESULT = 0, EXIT = 1};
 enum LevelsLog{ERROR=1, WARNING, INFORMATION};
+enum CourtCommands {PLAY = 0, CLOSE = 1, IGNORE = 2};
 enum TideType {raiseType=0, lowType=1, closeCourts=3};
 
 struct initialParameter {
@@ -48,6 +49,10 @@ const std::string FIFO_WRITE_STATUS_TO_PLAYERMANAGER = FIFO_READ_COMMAND_OF_COMM
 
 //fifos usados por ResultManager
 const std::string FIFO_READ_RESULT_TO_RESULTMANAGER = FIFO_WRITE_RESULT_TO_RESULTMANAGER;
+
+//fifos usados por CourtManager
+const std::string FIFO_READ_TIDE_OF_COMMANDMANAGER = FIFO_WRITE_COMMAND_TO_COURTMANAGER;
+
 
 #endif // CONSTANTS_H_
 
