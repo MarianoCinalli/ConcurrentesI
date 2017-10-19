@@ -4,6 +4,7 @@
 #include "tools/Constants.h"
 #include "fifos/FifoLectura.h"
 #include <vector>
+#include <iterator>
 
 class FifoInitializer {
 

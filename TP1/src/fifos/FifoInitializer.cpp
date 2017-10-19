@@ -11,5 +11,11 @@ void FifoInitializer::createFifos() {
 }
 
 void FifoInitializer::deleteFifos() {
-
+    for (std::vector<FifoLectura*>::iterator it = fifos->begin(); it != fifos->end(); it++) {
+        FifoLectura *fifo = (*it);
+        fifo->eliminar();
+        delete fifo;
+    }
+    fifos->clear();
+    delete fifos;
 }
