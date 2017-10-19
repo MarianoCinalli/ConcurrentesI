@@ -13,6 +13,7 @@
 #include "tools/utilFunctions.h"
 #include "tools/ProcessSpawner.h"
 #include "courtManager/CourtManager.h"
+#include "semaphores/Semaforo.h"
 
 // Del branch courtManager ------------------------------
 void openCourtManager(int parameters[]) {
@@ -22,6 +23,7 @@ void openCourtManager(int parameters[]) {
 	delete(courtManager);
 }
 
+/* LO QUE USA ESTO ESTA COMENTADO DEBERIA VOLAR.
 void openCourt() {
     log("INICIO DEL COURT",INFORMATION);
 	Court* court = new Court();
@@ -30,11 +32,13 @@ void openCourt() {
     log("FIN DEL COURT",INFORMATION);
 }
 // ------------------------------------------------------
-
+*/
 
 // Constants ------------------------------------------------------
 int LOG_MIN_LEVEL = 1;
 std::ofstream LOG_FILE_POINTER;
+const std::string SEMAPHORE_NAME = "src/main.cpp";
+Semaforo semaphoreFifoMatches(SEMAPHORE_NAME, 0);
 // Constants ------------------------------------------------------
 
 
@@ -104,14 +108,19 @@ int main(int argc, char* argv[]) {
 //    ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);
 
-
-    // Del branch courtManager ------------------------------   
+ 
+    // Del branch courtManager ------------------------------
     int parsedRows = 3; // Reemplazar por el valor parseado
     int parsedColumns = 3; // Reemplazar por el valor parseado
     int parameters[2] = {parsedRows, parsedColumns};
-    //ProcessSpawner* spawner = new ProcessSpawner();
-    //pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
-    processSpawner->spawnProcess(&openCourtManager, parameters);
+    ProcessSpawner* spawner = new ProcessSpawner();
+    pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
+    // End Main body
+
+    // Esto se podria hacer constante y que se borre NOMBRE_FIFO_MATCHES + "_lock".
+    // Porque desde el destructor no se puede borrar (la borra al primero que lo ejecuta).
+    std::string lockFile = "/tmp/fifoMatches_lock";
+    remove(lockFile.c_str());
 
     // End Main body
 
@@ -123,7 +132,6 @@ int main(int argc, char* argv[]) {
 
 
     // Main body
-
     // TODO: Delete when finished. -------------------------
   /*  int parameters[2] = { 1, 1 };
 	ProcessSpawner* spawner = new ProcessSpawner();

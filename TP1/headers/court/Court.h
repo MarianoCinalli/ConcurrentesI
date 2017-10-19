@@ -10,6 +10,7 @@
 #include "tools/Constants.h"
 #include "fifos/FifoEscritura.h"
 #include "fifos/FifoLecturaBloqueante.h"
+#include "semaphores/Semaforo.h"
 #include "court/Message.h"
 #include "court/Match.h"
 #include "court/Team.h"

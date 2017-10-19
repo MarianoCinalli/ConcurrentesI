@@ -1,5 +1,7 @@
 #include "courtManager/CourtManager.h"
 
+extern Semaforo semaphoreFifoMatches;
+
 /* Las canchas mas cercanas a la orilla son las de [0][0] a [0][columns]
  */
 
@@ -89,6 +91,7 @@ void CourtManager::raiseTideAndInformCourts(int amountToRaise) {
 		log("CourtManager: Aumentando la marea.", 2);
 		for (int rowNumber = previousTideLevel; rowNumber < this->tideLevel; ++rowNumber) {
 			for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
+				log("CourtManager: Cerrando cancha nro.:" + std::to_string(rowNumber) + " " + std::to_string(columnNumber) , 3);
 				this->beach[rowNumber][columnNumber]->closeCourt();
 			}
 		}
@@ -107,7 +110,8 @@ void CourtManager::lowerTideAndInformCourts(int amountToLower) {
 		log("CourtManager: Disminuyendo marea.", 3);
 		for (int rowNumber = previousTideLevel; rowNumber > this->tideLevel; --rowNumber) {
 			for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
-				this->beach[rowNumber][columnNumber]->openCourt();
+				log("CourtManager: Abriendo cancha nro.:" + std::to_string(rowNumber - 1) + " " + std::to_string(columnNumber) , 3);
+				this->beach[rowNumber - 1][columnNumber]->openCourt();
 			}
 		}
 	} else {
@@ -148,12 +152,11 @@ void CourtManager::shutDownCourts() {
 			}
 		}
 	}
-	// Aca falta un semaforo que tienen disminuir las canchas cuando se destruyen.
-	// Y aumentar cuando se crean.
-	// Aca se espera a que sea cero y se puede seguir la ejecucion.
-	// Sino se va a cerrar el archivo y bloquear todas las canchas.
 	log("CourtManager: Cerrando fifo de canchas", 3);
 	fifoMatches->cerrar();
+	log("CourtManager: Esperando a que no haya procesos leyendo el fifoMatches, para poder eliminarlo.", 3);
+	semaphoreFifoMatches.waitUntilCero();
+	fifoMatches->eliminar();
 	delete(fifoMatches);
 	log("CourtManager: Fifo de canchas cerrado", 3);
 };

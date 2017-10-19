@@ -1,12 +1,17 @@
 #include "court/Court.h"
 #include "court/signal/SIGINT_Handler.h"
 
+extern Semaforo semaphoreFifoMatches;
+
 Court::Court() {
 	log("Court: Inicializando.", 3);
 	log("Court: Abriendo /tmp/fifoMatches.", 3);
 	this->fifoMatches = new FifoLecturaBloqueante(FIFO_READ_MATCH_OF_MATCHMANAGER);
 	this->fifoMatches->abrir();
 	log("Court: /tmp/fifoResultManager abierto.", 3);
+	log("Court: Incrementando el valor del semaforo.", 3);
+	semaphoreFifoMatches.signal();
+	log("Court: Valor del semaforo incrementando.", 3);
 	log("Court: Abriendo /tmp/fifoResultManager.", 3);
 	this->fifoResults = new FifoEscritura(FIFO_WRITE_RESULT_TO_RESULTMANAGER);
 	this->fifoResults->abrir();
@@ -27,6 +32,9 @@ Court::~Court() {
 	this->fifoMatches->cerrar();
 	this->fifoMatches->eliminar();
 	log("Court: /tmp/fifoResultManager cerrado.", 3);
+	log("Court: Decrementando el valor del semaforo.", 3);
+	semaphoreFifoMatches.signal();
+	log("Court: Valor del semaforo decrementado.", 3);
 	log("Court: Cerrando /tmp/fifoResultManager.", 3);
 	this->fifoResults->cerrar();
 	this->fifoResults->eliminar();
