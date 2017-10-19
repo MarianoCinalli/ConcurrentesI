@@ -230,8 +230,6 @@ TeamManager::~TeamManager() {
     delete this->players;
     this->channelToRead->cerrar();
     this->channelToWrite->cerrar();  
-    this->channelToRead->eliminar();
-	this->channelToWrite->eliminar();  
     delete this->channelToRead;
     delete this->channelToWrite;
 }

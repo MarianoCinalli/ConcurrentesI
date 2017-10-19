@@ -144,6 +144,5 @@ ResultManager::~ResultManager() {
     }
     delete this->playerResults;
     delete this->winners;
-    this->channelToRead->eliminar();
     delete this->channelToRead;
 }
