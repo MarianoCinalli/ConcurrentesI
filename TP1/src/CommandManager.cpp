@@ -76,8 +76,9 @@ void CommandManager::execute(){
 				value = '\0';
 			}
 			//this->finalize();
-			this->finalizeResult();
+			//this->finalizeResult();//mata 
 		}
+
 
 		pid = waitpid(pidResult,&status,WUNTRACED);	
 		if(pid != -1){
@@ -87,7 +88,8 @@ void CommandManager::execute(){
 		}
 		flushLog();
 
-		this->finalize();
+
+		this->finalizeCourtManager();
 
 		pid = waitpid(pidCourt,&status,WUNTRACED);	
 		if(pid != -1){
@@ -96,6 +98,11 @@ void CommandManager::execute(){
 			log("Error en la finalizacion del proceso ", INFORMATION);
 		}
 		flushLog();
+
+
+
+
+
 	}
 
 }
@@ -140,7 +147,9 @@ void CommandManager::receiveCommand(char command){
 
 }
 
+//void CommandManager::finalizeResult(){
 void CommandManager::finalize(){
+	
 	//finalizedProcess = true;
 	log(COMMAND_MANAGER_NAME + " : El proceso CommandManager finaliza correctamente ",INFORMATION);
 	messagePlayer *player = new messagePlayer;
@@ -158,7 +167,7 @@ void CommandManager::finalize(){
 }
 
 
-void CommandManager::finalizeResult(){
+void CommandManager::finalizeCourtManager(){
 	messageCourtManager* messageCourt = new messageCourtManager;
 	messageCourt->operation = TideType::closeCourts;
 	int status;

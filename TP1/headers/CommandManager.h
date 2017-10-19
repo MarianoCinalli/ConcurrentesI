@@ -72,7 +72,7 @@ class CommandManager : public Executable {
 		static void sigInt_handler(int signum);
 		void openCourtManager();
 		void executeResultManager();
-		void finalizeResult();
+		void finalizeCourtManager();
 		
 
 	public:
