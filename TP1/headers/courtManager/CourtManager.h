@@ -8,6 +8,7 @@
 #include "tools/Messages.h"
 #include "fifos/FifoLectura.h"
 #include "fifos/FifoEscritura.h"
+#include "semaphores/Semaforo.h"
 #include "courtManager/CourtCM.h"
 #include "courtManager/MessageCM.h"
 

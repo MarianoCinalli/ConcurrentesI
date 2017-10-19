@@ -10,7 +10,7 @@ void CourtCM::openCourt() {
 	ProcessSpawner* spawner = new ProcessSpawner();
 	this->courtPid = spawner->spawnProcess(&(CourtCM::createCourt));
 	this->isOpen = true;
-	log("CourtCM: Cancha abierta. Nro de cancha", this->courtPid, 3);
+	log("CourtCM: Cancha abierta. Nro de cancha ", this->courtPid, 3);
 };
 
 void CourtCM::closeCourt() {
