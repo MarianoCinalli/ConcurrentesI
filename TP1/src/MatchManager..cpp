@@ -107,7 +107,6 @@ messageTeam* MatchManager::readTeam() {
 MatchManager::~MatchManager() {
     this->channelToReadTeams->cerrar();
     this->channelToWriteMatches->cerrar(); 
-    this->channelToReadTeams->eliminar();
     delete this->channelToReadTeams;
     delete this->channelToWriteMatches;
     
