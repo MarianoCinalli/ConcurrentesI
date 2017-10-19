@@ -14,14 +14,14 @@ initialParameter* loadInitialParameters(std::string path) {
     rapidjson::Document document;
     struct initialParameter* initialParameter = new struct initialParameter;
     if (document.ParseStream(stream).HasParseError()) {
-        log(UTIL_FUNCTIONS_NAME + "El archivo " + path + " no se ha parsiado correctamente", ERROR);
-        log(UTIL_FUNCTIONS_NAME + "Se toman datos default", INFORMATION);
+        log(UTIL_FUNCTIONS_NAME + " : El archivo " + path + " no se ha parsiado correctamente", ERROR);
+        log(UTIL_FUNCTIONS_NAME + " : Se toman datos default", INFORMATION);
         initialParameter->rows = F_DEFAULT;
         initialParameter->columns = C_DEFAULT;
         initialParameter->maxPlayer = MAX_PLAYERS_DEFAULT;
         initialParameter->maxGamesByPlayer = MAX_GAMES_PER_PLAYER_DEFAULT;
     } else {
-        log(UTIL_FUNCTIONS_NAME + "El archivo " + path + " se ha parsiado correctamente.", INFORMATION); 
+        log(UTIL_FUNCTIONS_NAME + " : El archivo " + path + " se ha parsiado correctamente.", INFORMATION); 
         initialParameter->rows = document["rows"].GetInt();
         initialParameter->columns = document["columns"].GetInt();
         initialParameter->maxPlayer = document["maxPlayer"].GetInt();

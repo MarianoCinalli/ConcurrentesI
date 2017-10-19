@@ -35,17 +35,19 @@ void openCourt() {
 */
 
 // Constants ------------------------------------------------------
+const char INITIAL_PARAMETERS[] = "initialParameter.json";
 int LOG_MIN_LEVEL = 1;
 std::ofstream LOG_FILE_POINTER;
 const std::string SEMAPHORE_NAME = "src/main.cpp";
 Semaforo semaphoreFifoMatches(SEMAPHORE_NAME, 0);
 // Constants ------------------------------------------------------
 
-
 void executePlayerManager(){
     log("INICIO DEL PLAYER_MANAGER",INFORMATION);
-    PlayerManager *playerManager = new PlayerManager(10,5);
+    struct initialParameter *initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
+    PlayerManager *playerManager = new PlayerManager(initialParameters->maxPlayer , initialParameters->maxGamesByPlayer);
     playerManager->execute();
+    delete initialParameters;
     delete playerManager;
     log("FIN DEL PLAYER_MANAGER",INFORMATION);
 }
@@ -79,8 +81,6 @@ void executeResultManager(){
 
 typedef void (*functiontype)();
 
-//const char INITIAL_PARAMETERS[] = "initialParameter.json";
-
 int main(int argc, char* argv[]) {
     // Initialization
     srand(time(NULL)); // Init seed for random
@@ -93,9 +93,8 @@ int main(int argc, char* argv[]) {
  //   Semaforo semaforoPlayerCourt ( NOMBRE1,0 );
 
     logSessionStarted();
-
+    struct initialParameter* initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
-
     ProcessSpawner *processSpawner = new ProcessSpawner();
     std::vector<functiontype> *functions = new std::vector<functiontype>();
     
@@ -110,8 +109,8 @@ int main(int argc, char* argv[]) {
 
  
     // Del branch courtManager ------------------------------
-    int parsedRows = 3; // Reemplazar por el valor parseado
-    int parsedColumns = 3; // Reemplazar por el valor parseado
+    int parsedRows = initialParameters->rows;
+    int parsedColumns = initialParameters->columns;
     int parameters[2] = {parsedRows, parsedColumns};
     ProcessSpawner* spawner = new ProcessSpawner();
     pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
@@ -126,7 +125,7 @@ int main(int argc, char* argv[]) {
 
     
     processSpawner->waitChilds();
-
+    delete initialParameters;
     delete functions;
     log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
 
