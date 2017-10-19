@@ -14,6 +14,7 @@
 #include "tools/ProcessSpawner.h"
 #include "courtManager/CourtManager.h"
 #include "semaphores/Semaforo.h"
+#include "fifos/FifoInitializer.h"
 
 // Del branch courtManager ------------------------------
 void openCourtManager(int parameters[]) {
@@ -83,6 +84,8 @@ typedef void (*functiontype)();
 
 int main(int argc, char* argv[]) {
     // Initialization
+    FifoInitializer* fifoInitializer = new FifoInitializer();
+    fifoInitializer->createFifos();
     srand(time(NULL)); // Init seed for random
     LOG_FILE_POINTER.open("beachVoley.log", std::ofstream::app);
     // End Initialization
@@ -163,6 +166,8 @@ int main(int argc, char* argv[]) {
     delete initialParameters;
 
 */
+    fifoInitializer->deleteFifos();
+    delete fifoInitializer;
 	logSessionFinished();
 	return 0;
 }
