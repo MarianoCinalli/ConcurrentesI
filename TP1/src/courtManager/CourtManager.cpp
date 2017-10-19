@@ -156,7 +156,6 @@ void CourtManager::shutDownCourts() {
 	fifoMatches->cerrar();
 	log("CourtManager: Esperando a que no haya procesos leyendo el fifoMatches, para poder eliminarlo.", 3);
 	semaphoreFifoMatches.waitUntilCero();
-	fifoMatches->eliminar();
 	delete(fifoMatches);
 	log("CourtManager: Fifo de canchas cerrado", 3);
 };
@@ -169,7 +168,6 @@ CourtManager::~CourtManager() {
 	log("CourtManager: Canchas cerradas.", 3);
 	log("CourtManager: Cerrando fifo.", 3);
 	this->fifoCourtManager->cerrar();
-	this->fifoCourtManager->eliminar();	
 	delete(this->fifoCourtManager);
 	log("CourtManager: Fifo cerrado.", 3);
 	log("CourtManager: Recursos liberados.", 3);

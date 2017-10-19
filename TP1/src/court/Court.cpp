@@ -30,18 +30,16 @@ Court::~Court() {
 	log("Court: Liberando recursos.", 3);
 	log("Court: Cerrando /tmp/fifoMatches.", 3);
 	this->fifoMatches->cerrar();
-	this->fifoMatches->eliminar();
+	
 	log("Court: /tmp/fifoResultManager cerrado.", 3);
 	log("Court: Decrementando el valor del semaforo.", 3);
 	semaphoreFifoMatches.signal();
 	log("Court: Valor del semaforo decrementado.", 3);
 	log("Court: Cerrando /tmp/fifoResultManager.", 3);
 	this->fifoResults->cerrar();
-	this->fifoResults->eliminar();
 	log("Court: /tmp/fifoPlayerManager cerrado.", 3);
 	log("Court: Cerrando /tmp/fifoPlayerManager.", 3);
 	this->fifoPlayerManager->cerrar();
-	this->fifoPlayerManager->eliminar();
 	delete(this->fifoMatches);
 	delete(this->fifoResults);
 	delete(this->fifoPlayerManager);

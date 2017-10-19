@@ -31,10 +31,6 @@ PlayerManager::~PlayerManager(){
 	this->channelToRead->cerrar();
 	this->channelToWrite->cerrar();
 	this->channelToWriteResult->cerrar();
-	this->channelToRead->eliminar();
-	this->channelToWrite->eliminar();
-	this->channelToWriteResult->eliminar();
-
 //	this->channelToWriteResult->abrir();
 	delete this->channelToRead;
 	delete this->channelToWrite;

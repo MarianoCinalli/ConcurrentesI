@@ -163,8 +163,6 @@ CommandManager::~CommandManager(){
 	log(COMMAND_MANAGER_NAME + " : Se liberan recursos ", INFORMATION);
 	this->fifoManagerPlayer->cerrar();
 	this->fifoTide->cerrar();
-	//this->fifoManagerPlayer->eliminar();
-	//this->fifoTide->eliminar();
 	delete this->fifoManagerPlayer;
 	delete this->fifoTide;
 }
