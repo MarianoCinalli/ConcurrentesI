@@ -6,22 +6,22 @@
 #include "TeamManager.h"
 #include "MatchManager.h"
 #include "playerManager/PlayerManager.h"
-#include "playerResult/ResultManager.h"
+//#include "playerResult/ResultManager.h"
 
 // TODO: Delete when finished.
 #include "tools/logger.h"
 #include "tools/utilFunctions.h"
 #include "tools/ProcessSpawner.h"
-#include "courtManager/CourtManager.h"
+//#include "courtManager/CourtManager.h"
 #include "semaphores/Semaforo.h"
 
 // Del branch courtManager ------------------------------
-void openCourtManager(int parameters[]) {
+/*void openCourtManager(int parameters[]) {
 	// 0 rows - 1 columns
 	CourtManager* courtManager = new CourtManager(parameters[0], parameters[1]);
 	courtManager->administrateCourts();
 	delete(courtManager);
-}
+}*/
 
 /* LO QUE USA ESTO ESTA COMENTADO DEBERIA VOLAR.
 void openCourt() {
@@ -67,7 +67,7 @@ void executeMatchManager(){
     delete matchManager;
     log("FIN DEL MATCH_MANAGER",INFORMATION);
 }
-
+/*
 void executeResultManager(){
     log("INICIO DEL RESULT_MANAGER",INFORMATION);
     ResultManager *resultManager = new ResultManager();
@@ -75,7 +75,7 @@ void executeResultManager(){
     delete resultManager;
     log("FIN DEL RESULT_MANAGER",INFORMATION);
 }
-
+*/
 
 
 
@@ -102,20 +102,20 @@ int main(int argc, char* argv[]) {
     functions->push_back(executeTeamManager);
     functions->push_back(executeMatchManager);
     //functions->push_back(openCourt);
-    functions->push_back(executeResultManager);
+ //   functions->push_back(executeResultManager);
  //   ProcessSpawner *processSpawner = new ProcessSpawner();
 //    ProcessSpawner *processSpawner = new ProcessSpawner();
     processSpawner->spawnProcesses(functions);
 
  
     // Del branch courtManager ------------------------------
-    int parsedRows = initialParameters->rows;
+ /*   int parsedRows = initialParameters->rows;
     int parsedColumns = initialParameters->columns;
     int parameters[2] = {parsedRows, parsedColumns};
     ProcessSpawner* spawner = new ProcessSpawner();
     pid_t newProcessPid = spawner->spawnProcess(&openCourtManager, parameters);
     // End Main body
-
+*/
     // Esto se podria hacer constante y que se borre NOMBRE_FIFO_MATCHES + "_lock".
     // Porque desde el destructor no se puede borrar (la borra al primero que lo ejecuta).
     std::string lockFile = "/tmp/fifoMatches_lock";

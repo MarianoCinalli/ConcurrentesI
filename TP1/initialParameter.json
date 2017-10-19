@@ -2,5 +2,5 @@
     "rows": 3,
     "columns": 3,
     "maxPlayer": 10,
-    "maxGamesByPlayer": 5
+    "maxGamesByPlayer": 9
 }

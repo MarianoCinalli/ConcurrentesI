@@ -7,6 +7,11 @@
 #include <memory.h>
 
 
+#include "courtManager/CourtManager.h"
+#include "tools/utilFunctions.h"
+#include "playerResult/ResultManager.h"
+
+extern const char INITIAL_PARAMETERS[] = "initialParameter.json";
 
 //include "log.h"
 
@@ -16,24 +21,83 @@ CommandManager::CommandManager(){
 	//finalizedProcess = false;
 	this->fifoManagerPlayer = new FifoEscritura(FIFO_WRITE_COMMAND_TO_PLAYERMANAGER);
 	this->fifoTide = new FifoEscritura(FIFO_WRITE_COMMAND_TO_COURTMANAGER);
-	this->fifoManagerPlayer->abrir();
-	this->fifoTide->abrir();
 	log(COMMAND_MANAGER_NAME + " Se abrio FIFO de escritura " + FIFO_WRITE_COMMAND_TO_PLAYERMANAGER,INFORMATION);
 	log(COMMAND_MANAGER_NAME + " Se abrio FIFO de escritura " + FIFO_WRITE_COMMAND_TO_COURTMANAGER,INFORMATION);
 }
 
-void CommandManager::execute(){
-	char value;
-//	this->fifoManagerPlayer->abrir();
-//	this->fifoTide->abrir();
-	this->registerFunction();
 
-	while (!finalizedProcess){
-		std::cin>>value;
-		this->receiveCommand(value);
-		value = '\0';
+
+void CommandManager::openCourtManager() {
+	struct initialParameter *initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
+	CourtManager* courtManager = new CourtManager(initialParameters->rows, initialParameters->columns);
+	courtManager->administrateCourts();
+	delete(courtManager);
+	delete initialParameters;
+}
+
+
+
+void CommandManager::executeResultManager(){
+    log("INICIO DEL RESULT_MANAGER",INFORMATION);
+    ResultManager *resultManager = new ResultManager();
+    resultManager->execute();
+    delete resultManager;
+    log("FIN DEL RESULT_MANAGER",INFORMATION);
+}
+
+
+void CommandManager::execute(){
+
+	pid_t pidCourt = fork();
+	pid_t pid;
+	int status;
+	bool isChild = pidCourt == 0;
+	if( isChild ){
+		this->openCourtManager();
+		exit ( 0 );
+
+	}else{
+		pid_t pidResult = fork();
+		isChild = pidResult == 0;
+		if( isChild ){
+			this->executeResultManager();
+			exit ( 0 );
+	
+		}else{
+
+			this->fifoManagerPlayer->abrir();
+			this->fifoTide->abrir();
+			char value;
+			this->registerFunction();
+
+			while (!finalizedProcess){
+				std::cin>>value;
+				this->receiveCommand(value);
+				value = '\0';
+			}
+			//this->finalize();
+			this->finalizeResult();
+		}
+
+		pid = waitpid(pidResult,&status,WUNTRACED);	
+		if(pid != -1){
+			log("Proceso finalizado, su pid es ", pid, INFORMATION);
+		}else{
+			log("Error en la finalizacion del proceso ", INFORMATION);
+		}
+		flushLog();
+
+		this->finalize();
+
+		pid = waitpid(pidCourt,&status,WUNTRACED);	
+		if(pid != -1){
+			log("Proceso finalizado, su pid es ", pid, INFORMATION);
+		}else{
+			log("Error en la finalizacion del proceso ", INFORMATION);
+		}
+		flushLog();
 	}
-	this->finalize();	
+
 }
 
 void CommandManager::sigInt_handler(int signum){
@@ -90,9 +154,14 @@ void CommandManager::finalize(){
 	}else{
 		log("CommandManager: se mando correctamente fin de juego a PlayerManager",INFORMATION);
 	}
+	delete player;
+}
 
+
+void CommandManager::finalizeResult(){
 	messageCourtManager* messageCourt = new messageCourtManager;
 	messageCourt->operation = TideType::closeCourts;
+	int status;
 	status = this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));
 	if(status == -1){
 		log("CommandManager:**ERROR** no se pudo mandar fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
@@ -103,7 +172,6 @@ void CommandManager::finalize(){
 	}
 
 	delete messageCourt;
-	delete player;
 }
 
 
