@@ -43,6 +43,7 @@ void SIGINT_Handler::handle() {
 					// Si no termino. Lo cancelo e informo.
 					log("SIGINT HANDLER: (Marea) El partido no termino. Informando que se cancelo.", 3);
 					courtMatch->cancelMatch();
+					log("Court: Partido finalizado. Resultado: ", courtMatch, 3);
 					this->court->sendMessages(courtMatch);
 					delete(courtMatch);
 				}
