@@ -90,6 +90,7 @@ void CourtManager::raiseTideAndInformCourts(int amountToRaise) {
 		log("CourtManager: Aumentando la marea.", 2);
 		for (int rowNumber = previousTideLevel; rowNumber < this->tideLevel; ++rowNumber) {
 			for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
+				log("CourtManager: Cerrando cancha nro.:" + std::to_string(rowNumber) + " " + std::to_string(columnNumber) , 3);
 				this->beach[rowNumber][columnNumber]->closeCourt();
 			}
 		}
@@ -108,7 +109,8 @@ void CourtManager::lowerTideAndInformCourts(int amountToLower) {
 		log("CourtManager: Disminuyendo marea.", 3);
 		for (int rowNumber = previousTideLevel; rowNumber > this->tideLevel; --rowNumber) {
 			for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
-				this->beach[rowNumber][columnNumber]->openCourt();
+				log("CourtManager: Abriendo cancha nro.:" + std::to_string(rowNumber - 1) + " " + std::to_string(columnNumber) , 3);
+				this->beach[rowNumber - 1][columnNumber]->openCourt();
 			}
 		}
 	} else {
