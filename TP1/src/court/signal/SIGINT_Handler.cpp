@@ -68,6 +68,7 @@ void SIGINT_Handler::handle() {
 	}
 	log("SIGINT HANDLER: Marea manejada.", 3);
 	if (shouldExit) {
+		delete(this->court);
 		exit(EXIT_SUCCESS);
 	}
 };
