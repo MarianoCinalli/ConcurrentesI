@@ -1,7 +1,7 @@
 #ifndef FIFOLECTURA_H_
 #define FIFOLECTURA_H_
 
-#include "Fifo.h"
+#include "fifos/Fifo.h"
 
 class FifoLectura : public Fifo {
 public:

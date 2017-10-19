@@ -19,12 +19,13 @@ std::string getPID() {
 // PRE: Global variables LOG_MIN_LEVEL and LOG_FILE_POINTER have to be initialized.
 // Returns 0 if the message was logged, 1 otherwise.
 int log(std::string message, int messageLevel) {
-    if (messageLevel < LOG_MIN_LEVEL) {
+if (messageLevel < LOG_MIN_LEVEL) {
         return 1;
     }
     std::string timeString = getDate();
     std::string toLog = "[" + getDate() + " - " + getPID() + "] : " + message + "\n";
     LOG_FILE_POINTER << toLog;
+    flushLog();
     return 0;
 }
 
@@ -98,5 +99,21 @@ int log(std::string messageToConcatenate, Loggable* classToConcatenate, int mess
     } else {
         concatenatedMessage = messageToConcatenate + "[ **error** classToConcatenate* is NULL]";
     }
+    return log(concatenatedMessage, messageLevel);
+}
+
+//log("message",int , __FILE__, __LINE__, ERROR);
+
+int log(std::string messageToConcatenate, int integerToConcatenate, std::string file, int line, int messageLevel){
+    std::string intToString = std::to_string(integerToConcatenate);
+    std::string intLineToString = std::to_string(line);
+    std::string concatenatedMessage = messageToConcatenate + intToString + " archivo: " + file + " linea: " + intLineToString;
+    return log(concatenatedMessage, messageLevel);
+}
+
+//log("message" , __FILE__, __LINE__, ERROR);
+int log(std::string messageToConcatenate, std::string file, int line,  int messageLevel){
+    std::string intLineToString = std::to_string(line);
+    std::string concatenatedMessage = messageToConcatenate + " archivo: " + file + " linea: " + intLineToString;
     return log(concatenatedMessage, messageLevel);
 }
