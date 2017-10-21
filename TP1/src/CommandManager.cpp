@@ -6,14 +6,12 @@
 #include <string.h>
 #include <memory.h>
 
-
 #include "courtManager/CourtManager.h"
 #include "tools/utilFunctions.h"
 #include "playerResult/ResultManager.h"
+#include "tools/ProcessSpawner.h"
 
 extern const char INITIAL_PARAMETERS[] = "initialParameter.json";
-
-//include "log.h"
 
 bool CommandManager::finalizedProcess =  false;
 
@@ -27,12 +25,14 @@ CommandManager::CommandManager(){
 
 
 
-void CommandManager::openCourtManager() {
+void CommandManager::executeCourtManager() {
+    log("INICIO DEL COURT_MANAGER",INFORMATION);
 	struct initialParameter *initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
 	CourtManager* courtManager = new CourtManager(initialParameters->rows, initialParameters->columns);
 	courtManager->administrateCourts();
 	delete(courtManager);
 	delete initialParameters;
+    log("FIN DEL COURT_MANAGER",INFORMATION);	
 }
 
 
@@ -48,60 +48,48 @@ void CommandManager::executeResultManager(){
 
 void CommandManager::execute(){
 
-	pid_t pidCourt = fork();
+		
+	pid_t pidCourt;
+	pid_t pidResult;
 	pid_t pid;
 	int status;
-	bool isChild = pidCourt == 0;
-	if( isChild ){
-		this->openCourtManager();
-		exit ( 0 );
+	ProcessSpawner *processSpawner =  new ProcessSpawner();
 
-	}else{
-		pid_t pidResult = fork();
-		isChild = pidResult == 0;
-		if( isChild ){
-			this->executeResultManager();
-			exit ( 0 );
-	
-		}else{
-
-			this->fifoManagerPlayer->abrir();
-			this->fifoTide->abrir();
-			char value;
-			this->registerFunction();
-
-			while (!finalizedProcess){
-				std::cin>>value;
-				this->receiveCommand(value);
-				value = '\0';
-			}
-			//this->finalize();
-			//this->finalizeResult();//mata 
-		}
+	pidCourt = processSpawner->spawnProcess(CommandManager::executeCourtManager);
+	pidResult = processSpawner->spawnProcess(CommandManager::executeResultManager);
 
 
-		pid = waitpid(pidResult,&status,WUNTRACED);	
-		if(pid != -1){
-			log("Proceso finalizado, su pid es ", pid, INFORMATION);
-		}else{
-			log("Error en la finalizacion del proceso ", INFORMATION);
-		}
-		flushLog();
+	this->fifoManagerPlayer->abrir();
+	this->fifoTide->abrir();
+	char value;
+	this->registerFunction();
 
-
-		this->finalizeCourtManager();
-
-		pid = waitpid(pidCourt,&status,WUNTRACED);	
-		if(pid != -1){
-			log("Proceso finalizado, su pid es ", pid, INFORMATION);
-		}else{
-			log("Error en la finalizacion del proceso ", INFORMATION);
-		}
-		flushLog();
-
-
+	while (!finalizedProcess){
+		std::cin>>value;
+		this->receiveCommand(value);
+		value = '\0';
 	}
 
+
+	pid = waitpid(pidResult,&status,WUNTRACED);	
+	if(pid != -1){
+		log(COMMAND_MANAGER_NAME + " : Proceso finalizado, su pid es ", pid, INFORMATION);
+	}else{
+		log(COMMAND_MANAGER_NAME + " : Error en la finalizacion del proceso ", INFORMATION);
+	}
+	flushLog();
+
+	this->finalizeCourtManager();
+
+	pid = waitpid(pidCourt,&status,WUNTRACED);	
+	if(pid != -1){
+		log(COMMAND_MANAGER_NAME + " : Proceso finalizado, su pid es ", pid, INFORMATION);
+	}else{
+		log(COMMAND_MANAGER_NAME + " : Error en la finalizacion del proceso ", INFORMATION);
+	}
+	flushLog();
+
+	delete processSpawner;
 }
 
 void CommandManager::sigInt_handler(int signum){
@@ -154,11 +142,11 @@ void CommandManager::finalize(){
 	int status;
 	status = this->fifoManagerPlayer->escribir(static_cast<const void*> (player), sizeof(player));
 	if(status == -1){
-		log("CommandManager:**ERROR** no se pudo mandar fin de juego a PlayerManager",__FILE__, __LINE__, ERROR);
+		log(COMMAND_MANAGER_NAME + " :  **ERROR** no se pudo mandar fin de juego a PlayerManager",__FILE__, __LINE__, ERROR);
 	}else if(status != sizeof(player)){
-		log("CommandManager:**ERROR** no se pudo mandar correctamente el fin de juego a PlayerManager",__FILE__, __LINE__, ERROR);
+		log(COMMAND_MANAGER_NAME + " :  **ERROR** no se pudo mandar correctamente el fin de juego a PlayerManager",__FILE__, __LINE__, ERROR);
 	}else{
-		log("CommandManager: se mando correctamente fin de juego a PlayerManager",INFORMATION);
+		log(COMMAND_MANAGER_NAME + " :   se mando correctamente fin de juego a PlayerManager",INFORMATION);
 	}
 	delete player;
 }
@@ -170,11 +158,11 @@ void CommandManager::finalizeCourtManager(){
 	int status;
 	status = this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));
 	if(status == -1){
-		log("CommandManager:**ERROR** no se pudo mandar fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
+		log(COMMAND_MANAGER_NAME + " :  **ERROR** no se pudo mandar fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
 	}else if(status != sizeof(messageCourt)){
-		log("CommandManager:**ERROR** no se pudo mandar correctamente el fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
+		log(COMMAND_MANAGER_NAME + " :  **ERROR** no se pudo mandar correctamente el fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
 	}else{
-		log("CommandManager: se mando correctamente fin de juego a CourtManager",INFORMATION);
+		log(COMMAND_MANAGER_NAME + " :   se mando correctamente fin de juego a CourtManager",INFORMATION);
 	}
 
 	delete messageCourt;
@@ -202,13 +190,6 @@ void CommandManager::removePlayer(){
 }
 
 void CommandManager::raiseTide(){
-/*	std::cout<<"Comando levantar la marea"<<std::endl;
-	log(COMMAND_MANAGER_NAME + " : Se levanta la marea ",INFORMATION);
-	messageTide *tide = new messageTide;
-	tide->status = TideType::raiseType;
-	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
-	delete tide;
-*/
 	std::cout<<"Comando levantar la marea"<<std::endl;
 	log(COMMAND_MANAGER_NAME + " : Se levanta la marea ",INFORMATION);
 	messageCourtManager* messageCourt = new messageCourtManager;
@@ -219,13 +200,6 @@ void CommandManager::raiseTide(){
 }
 
 void CommandManager::lowTide(){
-/*	std::cout<<"Comando baja la marea"<<std::endl;
-	log(COMMAND_MANAGER_NAME + " : Se baja la marea ",INFORMATION);
-	messageTide *tide = new messageTide;
-	tide->status = TideType::lowType;
-	this->fifoTide->escribir(static_cast<const void*> (tide), sizeof(tide));
-	delete tide;
-*/
 	std::cout<<"Comando bajar la marea"<<std::endl;
 	log(COMMAND_MANAGER_NAME + " : Se baja la marea ",INFORMATION);
 	messageCourtManager* messageCourt = new messageCourtManager;

@@ -6,10 +6,10 @@ ResultManager::ResultManager() {
     this->playerResults = new std::map<int, PlayerResult*>();
     this->channelToRead = new FifoLectura(FIFO_READ_RESULT_TO_RESULTMANAGER);
     this->channelToRead->abrir();
-    log("ResultManager: Se abrio FIFO de lectura " + FIFO_READ_RESULT_TO_RESULTMANAGER,INFORMATION);
+    log(RESULT_MANAGER_NAME + " : Se abrio FIFO de lectura " + FIFO_READ_RESULT_TO_RESULTMANAGER,INFORMATION);
     this->maxScore = -1;
     this->winners = new std::vector<PlayerResult*>();
-	log(RESULT_MANAGER_NAME + " Se construyo FIFO de lectura " + FIFO_READ_RESULT_TO_RESULTMANAGER, INFORMATION);
+	log(RESULT_MANAGER_NAME + " : Se construyo FIFO de lectura " + FIFO_READ_RESULT_TO_RESULTMANAGER, INFORMATION);
 }
 
 void ResultManager::execute() {
@@ -29,7 +29,7 @@ void ResultManager::parseMessage(struct messageResult *result){
             break;
         
         case ResultCommands::EXIT:
-            log("ResultManager: llego mensaje de fin de partido",INFORMATION);
+            log(RESULT_MANAGER_NAME + " : Llego mensaje de fin de partido",INFORMATION);
             this->finalizedProcess = true;
             break;
     }

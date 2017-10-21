@@ -70,8 +70,8 @@ class CommandManager : public Executable {
 		FifoEscritura *fifoTide;
 		void registerFunction();
 		static void sigInt_handler(int signum);
-		void openCourtManager();
-		void executeResultManager();
+		static void executeCourtManager();
+		static void executeResultManager();
 		void finalizeCourtManager();
 		
 

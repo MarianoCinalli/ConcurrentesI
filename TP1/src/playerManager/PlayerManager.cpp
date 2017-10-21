@@ -3,10 +3,12 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <signal.h>
+#include "tools/ProcessSpawner.h"
+
 
 PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerPlayer){
 	if(minPlayersToBeginGame < maxPlayersVillage){
-		log("PlayerManager: cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
+		log(PLAYER_MANAGER_NAME + " :  cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
 		exit(1); 
 	}
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
@@ -57,54 +59,59 @@ void PlayerManager::executeCommandManager(){
 
 void PlayerManager::execute(){
 
-	pid_t pid = fork();
-	bool isChild = pid == 0;
-	if( isChild ){
-		this->executeCommandManager();
-		exit ( 0 );
-	}else{
-		this->channelToRead->abrir();
-		this->channelToWrite->abrir();
-		this->channelToWriteResult->abrir();
-		log("PlayerManager: Se abrio FIFO de lectura " + FIFO_READ_COMMAND_OF_COMMANDMANAGER,INFORMATION);
-		log("PlayerManager: Se abrio FIFO de escritura " + FIFO_WRITE_PLAYER_TO_TEAMMANAGER,INFORMATION);
-		log("PlayerManager: Se abrio FIFO de escritura " + FIFO_READ_RESULT_TO_RESULTMANAGER,INFORMATION);
-		
+	pid_t pid;
+	ProcessSpawner * processSpawner = new ProcessSpawner();
+	pid = processSpawner->spawnProcess(PlayerManager::executeCommandManager);
 
-		struct messagePlayer* message;
-		std::cout<<"DEBEN INGRESAR AL MENOS "<<this->minPlayersToBeginGame<<" JUGADORES PARA INICIAR EL JUEGO"<<std::endl;
-		while(!this->finalizedProcess){
-			message = this->readFifoPlayerManager();
-			this->parseMessage(message);
-			if(this->beginGame){
-				this->writeFifoTeamManager();
-				this->evaluateEndGame();
-			}
-			delete message;		
+	this->channelToRead->abrir();
+	this->channelToWrite->abrir();
+	this->channelToWriteResult->abrir();
+	log(PLAYER_MANAGER_NAME + " :  Se abrio FIFO de lectura " + FIFO_READ_COMMAND_OF_COMMANDMANAGER,INFORMATION);
+	log(PLAYER_MANAGER_NAME + " :  Se abrio FIFO de escritura " + FIFO_WRITE_PLAYER_TO_TEAMMANAGER,INFORMATION);
+	log(PLAYER_MANAGER_NAME + " :  Se abrio FIFO de escritura " + FIFO_READ_RESULT_TO_RESULTMANAGER,INFORMATION);
+	
+
+	struct messagePlayer* message;
+	std::cout<<"DEBEN INGRESAR AL MENOS "<<this->minPlayersToBeginGame<<" JUGADORES PARA INICIAR EL JUEGO"<<std::endl;
+	while(!this->finalizedProcess){
+		message = this->readFifoPlayerManager();
+		this->parseMessage(message);
+		if(this->beginGame){
+			this->writeFifoTeamManager();
+			this->evaluateEndGame();
 		}
-		log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
-		flushLog();
-
-		int ss = kill(pid,SIGINT);
-		if (ss == 0){
-			log("PlayerManager: señal de kill enviada a CommandManager correctamente ",INFORMATION);
-		}else if(ss == -1){
-			log("PlayerManager: error al enviar señal de kill a CommandManager",ERROR);
-			exit(1);
-		}
-
-		this->loggearPlayers();
+		delete message;		
 	}
+
+	log(PLAYER_MANAGER_NAME + " : El proceso PlayerManager finaliza correctamente ",INFORMATION);
+	flushLog();
+
+	this->sendSingnalToProcess(pid);
+	this->loggearPlayers();
+	
 
 	pid = wait(NULL);
 	if(pid != -1){
-		log("Proceso finalizado, su pid es ", pid, INFORMATION);
+		log(PLAYER_MANAGER_NAME + " : Proceso finalizado, su pid es ", pid, INFORMATION);
 	}else{
-		log("Error en la finalizacion del proceso ", INFORMATION);
+		log(PLAYER_MANAGER_NAME + " : Error en la finalizacion del proceso ", INFORMATION);
 	}
 	flushLog();
 
+	delete processSpawner;
 }
+
+
+void PlayerManager::sendSingnalToProcess(pid_t pid){
+	int ss = kill(pid,SIGINT);
+	if (ss == 0){
+		log(PLAYER_MANAGER_NAME + " :  señal de kill enviada a CommandManager correctamente ",INFORMATION);
+	}else if(ss == -1){
+		log(PLAYER_MANAGER_NAME + " :  **Error** al enviar señal de kill al proceso", pid, ERROR);
+	}
+}
+
+
 
 /**
  * Se evalua si todos los jugadores completaron la cantidad de juegos
@@ -146,11 +153,11 @@ void PlayerManager::loggearPlayers(){
 	std::vector<PlayerPM*>::iterator it;
 
 	for(it = this->playersToGame->begin();it != this->playersToGame->end(); it++){
-		log((*it)->logMemberVariables(),INFORMATION);
+		log(PLAYER_MANAGER_NAME + " : "+ (*it)->logMemberVariables(),INFORMATION);
 	}
 
 	for(it = this->playersToWait->begin();it != this->playersToWait->end(); it++){
-		log((*it)->logMemberVariables(),INFORMATION);
+		log(PLAYER_MANAGER_NAME + " : "+(*it)->logMemberVariables(),INFORMATION);
 	}
 
 }
@@ -163,7 +170,6 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 		case CommandType::killType :
 			this->finalizedProcess = true;
 			this->writeMessagePlayer(message);
-			//sleep(10);
 			break;
 
 		case CommandType::addType :
@@ -217,7 +223,7 @@ void PlayerManager::addPlayerToGame(){
 	if(this->playersToGame->size() >= minPlayersToBeginGame && !this->beginGame){	
 		this->beginGame = true;
 		std::cout<<"COMIENZA EL JUEGO"<<std::endl;
-		log("PlayerManager: Se completa la cantidad minima de jugadores para comenzar el juego",INFORMATION);
+		log(PLAYER_MANAGER_NAME + " :  Se completa la cantidad minima de jugadores para comenzar el juego",INFORMATION);
 	}
 
 }
@@ -284,7 +290,7 @@ void PlayerManager::writeEndGameToResultManager(){
 		log(PLAYER_MANAGER_NAME + " : **ERROR***  no se pudo mandar se mando correctamente finalización de juego a ResultManager", __FILE__, __LINE__, ERROR);
 		exit(1);
 	}else{
-		log("PlayerManager: se mando correctamente finalización de juego a ResultManager ", INFORMATION);
+		log(PLAYER_MANAGER_NAME + " :  se mando correctamente finalización de juego a ResultManager ", INFORMATION);
 	}
 	
 }
@@ -302,7 +308,7 @@ void PlayerManager::removePlayerToGame(){
  * cambia el estado del jugador a libre
  * */
 void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
-	log("PlayerManager: llega mensaje de cancelacion de partido para jugador: ",message->idPlayer, INFORMATION);
+	log(PLAYER_MANAGER_NAME + " :  llega mensaje de cancelacion de partido para jugador: ",message->idPlayer, INFORMATION);
 
 		std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
 		bool found = false;
@@ -311,7 +317,7 @@ void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
 				(*it)->endGame();//cambiamos el estado a libre
 				found = true;
 				if(this->removePlayer > 0){	//si es necesario sacar a un jugador
-					log("PlayerManager: jugador sale del predio por comando, jugador con id: ",message->idPlayer, INFORMATION);
+					log(PLAYER_MANAGER_NAME + " :  jugador sale del predio por comando, jugador con id: ",message->idPlayer, INFORMATION);
 					this->playersToWait->push_back((*it));
 					this->playersToGame->erase(it);
 					this->removePlayer--;
@@ -320,7 +326,7 @@ void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
 			it++;
 		}
 		if(!found){
-			log("PlayerManager: jugador no encontrado en el predio para notificar partido cancelado su estado id jugador: ",message->idPlayer, ERROR);
+			log(PLAYER_MANAGER_NAME + " :  jugador no encontrado en el predio para notificar partido cancelado su estado id jugador: ",message->idPlayer, ERROR);
 			exit(1);
 		}
 	
@@ -364,7 +370,7 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 	}
 
 	if(!found){
-		log("PlayerManager: jugador no encontrado en el predio para actualizar su estado id jugador: ",idPlayer, ERROR);
+		log(PLAYER_MANAGER_NAME + " :  jugador no encontrado en el predio para actualizar su estado id jugador: ",idPlayer, ERROR);
 		exit(1);
 	}
 }
@@ -381,9 +387,9 @@ bool PlayerManager::evaluteGamesCompletedPlayer(PlayerPM *player){
 	bool completedGames = player->getGamesPlayed() == this->maxMatchesPerPlayer;
 
 	if(completedGames){
-		log("PlayerManager: Jugador ha completado los partidos permitidos, jugador con id ",player->getId(),INFORMATION);
+		log(PLAYER_MANAGER_NAME + " :  Jugador ha completado los partidos permitidos, jugador con id ",player->getId(),INFORMATION);
 	}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer){
-		log("PlayerManager: Jugador ha jugado mas partidos de los permitidos, jugador con id ",player->getId(),ERROR);
+		log(PLAYER_MANAGER_NAME + " :  Jugador ha jugado mas partidos de los permitidos, jugador con id ",player->getId(),ERROR);
 		exit (1); 
 	}
 	return completedGames;

@@ -8,8 +8,8 @@ TeamManager::TeamManager() {
     this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCHMANAGER);
     this->channelToRead->abrir();
     this->channelToWrite->abrir();
-    log("TeamManager: Se abrio FIFO de lectura " + FIFO_READ_PLAYER_OF_PLAYERMANAGER,INFORMATION);
-    log("TeamManager: Se abrio FIFO de escritura " + FIFO_WRITE_TEAM_TO_MATCHMANAGER,INFORMATION);
+    log(TEAM_MANAGER_NAME + " : Se abrio FIFO de lectura " + FIFO_READ_PLAYER_OF_PLAYERMANAGER,INFORMATION);
+    log(TEAM_MANAGER_NAME + " : Se abrio FIFO de escritura " + FIFO_WRITE_TEAM_TO_MATCHMANAGER,INFORMATION);
 }
 
 void TeamManager::execute() {
@@ -26,8 +26,8 @@ void TeamManager::execute() {
         }
         delete message;
     }
-    log("TeamManager: El proceso finaliza correctamente ",INFORMATION);
-    log("TeamManager: la jugadores que quedaron para formar equipos",this->players->size(),INFORMATION);
+    log(TEAM_MANAGER_NAME + " : El proceso finaliza correctamente ",INFORMATION);
+    log(TEAM_MANAGER_NAME + " : La jugadores que quedaron para formar equipos",this->players->size(),INFORMATION);
 }
 
 void TeamManager::parseMessage(struct messagePlayer* message){
@@ -90,7 +90,7 @@ struct messageTeam* TeamManager::makeTeam(){
                 this->removePlayer(idPlayer2);
 
                 std::string messageLog =" IdJugador1: "+std::to_string(idPlayer1) + ", IdJugador2: "+std::to_string(idPlayer2);
-                log("TeamManager:  se formo un equipo, " + messageLog,INFORMATION);
+                log(TEAM_MANAGER_NAME + " : Se formo un equipo, " + messageLog,INFORMATION);
                 return team;
             }
         }
@@ -114,15 +114,15 @@ void TeamManager::cancelLastGameOfPLayer(int idPlayer){
             int playMate = playMates->back();
             playMates->pop_back();
             std::string team = std::to_string(idPlayer) +  " - " + std::to_string(playMate);
-            log("TeamManager: se elimino el registro de equipo formado por: " + team,INFORMATION);
+            log(TEAM_MANAGER_NAME + " : Se elimino el registro de equipo formado por: " + team,INFORMATION);
             
         }else{
-            log("TeamManager: No existe registro a cancelar del ultimo compañero del jugador con id: ",idPlayer,ERROR);
+            log(TEAM_MANAGER_NAME + " : No existe registro a cancelar del ultimo compañero del jugador con id: ",idPlayer,ERROR);
             exit(1);
         }
 
     }catch(std::out_of_range e){
-        log("TeamManager: No existe registro del jugador con id: ",idPlayer,ERROR);
+        log(TEAM_MANAGER_NAME + " : No existe registro del jugador con id: ",idPlayer,ERROR);
         exit(1);
     }
 }
@@ -146,8 +146,8 @@ struct messageTeam* TeamManager::formTeam(int idPlayer1, int idPlayer2) {
 
     }catch(std::out_of_range e){
 
-        log("TeamManager: error al actualizar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
-        log("TeamManager: error al actualizar registro de equipos, jugador id: ",idPlayer2 ,ERROR);
+        log(TEAM_MANAGER_NAME + " : **Error** al actualizar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
+        log(TEAM_MANAGER_NAME + " : **Error** al actualizar registro de equipos, jugador id: ",idPlayer2 ,ERROR);
         exit(1);
     }
 
@@ -160,7 +160,7 @@ void TeamManager::removePlayer(int idPlayer){
     if (it != players->end())
         this->players->erase(it);
     else{
-        log("TeamManager: no se puedo remover a un jugador luego de crear un equipo, jugador con id",idPlayer,ERROR);
+        log(TEAM_MANAGER_NAME + " : No se puedo remover a un jugador luego de crear un equipo, jugador con id",idPlayer,ERROR);
         exit(1);
     }
 }
@@ -181,7 +181,7 @@ bool TeamManager::canPlayersFormTeam(int idPlayer1, int idPlayer2) {
           //si no esta asociado pueden formar equipo  
           return true;
     }catch(std::out_of_range e){
-        log("TeamManager: error al buscar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
+        log(TEAM_MANAGER_NAME + " : Error al buscar registro de equipos, jugador id: ",idPlayer1 ,ERROR);
         exit(1); 
     }  
 }
@@ -193,12 +193,12 @@ struct messagePlayer* TeamManager::readPlayer(){
     int result = this->channelToRead->leer(buff,sizeof(messagePlayer));
     
 	if(result == -1){
-		log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo ", __FILE__, __LINE__, ERROR);
+		log(TEAM_MANAGER_NAME + " : No se pudo realizar la lectura del fifo ", __FILE__, __LINE__, ERROR);
 	}else if(result == 0){
-        log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo, porque se ha cerrado el fifo ", __FILE__, __LINE__, WARNING);        
+        log(TEAM_MANAGER_NAME + " : No se pudo realizar la lectura del fifo, porque se ha cerrado el fifo ", __FILE__, __LINE__, WARNING);        
         this->finalize = true;
     }else if (result != sizeof(messagePlayer)){
-		log(TEAM_MANAGER_NAME + " Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
+		log(TEAM_MANAGER_NAME + " : Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
     }
     
     return buff;

@@ -7,8 +7,8 @@ MatchManager::MatchManager() {
     this->team2 = NULL;
     this->channelToReadTeams->abrir();
     this->channelToWriteMatches->abrir();
-    log("MatchManager: Se abrio FIFO de lectura " + FIFO_READ_TEAM_OF_TEAMMANAGER,INFORMATION);
-    log("MatchManager: Se abrio FIFO de escritura " + FIFO_WRITE_MATCH_TO_MATCHES,INFORMATION);
+    log(MATCH_MANAGER_NAME + " : Se abrio FIFO de lectura " + FIFO_READ_TEAM_OF_TEAMMANAGER,INFORMATION);
+    log(MATCH_MANAGER_NAME + " : Se abrio FIFO de escritura " + FIFO_WRITE_MATCH_TO_MATCHES,INFORMATION);
 }
 
 void MatchManager::execute() {
@@ -17,7 +17,7 @@ void MatchManager::execute() {
         struct messageTeam* team = this->readTeam();
         this->parseMessage(team);
     }
-    log("MatchManager: MatchManager: el proceso ha finalizado correctamente",INFORMATION);
+    log(MATCH_MANAGER_NAME + " : MatchManager: el proceso ha finalizado correctamente",INFORMATION);
 }
 
 
@@ -29,11 +29,11 @@ void MatchManager::parseMessage(struct messageTeam* team) {
 
         case PLAY :
             this->notifyMatch(team);
-            log("MatchManager: llega un team ",INFORMATION);
+            log(MATCH_MANAGER_NAME + " : Llega un team ",INFORMATION);
             break;
         case CLOSE :
             this->finalize = true;
-            log("MatchManager: llega un close ",INFORMATION);
+            log(MATCH_MANAGER_NAME + " : Llega un close ",INFORMATION);
             break;
         
     }
@@ -81,7 +81,7 @@ void MatchManager::writeMatch(struct messageMatch *match) {
     }else if (result != sizeof(messageMatch)){
         log(MATCH_MANAGER_NAME + " : Se ha escrito una cantidad erronea de bytes en el fifo ", __FILE__, __LINE__, ERROR);
     }else{
-        log("MatchManager : Se escribio un match Correctamente ", INFORMATION);
+        log(MATCH_MANAGER_NAME + " : Se escribio un match Correctamente ", INFORMATION);
     }
 }
 

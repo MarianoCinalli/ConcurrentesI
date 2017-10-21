@@ -45,7 +45,8 @@ class PlayerManager {
 		void loggearPlayers();
 		void evaluateEndGame();
 		void writeEndGameToResultManager();
-		void executeCommandManager();
+		static void executeCommandManager();
+		void sendSingnalToProcess(pid_t pid);
 
 
 	public:
