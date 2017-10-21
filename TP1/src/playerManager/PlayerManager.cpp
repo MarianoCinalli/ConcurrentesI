@@ -12,11 +12,6 @@ PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerP
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
 	this->channelToWrite = new FifoEscritura(FIFO_WRITE_PLAYER_TO_TEAMMANAGER);
 	this->channelToWriteResult = new FifoEscritura(FIFO_READ_RESULT_TO_RESULTMANAGER);	
-
-/*	this->channelToRead->abrir();
-	this->channelToWrite->abrir();
-	this->channelToWriteResult->abrir();
-*/
 	this->playersToGame = new std::vector<PlayerPM*>();
 	this->playersToWait = new std::vector<PlayerPM*>();
 	this->idPlayer = 0;
@@ -31,7 +26,6 @@ PlayerManager::~PlayerManager(){
 	this->channelToRead->cerrar();
 	this->channelToWrite->cerrar();
 	this->channelToWriteResult->cerrar();
-//	this->channelToWriteResult->abrir();
 	delete this->channelToRead;
 	delete this->channelToWrite;
 
@@ -254,6 +248,7 @@ void PlayerManager::writeFifoTeamManager(){
 			memset(buff,0,sizeof(messagePlayer));
 			buff->idPlayer = (*it)->getId();
 			this->writeMessagePlayer(buff);
+			log(PLAYER_MANAGER_NAME + " : Se ha enviado para formar equipo al jugador con id: ",buff->idPlayer,INFORMATION);
 			delete buff;
 		}
 	}
@@ -307,27 +302,28 @@ void PlayerManager::removePlayerToGame(){
  * cambia el estado del jugador a libre
  * */
 void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
-	//si es necesario sacar a un jugador
-	if(this->removePlayer > 0){
-		bool found = false;
-		std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
+	log("PlayerManager: llega mensaje de cancelacion de partido para jugador: ",message->idPlayer, INFORMATION);
 
+		std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
+		bool found = false;
 		while(it != this->playersToGame->end() || !found){
 			if((*it)->getId() == message->idPlayer){
 				(*it)->endGame();//cambiamos el estado a libre
-				this->playersToWait->push_back((*it));
-				this->playersToGame->erase(it);
 				found = true;
-				this->removePlayer--;
+				if(this->removePlayer > 0){	//si es necesario sacar a un jugador
+					log("PlayerManager: jugador sale del predio por comando, jugador con id: ",message->idPlayer, INFORMATION);
+					this->playersToWait->push_back((*it));
+					this->playersToGame->erase(it);
+					this->removePlayer--;
+				}
 			}
 			it++;
 		}
-
 		if(!found){
 			log("PlayerManager: jugador no encontrado en el predio para notificar partido cancelado su estado id jugador: ",message->idPlayer, ERROR);
 			exit(1);
 		}
-	}
+	
 	this->writeMessagePlayer(message);
 }
 
@@ -385,7 +381,6 @@ bool PlayerManager::evaluteGamesCompletedPlayer(PlayerPM *player){
 	bool completedGames = player->getGamesPlayed() == this->maxMatchesPerPlayer;
 
 	if(completedGames){
-		//player->gameOver(); //completo el juego
 		log("PlayerManager: Jugador ha completado los partidos permitidos, jugador con id ",player->getId(),INFORMATION);
 	}else if(player->getGamesPlayed() > this->maxMatchesPerPlayer){
 		log("PlayerManager: Jugador ha jugado mas partidos de los permitidos, jugador con id ",player->getId(),ERROR);

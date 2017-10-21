@@ -12,8 +12,6 @@ MatchManager::MatchManager() {
 }
 
 void MatchManager::execute() {
-//    this->channelToReadTeams->abrir();
-//    this->channelToWriteMatches->abrir();
 
     while (!this->finalize) {
         struct messageTeam* team = this->readTeam();
@@ -35,8 +33,6 @@ void MatchManager::parseMessage(struct messageTeam* team) {
             break;
         case CLOSE :
             this->finalize = true;
-            flushLog(); //agregadoooooo porque el proceso no termina.......
-            //this->notifyCloseMatches();
             log("MatchManager: llega un close ",INFORMATION);
             break;
         
@@ -63,7 +59,7 @@ void MatchManager::notifyMatch(struct messageTeam* team){
 void MatchManager::notifyCloseMatches(){
     struct messageMatch * match = new messageMatch;
     match->operation = CLOSE;
-    this->writeMatch(match); //debbugear si se queda lokeado.....
+    this->writeMatch(match); 
     delete match;
 }
 
@@ -97,7 +93,10 @@ messageTeam* MatchManager::readTeam() {
     
 	if(result == -1){
 		log(MATCH_MANAGER_NAME + " : No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
-	}else if (result != sizeof(messageTeam)){
+	}else if(result == 0){
+        log(MATCH_MANAGER_NAME + " : No se pudo realizar la lectura del fifo, porque el fifo fue cerrado ",__FILE__, __LINE__, WARNING);
+        this->finalize = true;
+    }else if (result != sizeof(messageTeam)){
 		log(MATCH_MANAGER_NAME + " : Se ha leido una cantidad erronea de bytes del fifo ",__FILE__, __LINE__, ERROR);
     }
     

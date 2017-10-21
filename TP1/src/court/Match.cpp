@@ -14,7 +14,6 @@ Match::~Match() {
 
 void Match::play() {
 	int matchLength = getRandomBetween(1, 5);
-	//int matchLength = getRandomBetween(5, 10);
 	sleep(matchLength);
 	log("El partido duro: ", matchLength, 3);
 	int firstTeamWonSets = getRandomBetween(0, 3);
@@ -57,6 +56,15 @@ std::vector<messagePlayer> Match::getResultMessages() {
 	messages.push_back(this->getResultMessageForPlayer(this->firstTeam->getSecondPlayer(), matchStatus));
 	messages.push_back(this->getResultMessageForPlayer(this->secondTeam->getFirstPlayer(), matchStatus));
 	messages.push_back(this->getResultMessageForPlayer(this->secondTeam->getSecondPlayer(), matchStatus));
+
+	if(this->wasCancelled){
+		std::string team1 = std::to_string(this->firstTeam->getFirstPlayer()) + " - " + std::to_string(this->firstTeam->getSecondPlayer()); 
+		std::string team2 = std::to_string(this->secondTeam->getFirstPlayer()) + " - " + std::to_string(this->secondTeam->getSecondPlayer()); 
+		std::string message = "Match: partido cancelado entre el equipo: " + team1 + " y el equipo: " + team2;
+		log(message,INFORMATION);
+	}
+
+
 	return messages;
 };
 

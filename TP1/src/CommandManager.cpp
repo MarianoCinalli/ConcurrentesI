@@ -100,9 +100,6 @@ void CommandManager::execute(){
 		flushLog();
 
 
-
-
-
 	}
 
 }
@@ -216,6 +213,7 @@ void CommandManager::raiseTide(){
 	log(COMMAND_MANAGER_NAME + " : Se levanta la marea ",INFORMATION);
 	messageCourtManager* messageCourt = new messageCourtManager;
 	messageCourt->operation = TideType::raiseType;
+	messageCourt->operationValue = 1;
 	this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));	
 	delete messageCourt;
 }
@@ -231,6 +229,7 @@ void CommandManager::lowTide(){
 	std::cout<<"Comando bajar la marea"<<std::endl;
 	log(COMMAND_MANAGER_NAME + " : Se baja la marea ",INFORMATION);
 	messageCourtManager* messageCourt = new messageCourtManager;
+	messageCourt->operationValue = 1;
 	messageCourt->operation = TideType::lowType;
 	this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));	
 	delete messageCourt;

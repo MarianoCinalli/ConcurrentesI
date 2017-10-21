@@ -127,9 +127,16 @@ void Court::sendMessages(Match* match) {
 	}
 	log("Court: Enviando mensajes de estado de finalizacion del partido.", 3);
 	std::vector<messagePlayer> matchStateMessages = match->getResultMessages();
-	for(messagePlayer matchStateMessage : matchStateMessages) {
+/*	for(messagePlayer matchStateMessage : matchStateMessages) {
 		this->fifoPlayerManager->escribir(static_cast<void*>(&matchStateMessage), sizeof(matchStateMessage));
 	}
+*/
+	std::vector<messagePlayer>::iterator it;
+	for(it = matchStateMessages.begin();it != matchStateMessages.end();it++) {
+		messagePlayer matchStateMessage = (*it);
+		this->fifoPlayerManager->escribir(static_cast<void*>(&matchStateMessage), sizeof(matchStateMessage));
+	}
+
 };
 
 messageMatch Court::getReadMessage() {

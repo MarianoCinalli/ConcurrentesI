@@ -13,7 +13,7 @@ ResultManager::ResultManager() {
 }
 
 void ResultManager::execute() {
-//    this->channelToRead->abrir();
+
     while (!this->finalizedProcess) {
         struct messageResult *result = readFifoResultManager();
         this->parseMessage(result);
@@ -127,9 +127,14 @@ struct messageResult* ResultManager::readFifoResultManager() {
 	memset(buff,0,sizeof(messageResult));
 	int result = this->channelToRead->leer(buff,sizeof(messageResult));
 	if(result == -1){
-		log(RESULT_MANAGER_NAME + " : No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
+        log(RESULT_MANAGER_NAME + " : **Error** No se pudo realizar la lectura del fifo ",__FILE__, __LINE__, ERROR);
+        exit(1);
+	}if(result == 0){
+        log(RESULT_MANAGER_NAME + " : El fifo para lectura se ha cerrado, finalizando proceso",__FILE__, __LINE__, INFORMATION);
+        this->finalizedProcess = true;
 	} else if (result != sizeof(messageResult)){
-		log(RESULT_MANAGER_NAME + " : Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
+        log(RESULT_MANAGER_NAME + " : **Error** Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
+        exit(1);
 	}
 	
 	return buff;

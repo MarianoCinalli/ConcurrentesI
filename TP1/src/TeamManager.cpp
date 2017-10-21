@@ -15,8 +15,6 @@ TeamManager::TeamManager() {
 void TeamManager::execute() {
     struct messageTeam* team;
     struct messagePlayer* message;
-//    this->channelToRead->abrir();
-//    this->channelToWrite->abrir();
 
     while (!this->finalize) {
         message = this->readPlayer();
@@ -109,18 +107,16 @@ struct messageTeam* TeamManager::makeTeam(){
 void TeamManager::cancelLastGameOfPLayer(int idPlayer){
 
     try{
-        std::vector<int>* playMates = playsByPlayer->at(idPlayer);
-        std::vector<int>::iterator it = playMates->begin();
-        bool found = false;
-        while(it != playMates->end() || !found){
-            if ((*it) == idPlayer){
-                found = true;
-                playMates->erase(it);
-            }
-            it++;
-        }
 
-        if(!found){
+        std::vector<int>* playMates = playsByPlayer->at(idPlayer);
+
+        if (!playMates->empty()){
+            int playMate = playMates->back();
+            playMates->pop_back();
+            std::string team = std::to_string(idPlayer) +  " - " + std::to_string(playMate);
+            log("TeamManager: se elimino el registro de equipo formado por: " + team,INFORMATION);
+            
+        }else{
             log("TeamManager: No existe registro a cancelar del ultimo compañero del jugador con id: ",idPlayer,ERROR);
             exit(1);
         }
@@ -198,7 +194,10 @@ struct messagePlayer* TeamManager::readPlayer(){
     
 	if(result == -1){
 		log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo ", __FILE__, __LINE__, ERROR);
-	}else if (result != sizeof(messagePlayer)){
+	}else if(result == 0){
+        log(TEAM_MANAGER_NAME + " No se pudo realizar la lectura del fifo, porque se ha cerrado el fifo ", __FILE__, __LINE__, WARNING);        
+        this->finalize = true;
+    }else if (result != sizeof(messagePlayer)){
 		log(TEAM_MANAGER_NAME + " Se ha leido una cantidad erronea de bytes del fifo ", __FILE__, __LINE__, ERROR);
     }
     
