@@ -133,8 +133,8 @@ void PlayerManager::evaluateEndGame(){
 	}
 
 	if(this->playersToGame->size() <= 3){
-		std::cout<<"FINALIZACIÓN DEL JUEGO"<<std::endl;
-		//MANDAR UNA SIGNAL A COMMANDMANAGERqq
+		log("SE CUMPLE CONDICIÓN FINALIZACIÓN DEL JUEGO",INFORMATION);
+		//MANDAR UNA SIGNAL A COMMANDMANAGER
 		this->finalizedProcess = true;
 		this->beginGame = false;
 		struct messagePlayer message;
@@ -347,7 +347,7 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 	bool completedGames = false;
 	PlayerPM* player;
 
-	while(it != this->playersToGame->end() || !found){
+	while(it != this->playersToGame->end() && !found){
 		player = (*it);
 		if(player->getId() == idPlayer){
 			found = true;
