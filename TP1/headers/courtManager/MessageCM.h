@@ -6,14 +6,12 @@
 class MessageCM {
 	private:
 		int operation;
-		int operationValue;
 
 	public:
 		MessageCM();
 		MessageCM(struct messageCourtManager message);
 		~MessageCM();
 		int getOperation();
-		int getOperationValue();
 };
 
 #endif // MESSAGECM_H

@@ -6,7 +6,6 @@ MessageCM::MessageCM() {
 
 MessageCM::MessageCM(struct messageCourtManager message) {
 	this->operation = message.operation;
-	this->operationValue = message.operationValue;
 };
 
 MessageCM::~MessageCM() {
@@ -15,8 +14,4 @@ MessageCM::~MessageCM() {
 
 int MessageCM::getOperation() {
 	return this->operation;
-};
-
-int MessageCM::getOperationValue() {
-	return this->operationValue;
 };

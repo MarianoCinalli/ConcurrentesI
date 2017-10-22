@@ -66,11 +66,13 @@ bool CourtManager::processMessage(MessageCM* message) {
 	log("CourtManager: Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == raiseType) {
 		log("Se recibio el mensaje de incremento de marea.", 3);
-		this->raiseTideAndInformCourts(message->getOperationValue());
+		// Por enunciado sube de a 1.
+		this->raiseTideAndInformCourts(1);
 		shouldEnd = false;
 	} else if (operation == lowType) {
 		log("CourtManager: Se recibio el mensaje de decremento de marea.", 3);
-		this->lowerTideAndInformCourts(message->getOperationValue());
+		// Por enunciado baja de a 1.
+		this->lowerTideAndInformCourts(1);
 		shouldEnd = false;
 	} else if (operation == closeCourts) {
 		log("CourtManager: Se recibio el mensaje de cerrado de cancha.", 3);
