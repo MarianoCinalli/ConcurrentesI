@@ -119,14 +119,17 @@ void PlayerManager::sendSingnalToProcess(pid_t pid){
 void PlayerManager::evaluateEndGame(){
 	std::vector<PlayerPM*>::iterator it;
 	//unsigned maxPossibleMatches = this->maxMatchesPerPlayer -1;
+	PlayerPM *player;
 	bool isVillageFull	= this->playersToGame->size() == this->maxPlayersVillage;
 
 	//primero se evalua si hay jugadores en espera
 	if(isVillageFull == false){
 		it = this->playersToWait->begin();
 		while(!this->playersToWait->empty() && isVillageFull == false){
-			this->playersToGame->push_back((*it));
+			player = (*it);
+			this->playersToGame->push_back(player);
 			this->playersToWait->erase(it);
+			log(PLAYER_MANAGER_NAME + " :  jugador en espera entra al predio porque el predio no esta lleno, jugador con id: ",player->getId(), INFORMATION);			
 			isVillageFull = this->playersToGame->size() == this->maxPlayersVillage;
 			it++;
 		}
@@ -148,18 +151,22 @@ void PlayerManager::evaluateEndGame(){
 
 
 void PlayerManager::loggearPlayers(){
-	log(PLAYER_MANAGER_NAME + " : la jugadores en predio ",this->playersToGame->size(),INFORMATION);
-	log(PLAYER_MANAGER_NAME + " : la jugadores en espera ",this->playersToWait->size(),INFORMATION);
+
+	
 	std::vector<PlayerPM*>::iterator it;
+	std::string players = "";
 
 	for(it = this->playersToGame->begin();it != this->playersToGame->end(); it++){
-		log(PLAYER_MANAGER_NAME + " : "+ (*it)->logMemberVariables(),INFORMATION);
+		players += (*it)->logMemberVariables() + ", ";
 	}
-
+	log(PLAYER_MANAGER_NAME + " : Fin del proceso, jugadores que quedaron el en predio: "+ players,INFORMATION);
+	
+	players = "";
 	for(it = this->playersToWait->begin();it != this->playersToWait->end(); it++){
-		log(PLAYER_MANAGER_NAME + " : "+(*it)->logMemberVariables(),INFORMATION);
+		players += (*it)->logMemberVariables() + ", ";
 	}
-
+	log(PLAYER_MANAGER_NAME + " : Fin del proceso, jugadores que quedaron en espera: " + players,INFORMATION);
+	
 }
 
 
@@ -209,14 +216,19 @@ void PlayerManager::addPlayerToGame(){
 			PlayerPM* playerToGame = this->playersToWait->back();
 			this->playersToWait->pop_back();
 			this->playersToGame->push_back(playerToGame);
+			log(PLAYER_MANAGER_NAME + " :  jugador entra al predio luego de estar en espera por un comando agregar, jugador con id: ",playerToGame->getId(), INFORMATION);						
 		}else{
 			PlayerPM* player =  new PlayerPM(this->generateId());
 			this->playersToGame->push_back(player);
+			log(PLAYER_MANAGER_NAME + " :  jugador entra al predio por un comando agregar, jugador con id: ",player->getId(), INFORMATION);						
+			
 		}
 
 	}else{
 		PlayerPM* playerToWait =  new PlayerPM(this->generateId());
 		this->playersToWait->push_back(playerToWait);
+		log(PLAYER_MANAGER_NAME + " :  jugador entra por comando agregar en modo espera porque el predio esta lleno , jugador con id: ",playerToWait->getId(), INFORMATION);						
+		
 	}
 
 	//evaluamos si puede comenzar el juego
@@ -312,7 +324,7 @@ void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
 
 		std::vector<PlayerPM*>::iterator it = this->playersToGame->begin();
 		bool found = false;
-		while(it != this->playersToGame->end() || !found){
+		while(it != this->playersToGame->end() && !found){
 			if((*it)->getId() == message->idPlayer){
 				(*it)->endGame();//cambiamos el estado a libre
 				found = true;
@@ -352,6 +364,7 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 		if(player->getId() == idPlayer){
 			found = true;
 			player->addGamePlayed();
+			log(PLAYER_MANAGER_NAME + ": Aumentado la cantidad de partidos del jugador con id: ",player->getId(),INFORMATION);
 			player->endGame();	//el jugador esta libre para volver a jugar
 			completedGames = this->evaluteGamesCompletedPlayer(player);
 
@@ -361,6 +374,7 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 				delete player;
 			}else if(this->removePlayer > 0){
 				//si NO completo el juego solo lo saco del predio
+				log(PLAYER_MANAGER_NAME + " :  jugador sale del predio por comando, jugador con id: ",idPlayer, INFORMATION);				
 				this->playersToWait->push_back(player);
 				this->playersToGame->erase(it);
 				this->removePlayer--; 

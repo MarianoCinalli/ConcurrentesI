@@ -134,6 +134,7 @@ void Court::sendMessages(Match* match) {
 	std::vector<messagePlayer>::iterator it;
 	for(it = matchStateMessages.begin();it != matchStateMessages.end();it++) {
 		messagePlayer matchStateMessage = (*it);
+		log("Court: Enviando mensajes de estado de finalizacion del jugador con id: ",matchStateMessage.idPlayer, 3);
 		this->fifoPlayerManager->escribir(static_cast<void*>(&matchStateMessage), sizeof(matchStateMessage));
 	}
 
