@@ -69,10 +69,8 @@ int main(int argc, char* argv[]) {
     functions->push_back(executeMatchManager);
     processSpawner->spawnProcesses(functions);
 
-    // Esto se podria hacer constante y que se borre NOMBRE_FIFO_MATCHES + "_lock".
-    // Porque desde el destructor no se puede borrar (la borra al primero que lo ejecuta).
     std::string lockFile = "/tmp/fifoMatches_lock";
-    //remove(lockFile.c_str());
+    remove(lockFile.c_str());
     
     processSpawner->waitChilds();
     delete initialParameters;

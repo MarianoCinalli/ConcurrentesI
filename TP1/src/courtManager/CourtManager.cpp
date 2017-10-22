@@ -65,7 +65,7 @@ bool CourtManager::processMessage(MessageCM* message) {
 	int operation = message->getOperation();
 	log("CourtManager: Se recibio un mensaje. Operacion: ", operation, 3);
 	if (operation == raiseType) {
-		log("Se recibio el mensaje de incremento de marea.", 3);
+		log("CourtManager: Se recibio el mensaje de incremento de marea.", 3);
 		// Por enunciado sube de a 1.
 		this->raiseTideAndInformCourts(1);
 		shouldEnd = false;
@@ -75,7 +75,7 @@ bool CourtManager::processMessage(MessageCM* message) {
 		this->lowerTideAndInformCourts(1);
 		shouldEnd = false;
 	} else if (operation == closeCourts) {
-		log("CourtManager: Se recibio el mensaje de cerrado de cancha.", 3);
+		log("CourtManager: Se recibio el mensaje de cerrado de canchas.", 3);
 		shouldEnd = true;
 	} else {
 		log("CourtManager: Warning ** Se ignora el mensaje.", 2);
@@ -86,11 +86,14 @@ bool CourtManager::processMessage(MessageCM* message) {
 
 void CourtManager::raiseTideAndInformCourts(int amountToRaise) {
 	int previousTideLevel = this->tideLevel;
-	log("CourtManager: Aumentando marea " + std::to_string(previousTideLevel) + " en " + std::to_string(amountToRaise), 3);
-	// Actualizo el valor de la marea (o es mayor o es igual al anterior)
-	this->tideLevel = this->getUpdatedTideLevel(amountToRaise);
-	if (previousTideLevel < this->tideLevel) {
-		log("CourtManager: Aumentando la marea.", 2);
+	int newTideLevel = this->getUpdatedTideLevel(amountToRaise);
+	// Actualizo el valor de la marea (Si es mayor al anterior y menor al numero de filas).
+	// Si es igual al numero de filas, no quedarian mas filas con canchas abiertas, por
+	// enunciado no puede pasar
+	if (newTideLevel < this->rows) {
+		this->tideLevel = newTideLevel;
+		log("CourtManager: Aumentando marea " + std::to_string(previousTideLevel) + " en " + std::to_string(amountToRaise) + " marea actual " +
+			std::to_string(this->tideLevel), 3);
 		for (int rowNumber = previousTideLevel; rowNumber < this->tideLevel; ++rowNumber) {
 			for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
 				log("CourtManager: Cerrando cancha nro.:" + std::to_string(rowNumber) + " " + std::to_string(columnNumber) , 3);
@@ -98,18 +101,17 @@ void CourtManager::raiseTideAndInformCourts(int amountToRaise) {
 			}
 		}
 	} else {
-		log("CourtManager: Warning ** El valor para actualizar la marea es incorrecto. Ignorando.", 2);
+		log("CourtManager: Warning ** El nuevo valor de la marea inunda la ultima fila. Ignorando.", 2);
 	}
 };
 
 void CourtManager::lowerTideAndInformCourts(int amountToLower) {
 	int previousTideLevel = this->tideLevel;
-	log("CourtManager: Disminuyendo marea " + std::to_string(previousTideLevel) + " en " + std::to_string(amountToLower), 3);
-	// Actualizo el valor de la marea (o es menor o es igual al anterior)
-	this->tideLevel = this->getUpdatedTideLevel((-1) * amountToLower);
-	if (previousTideLevel > this->tideLevel) {
-		// Voy desde la cancha que estaba indundada hasta la 
-		log("CourtManager: Disminuyendo marea.", 3);
+	int newTideLevel = this->getUpdatedTideLevel((-1) * amountToLower);
+	if (newTideLevel >= 0) {
+		this->tideLevel = newTideLevel;
+		log("CourtManager: Disminuyendo marea " + std::to_string(previousTideLevel) + " en " + std::to_string(amountToLower) + " marea actual " + 
+			std::to_string(this->tideLevel), 3);
 		for (int rowNumber = previousTideLevel; rowNumber > this->tideLevel; --rowNumber) {
 			for (int columnNumber = 0; columnNumber < this->columns; ++columnNumber) {
 				log("CourtManager: Abriendo cancha nro.:" + std::to_string(rowNumber - 1) + " " + std::to_string(columnNumber) , 3);
@@ -117,17 +119,13 @@ void CourtManager::lowerTideAndInformCourts(int amountToLower) {
 			}
 		}
 	} else {
-		log("CourtManager: Warning ** El valor para disminuir la marea produce un resultado negativo. Ignorando.", 2);
+		log("CourtManager: Warning ** El valor para disminuir la marea produce un resultado negativo (marea actual " +
+			std::to_string(this->tideLevel) + "). Ignorando.", 2);
 	}
 };
 
 int CourtManager::getUpdatedTideLevel(int amountToAdd) {
-	int temp = this->tideLevel + amountToAdd;
-	if ( temp >= 0 && temp <= this->rows ) {
-		return temp;
-	} else {
-		return this->tideLevel;
-	}
+	return this->tideLevel + amountToAdd;
 };
 
 void CourtManager::shutDownCourts() {
