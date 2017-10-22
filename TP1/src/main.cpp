@@ -13,14 +13,15 @@
 #include "semaphores/Semaforo.h"
 #include "fifos/FifoInitializer.h"
 
-// Constants ------------------------------------------------------
+// Constants ------------------------------------------------------------------------------
 const char INITIAL_PARAMETERS[] = "initialParameter.json";
 int LOG_MIN_LEVEL = 1;
 std::ofstream LOG_FILE_POINTER;
 const std::string SEMAPHORE_NAME = "src/main.cpp";
 Semaforo semaphoreFifoMatches(SEMAPHORE_NAME, 0);
-// Constants ------------------------------------------------------
-
+typedef void (*functiontype)();
+// Constants ------------------------------------------------------------------------------
+// Process spawn functions ----------------------------------------------------------------
 void executePlayerManager(){
     log("INICIO DEL PLAYER_MANAGER",INFORMATION);
     struct initialParameter *initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
@@ -46,20 +47,18 @@ void executeMatchManager(){
     delete matchManager;
     log("FIN DEL MATCH_MANAGER",INFORMATION);
 }
-
-
-
-typedef void (*functiontype)();
+// End process spawn functions ------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
+    std::cout << "COMIENZA EJECUCION" << std::endl;
+    // Init -------------------------------------------------------------------------------
     FifoInitializer* fifoInitializer = new FifoInitializer();
     fifoInitializer->createFifos();
     srand(time(NULL)); // Init seed for random
     LOG_FILE_POINTER.open("beachVoley.log", std::ofstream::app);
-    std::cout<<"COMIENZA EJECUCION"<<std::endl;
-
-    logSessionStarted();
     struct initialParameter* initialParameters = loadInitialParameters(INITIAL_PARAMETERS);
+    // End init ---------------------------------------------------------------------------
+    logSessionStarted();
     log("INICIO DEL PROCESO PRINCIPAL",INFORMATION);
     ProcessSpawner *processSpawner = new ProcessSpawner();
     std::vector<functiontype> *functions = new std::vector<functiontype>();
@@ -68,17 +67,19 @@ int main(int argc, char* argv[]) {
     functions->push_back(executeTeamManager);
     functions->push_back(executeMatchManager);
     processSpawner->spawnProcesses(functions);
-
-    std::string lockFile = "/tmp/fifoMatches_lock";
-    remove(lockFile.c_str());
-    
+    // Finish -----------------------------------------------------------------------------
     processSpawner->waitChilds();
+    // Clean ------------------------------------------------------------------------------
     delete initialParameters;
     delete functions;
-    log("FIN DEL PROCESO PRINCIPAL",INFORMATION);
     semaphoreFifoMatches.eliminar();
     fifoInitializer->deleteFifos();
     delete fifoInitializer;
+    // Por alguna razon, el lock solo se elimina si se hace aca.
+    std::string lockFile = FIFO_WRITE_MATCH_TO_MATCHES + "_lock";
+    unlink(lockFile.c_str());
 	logSessionFinished();
-	return 0;
+    // End clean --------------------------------------------------------------------------
+    log("FIN DEL PROCESO PRINCIPAL", INFORMATION);
+    return 0;
 }
