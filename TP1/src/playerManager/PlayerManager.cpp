@@ -22,6 +22,8 @@ PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerP
 	this->finalizedProcess = false;
 	this->beginGame = false;
 	this->removePlayer = 0;
+	this->amountTeamsFormed = 0;
+	this->amountPlayersToWait = 0;
 }
 
 PlayerManager::~PlayerManager(){
@@ -76,9 +78,10 @@ void PlayerManager::execute(){
 	while(!this->finalizedProcess){
 		message = this->readFifoPlayerManager();
 		this->parseMessage(message);
-		if(this->beginGame){
-			this->writeFifoTeamManager();
+		if(this->beginGame && this->amountPlayersToWait == 0){
 			this->evaluateEndGame();
+			this->writeFifoTeamManager();
+			this->writeFlagToFormTeam();
 		}
 		delete message;		
 	}
@@ -118,24 +121,26 @@ void PlayerManager::sendSingnalToProcess(pid_t pid){
  **/
 void PlayerManager::evaluateEndGame(){
 	std::vector<PlayerPM*>::iterator it;
-	//unsigned maxPossibleMatches = this->maxMatchesPerPlayer -1;
 	PlayerPM *player;
 	bool isVillageFull	= this->playersToGame->size() == this->maxPlayersVillage;
 
 	//primero se evalua si hay jugadores en espera
 	if(isVillageFull == false){
-		it = this->playersToWait->begin();
+		//it = this->playersToWait->begin();
 		while(!this->playersToWait->empty() && isVillageFull == false){
-			player = (*it);
+			player = this->playersToWait->back();
 			this->playersToGame->push_back(player);
-			this->playersToWait->erase(it);
-			log(PLAYER_MANAGER_NAME + " :  jugador en espera entra al predio porque el predio no esta lleno, jugador con id: ",player->getId(), INFORMATION);			
+			this->playersToWait->pop_back();
+			log(PLAYER_MANAGER_NAME + " :  jugador en espera entra al predio porque el predio no esta lleno, jugador con id: ",player->getId(), INFORMATION);
+			flushLog();									
 			isVillageFull = this->playersToGame->size() == this->maxPlayersVillage;
-			it++;
 		}
 	}
 
-	if(this->playersToGame->size() <= 3){
+	// se evalua si no hay jugadores, tambien se determina en updateAmountPlayersToWait
+	// updateAmountPlayersToWait evalua si no se pueden formar mas equipos con jugadores 
+	//evalua si no hay jugadores, complementado al anterior
+	if(this->playersToGame->empty()){
 		log("SE CUMPLE CONDICIÓN FINALIZACIÓN DEL JUEGO",INFORMATION);
 		//MANDAR UNA SIGNAL A COMMANDMANAGER
 		this->finalizedProcess = true;
@@ -151,7 +156,6 @@ void PlayerManager::evaluateEndGame(){
 
 
 void PlayerManager::loggearPlayers(){
-
 	
 	std::vector<PlayerPM*>::iterator it;
 	std::string players = "";
@@ -199,8 +203,47 @@ void PlayerManager::parseMessage(struct messagePlayer* message){
 		case CommandType::gameCompleted :
 			this->updateMatchesPlayer(message->idPlayer);
 			break;
+
+		//mensaje que informa la cantidad de equipos que se han formado
+		case CommandType::amountTeams :
+			this->updateAmountPlayersToWait(message->idPlayer);
+			break;
 	}
 }
+
+
+void PlayerManager::updateAmountPlayersToWait(int amountTeamsFormed){
+
+	unsigned previusValue = this->amountPlayersToWait;
+
+	this->amountTeamsFormed += amountTeamsFormed;
+	this->amountPlayersToWait = (this->amountTeamsFormed/2);
+	this->amountPlayersToWait *= 4;
+	this->amountTeamsFormed %= 2;
+
+	//condicion de finalizacion porque no se formaron mas de 2 equipos
+	if(this->amountPlayersToWait == 0){
+		log(PLAYER_MANAGER_NAME + " : SE CUMPLE CONDICIÓN FINALIZACIÓN DEL JUEGO",INFORMATION);
+		//MANDAR UNA SIGNAL A COMMANDMANAGER
+		this->finalizedProcess = true;
+		this->beginGame = false;
+		struct messagePlayer message;
+		message.status = CommandType::killType; 
+		this->writeMessagePlayer(&message);
+		this->writeEndGameToResultManager();
+	}
+
+
+	// si llego algun jugador antes de que teamManager mande la cantidad de quipos creados
+	if(previusValue != this->maxPlayersVillage){
+		log(PLAYER_MANAGER_NAME + " : llego algun jugador de un match antes de que TeamManager informe la cant de equipos formados",INFORMATION);
+		previusValue = this->maxPlayersVillage - previusValue;
+		this->amountPlayersToWait -= previusValue;
+	}
+}
+
+
+
 
 
 /**
@@ -232,7 +275,8 @@ void PlayerManager::addPlayerToGame(){
 	}
 
 	//evaluamos si puede comenzar el juego
-	if(this->playersToGame->size() >= minPlayersToBeginGame && !this->beginGame){	
+	//solo se ingresa una vez
+	if(!this->beginGame && this->playersToGame->size() >= minPlayersToBeginGame ){	
 		this->beginGame = true;
 		std::cout<<"COMIENZA EL JUEGO"<<std::endl;
 		log(PLAYER_MANAGER_NAME + " :  Se completa la cantidad minima de jugadores para comenzar el juego",INFORMATION);
@@ -265,12 +309,29 @@ void PlayerManager::writeFifoTeamManager(){
 			struct messagePlayer *buff = new messagePlayer;
 			memset(buff,0,sizeof(messagePlayer));
 			buff->idPlayer = (*it)->getId();
+			buff->status = CommandType::waitToTeam;
 			this->writeMessagePlayer(buff);
 			log(PLAYER_MANAGER_NAME + " : Se ha enviado para formar equipo al jugador con id: ",buff->idPlayer,INFORMATION);
 			delete buff;
 		}
 	}
+	//cambiamos a la cantidad de jugadores a esperar a la cant max del predio
+	//hasta que llegue una actualización del TeamManager
+	this->amountPlayersToWait = this->maxPlayersVillage;
+
 }
+
+void PlayerManager::writeFlagToFormTeam(){
+
+	struct messagePlayer *buff = new messagePlayer;
+	memset(buff,0,sizeof(messagePlayer));
+	buff->status = CommandType::readyToTeam;
+	this->writeMessagePlayer(buff);
+	log(PLAYER_MANAGER_NAME + " : Se ha enviado el Flag a TeamManager para comenzar a formar equipos",INFORMATION);
+	delete buff;
+
+}
+
 
 
 //escribe al fifo de teamManager
@@ -327,6 +388,7 @@ void PlayerManager::notifyGameCanceled(struct messagePlayer* message){
 		while(it != this->playersToGame->end() && !found){
 			if((*it)->getId() == message->idPlayer){
 				(*it)->endGame();//cambiamos el estado a libre
+				this->amountPlayersToWait--; //disminuimos la cantidad de jugadores a esperar
 				found = true;
 				if(this->removePlayer > 0){	//si es necesario sacar a un jugador
 					log(PLAYER_MANAGER_NAME + " :  jugador sale del predio por comando, jugador con id: ",message->idPlayer, INFORMATION);
@@ -366,6 +428,7 @@ void PlayerManager::updateMatchesPlayer(int idPlayer){
 			player->addGamePlayed();
 			log(PLAYER_MANAGER_NAME + ": Aumentado la cantidad de partidos del jugador con id: ",player->getId(),INFORMATION);
 			player->endGame();	//el jugador esta libre para volver a jugar
+			this->amountPlayersToWait--; //disminuimos la cantidad de jugadores a esperar
 			completedGames = this->evaluteGamesCompletedPlayer(player);
 
 			if(completedGames){

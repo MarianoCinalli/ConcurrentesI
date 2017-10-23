@@ -12,7 +12,8 @@ const int MIN_SETS_DEFAULT = 3;
 const int MAX_SETS_DEFAULT = 5;
 
 enum PCStatus {freeS=0, busyS, disableS,completedS};
-enum CommandType {addType=0, removeType=1, killType=2,gameCanceled=3,gameCompleted=4};
+//flags que se usan en el struct messagePlayer
+enum CommandType {addType=0, removeType=1, killType=2,gameCanceled=3,gameCompleted=4,readyToTeam,waitToTeam,amountTeams};
 enum ResultCommands {RESULT = 0, EXIT = 1};
 enum LevelsLog{ERROR=1, WARNING, INFORMATION};
 enum CourtCommands {PLAY = 0, CLOSE = 1, IGNORE = 2};

@@ -6,24 +6,20 @@ TeamManager::TeamManager() {
     this->playsByPlayer = new std::map<int, std::vector<int>*>();
     this->channelToRead = new FifoLectura(FIFO_READ_PLAYER_OF_PLAYERMANAGER);
     this->channelToWrite = new FifoEscritura(FIFO_WRITE_TEAM_TO_MATCHMANAGER);
+    this->channelToWritePlayerManager = new FifoEscritura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);    
     this->channelToRead->abrir();
     this->channelToWrite->abrir();
+    this->channelToWritePlayerManager->abrir();
     log(TEAM_MANAGER_NAME + " : Se abrio FIFO de lectura " + FIFO_READ_PLAYER_OF_PLAYERMANAGER,INFORMATION);
     log(TEAM_MANAGER_NAME + " : Se abrio FIFO de escritura " + FIFO_WRITE_TEAM_TO_MATCHMANAGER,INFORMATION);
 }
 
 void TeamManager::execute() {
-    struct messageTeam* team;
     struct messagePlayer* message;
 
     while (!this->finalize) {
         message = this->readPlayer();
         this->parseMessage(message);
-        team = this->makeTeam(); //devuelve null si no crea un equipo
-        if(team != NULL){
-            this->writeTeam(team); 
-            delete team;
-        }
         delete message;
     }
     log(TEAM_MANAGER_NAME + " : El proceso finaliza correctamente ",INFORMATION);
@@ -46,12 +42,51 @@ void TeamManager::parseMessage(struct messagePlayer* message){
             this->cancelLastGameOfPLayer(message->idPlayer);
             break;
 
-        default :
+
+        case CommandType::readyToTeam :
+            this->formAllTeams();
+            break;
+
+        case CommandType::waitToTeam :
             //se agrega un player para formar equipo
             this->addPlayer(message->idPlayer);
     }
 }
 
+void TeamManager::formAllTeams(){
+    log(TEAM_MANAGER_NAME + " : se recibio el Flag y se formaran los teams",INFORMATION);
+    std::vector<messageTeam*> teams;
+    struct messageTeam* team;
+    while ((team = this->makeTeam()) != NULL){
+        teams.push_back(team);
+    }
+
+    std::vector<messageTeam*>::iterator it;
+    for(it = teams.begin();it != teams.end();it++){
+        this->writeTeam(*it);
+    }
+
+    //escribo a PlayerManager la cantidad de equipos creados
+    messagePlayer message;
+    message.idPlayer = teams.size();
+    message.status = CommandType::amountTeams;
+    int result = this->channelToWritePlayerManager->escribir(&message,sizeof(messagePlayer));
+
+    if(result == -1){
+        log(TEAM_MANAGER_NAME + " No se pudo realizar la escritura de la cantidad de equipos Formados ", __FILE__, __LINE__, ERROR);
+        exit(1);
+    }else if (result != sizeof(messagePlayer)){
+        log(TEAM_MANAGER_NAME + " Se ha escrito de forma erronea la cantidad de equipos Formados  ", __FILE__, __LINE__, ERROR);
+        exit(1);
+    }else{
+        log(TEAM_MANAGER_NAME + " Se ha escrito la cantidad de equipos Formados: ",teams.size(), INFORMATION);        
+    }
+
+    for(it = teams.begin();it != teams.end();it++){
+        delete (*it);        
+    }
+    teams.clear();
+}
 
 void TeamManager::addPlayer(int idPlayer){
     std::vector<int>::iterator it = std::find(this->players->begin(), this->players->end(), idPlayer);
@@ -61,6 +96,7 @@ void TeamManager::addPlayer(int idPlayer){
     }else{
         //se acola para formar equipos
         this->players->push_back(idPlayer);
+        log(TEAM_MANAGER_NAME + "se recibe un jugador para formar equipo, jugador con id: ", idPlayer, INFORMATION);        
         try{
             playsByPlayer->at(idPlayer);
 
@@ -231,4 +267,8 @@ TeamManager::~TeamManager() {
     this->channelToWrite->cerrar();  
     delete this->channelToRead;
     delete this->channelToWrite;
+
+    this->channelToWritePlayerManager->cerrar();
+    delete this->channelToWritePlayerManager;
+
 }

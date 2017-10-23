@@ -18,7 +18,8 @@ class PlayerManager {
 	const unsigned minPlayersToBeginGame = 10;
 
 	private:
-
+		int amountTeamsFormed;
+        int amountPlayersToWait;
 		bool finalizedProcess;
 		bool beginGame;
 		unsigned removePlayer;
@@ -47,6 +48,8 @@ class PlayerManager {
 		void writeEndGameToResultManager();
 		static void executeCommandManager();
 		void sendSingnalToProcess(pid_t pid);
+		void updateAmountPlayersToWait(int amountTeamsFormed);
+		void writeFlagToFormTeam();
 
 
 	public:

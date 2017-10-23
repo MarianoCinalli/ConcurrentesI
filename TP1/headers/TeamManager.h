@@ -24,12 +24,12 @@ class TeamManager{//: public Executable {
     const std::string TEAM_MANAGER_NAME = typeid(TeamManager).name();
 
     private:
-        
         bool finalize = false;
         std::map<int, std::vector<int>*> *playsByPlayer;
         std::vector<int> *players;
         FifoLectura *channelToRead;
         FifoEscritura *channelToWrite;
+        FifoEscritura *channelToWritePlayerManager;
         void cancelLastGameOfPLayer(int idPlayer);
         void addPlayer(int idPlayer);
         struct messageTeam* makeTeam();
@@ -39,6 +39,7 @@ class TeamManager{//: public Executable {
         bool canPlayersFormTeam(int idPlayer1, int idPlayer2);
         struct messageTeam* formTeam(int idPlayer1, int idPlayer2);
         void removePlayer(int idPlayer);
+        void formAllTeams();
 
     public:
 
