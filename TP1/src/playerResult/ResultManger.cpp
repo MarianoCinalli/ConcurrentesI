@@ -96,6 +96,7 @@ void ResultManager::managerWinner(PlayerResult *playerResult) {
             this->winners->push_back(playerResult);
         }
     }
+    playerResult->showScore();
 }
 
 void ResultManager::showWinners() {
@@ -111,12 +112,12 @@ void ResultManager::showWinners() {
 PlayerResult* ResultManager::searchPlayerResult(int idPlayer) {
     std::map<int, PlayerResult*>::iterator it = this->playerResults->find(idPlayer);
     if (it != this->playerResults->end()) {
-        log(RESULT_MANAGER_NAME + " : Se encontro al playerResult " + std::to_string(idPlayer), __FILE__, __LINE__, ERROR);
+        log(RESULT_MANAGER_NAME + " : Se encontro al playerResult " + std::to_string(idPlayer), __FILE__, __LINE__, INFORMATION);
         PlayerResult *playerResult = it->second;
         playerResult->showScore();
         return it->second;
     }
-    log(RESULT_MANAGER_NAME + " : No se encontro al playerResult " + std::to_string(idPlayer), __FILE__, __LINE__, ERROR);
+    log(RESULT_MANAGER_NAME + " : No se encontro al playerResult " + std::to_string(idPlayer), __FILE__, __LINE__, WARNING);
     PlayerResult *playerResult = new PlayerResult(idPlayer);
     this->playerResults->insert(std::pair<int,PlayerResult*>(idPlayer,playerResult));
     return searchPlayerResult(idPlayer);
