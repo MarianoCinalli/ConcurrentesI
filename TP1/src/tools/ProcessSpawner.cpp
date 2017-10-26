@@ -100,6 +100,4 @@ void ProcessSpawner::waitChilds(){
 		flushLog();
 	}
 
-	std::cout<<"-------------finalizaron todos los procesos"<<std::endl;
-
 }

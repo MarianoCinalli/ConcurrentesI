@@ -159,7 +159,7 @@ void CommandManager::finalizeCourtManager(){
 	status = this->fifoTide->escribir(static_cast<const void*> (messageCourt), sizeof(messageCourtManager));
 	if(status == -1){
 		log(COMMAND_MANAGER_NAME + " :  **ERROR** no se pudo mandar fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
-	}else if(status != sizeof(messageCourt)){
+	}else if(status != sizeof(messageCourtManager)){
 		log(COMMAND_MANAGER_NAME + " :  **ERROR** no se pudo mandar correctamente el fin de juego a CourtManager",__FILE__, __LINE__, ERROR);
 	}else{
 		log(COMMAND_MANAGER_NAME + " :   se mando correctamente fin de juego a CourtManager",INFORMATION);

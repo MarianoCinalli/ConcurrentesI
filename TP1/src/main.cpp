@@ -31,7 +31,7 @@ void executePlayerManager(){
     delete playerManager;
     log("FIN DEL PLAYER_MANAGER",INFORMATION);
 }
-
+/*
 void executeTeamManager(){
     log("INICIO DEL TEAM_MANAGER",INFORMATION);
     TeamManager *teamManager = new TeamManager();
@@ -47,6 +47,8 @@ void executeMatchManager(){
     delete matchManager;
     log("FIN DEL MATCH_MANAGER",INFORMATION);
 }
+
+*/
 // End process spawn functions ------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
@@ -64,8 +66,8 @@ int main(int argc, char* argv[]) {
     std::vector<functiontype> *functions = new std::vector<functiontype>();
     
     functions->push_back(executePlayerManager);
-    functions->push_back(executeTeamManager);
-    functions->push_back(executeMatchManager);
+    //functions->push_back(executeTeamManager);
+    //functions->push_back(executeMatchManager);
     processSpawner->spawnProcesses(functions);
     // Finish -----------------------------------------------------------------------------
     processSpawner->waitChilds();

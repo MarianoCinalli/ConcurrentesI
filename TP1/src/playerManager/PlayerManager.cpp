@@ -1,5 +1,8 @@
 #include "../headers/playerManager/PlayerManager.h"
+
 #include "CommandManager.h"
+#include "TeamManager.h"
+#include "MatchManager.h"
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <signal.h>
@@ -7,8 +10,8 @@
 
 
 PlayerManager::PlayerManager(unsigned maxPlayersVillage, unsigned maxMatchesPerPlayer){
-	if(minPlayersToBeginGame < maxPlayersVillage){
-		log(PLAYER_MANAGER_NAME + " :  cantidad maxima de jugadores en el predio es menor a ",maxPlayersVillage,INFORMATION);
+	if(minPlayersToBeginGame > maxPlayersVillage){
+		log(PLAYER_MANAGER_NAME + " : **Error** cantidad maxima de jugadores en el predio es menor a ",minPlayersToBeginGame,ERROR);
 		exit(1); 
 	}
 	this->channelToRead = new FifoLectura(FIFO_READ_COMMAND_OF_COMMANDMANAGER);
@@ -59,11 +62,36 @@ void PlayerManager::executeCommandManager(){
 }
 
 
+void PlayerManager::executeTeamManager(){
+    log("INICIO DEL TEAM_MANAGER",INFORMATION);
+    TeamManager *teamManager = new TeamManager();
+    teamManager->execute();
+    delete teamManager;
+    log("FIN DEL TEAM_MANAGER",INFORMATION);
+}
+
+void PlayerManager::executeMatchManager(){
+    log("INICIO DEL MATCH_MANAGER",INFORMATION);
+    MatchManager *matchManager = new MatchManager();
+    matchManager->execute();
+    delete matchManager;
+    log("FIN DEL MATCH_MANAGER",INFORMATION);
+}
+
+
+
 void PlayerManager::execute(){
 
 	pid_t pid;
 	ProcessSpawner * processSpawner = new ProcessSpawner();
 	pid = processSpawner->spawnProcess(PlayerManager::executeCommandManager);
+
+
+	std::vector<functiontype> *functions = new std::vector<functiontype>();
+    functions->push_back(PlayerManager::executeTeamManager);
+    functions->push_back(PlayerManager::executeMatchManager);
+	processSpawner->spawnProcesses(functions);
+	delete functions;
 
 	this->channelToRead->abrir();
 	this->channelToWrite->abrir();
@@ -100,6 +128,8 @@ void PlayerManager::execute(){
 		log(PLAYER_MANAGER_NAME + " : Error en la finalizacion del proceso ", INFORMATION);
 	}
 	flushLog();
+
+	processSpawner->waitChilds();
 
 	delete processSpawner;
 }

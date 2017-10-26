@@ -47,6 +47,8 @@ class PlayerManager {
 		void evaluateEndGame();
 		void writeEndGameToResultManager();
 		static void executeCommandManager();
+		static void executeTeamManager();
+		static void executeMatchManager();
 		void sendSingnalToProcess(pid_t pid);
 		void updateAmountPlayersToWait(int amountTeamsFormed);
 		void writeFlagToFormTeam();
