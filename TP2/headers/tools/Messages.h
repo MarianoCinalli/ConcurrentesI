@@ -4,77 +4,33 @@
 #define MESSAGES_H_
 
 #include "Constants.h"
-	/*
-	*	struct sent to fifoPlayerManager, used by PlayerManager.
-	*	CommandManager and Court send this type of struct
-	*	if CommandManager send this message PlayerManager ignore idPlayer
-	*	types of status: remove, add, finalized, disrupted
-	*
-	*
-	* 	this struct also is sent to FifoTeamManager,
-	*	PlayerManager send this struct to notify status 
-	*	of last Game the player, to TeamManager.
-	*
-	*/
-	struct messagePlayer {
-		int idPlayer;
-		//CommandType status;
-		int status;
+
+	struct messageRequestWeatherService {
+		long mtype;
+		long replyTo;
+		int cityId;
 	};
 
-
-	/*
-	*	TeamManager send this type of struct.
-	*	struct sent to fifoMatchManager, fifo used for MatchManager 
-	*	
-	*/
-	struct messageTeam {
-		int idPlayer1;
-		int idPlayer2;
-		int operation;
+	struct messageRequestExchangeRatesService {
+		long mtype;
+		long replyTo;
+		int currencyId;
 	};
 
-
-	/*
-	*	MatchManager send this type of struct.
-	*	struct sent to fifoMatches, used for all Courts
-	*	
-	*/
-	struct messageMatch {
-		int operation;
-		int idPlayer1_Team1;
-		int idPlayer2_team1;
-		int idPlayer1_Team2;
-		int idPlayer2_team2;
+	// [Temperature] = Celsius - [Pressure] = ATM  - [Humidity] = %
+	struct messageReplyWeatherService {
+		long mtype;
+		int temperature;
+		int pressure;
+		int humidity;
+		int errorId;
 	};
 
-
-
-	/*
-	*	struct sent to fifoResultManager, used for resultManager
-	*	each court send this type of struct when its end successtly.
-	*	
-	*/
-	struct messageResult {
-		int operation;
-		int idPlayer1_Team1;
-		int idPlayer2_team1;
-		int idPlayer1_Team2;
-		int idPlayer2_team2;
-		int setsWonTeam1;
-		int setsWonTeam2;
-	};
-
-	/*
-		* Mensaje de comunicación entre CommandManager y CourtManager
-	*/
-	struct messageTide {
-		TideType status;
-	};
-
-	struct messageCourtManager {
-		int operation;
-		int operationValue;
+	// 1 ARG Peso = exchangeRate currency
+	struct messageReplyExchangeRatesService {
+		long mtype;
+		int exchangeRate;
+		int errorId;
 	};
 
 #endif // MESSAGES_H_
