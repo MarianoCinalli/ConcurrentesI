@@ -17,9 +17,9 @@ class Client : public Loggable{
 		Client ( const std::string& archivo,const char letra );
 		~Client();
 		void connect();
+		void disconnet();
 		void queryWeather();
 		void queryExchange();
-		void disconnet();
 };
 
 #endif /* CLIENTE_H_ */
