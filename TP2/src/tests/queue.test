@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+#include "tools/logger.h"
+
+#include "cola/Queue.h"
+
+
+struct MensajeNumero {
+	long mtype;
+	int numero;
+};
+
+struct MensajeLetra {
+	long mtype;
+	char letra;
+};
+
+
+// Constants ------------------------------------------------------
+int LOG_MIN_LEVEL = 1;
+std::ofstream LOG_FILE_POINTER;
+// Constants ------------------------------------------------------
+
+int main(int argc, char* argv[]) {
+    
+    // Initialization
+    srand(time(NULL)); // Init seed for random
+    LOG_FILE_POINTER.open("beachVoley.log", std::ofstream::app);
+    // End Initialization
+    logSessionStarted();
+
+    const std::string archivo = "test.txt";
+	const char letra = 'a';
+
+	Queue* queue = new Queue(archivo,letra);
+
+	// Escritura
+	std::cout << "Escribiendo primer mensaje, mtype 1 y numero 1" << std::endl;
+	MensajeNumero mensajeNumeroParaEnviar;
+	mensajeNumeroParaEnviar.numero = 1;
+	mensajeNumeroParaEnviar.mtype = 1;
+	queue->write(static_cast<const void*>(&mensajeNumeroParaEnviar),sizeof(mensajeNumeroParaEnviar));
+
+	std::cout << "Escribiendo segundo mensaje, mtype 2 y letra 'a'" << std::endl;
+	MensajeLetra mensajeLetraParaEnviar;
+	mensajeLetraParaEnviar.letra = 'a';
+	mensajeLetraParaEnviar.mtype = 2;
+	queue->write(static_cast<const void*>(&mensajeLetraParaEnviar),sizeof(mensajeLetraParaEnviar));
+	
+
+	// Lectura
+	std::cout << "Leyendo mtype 1, espero un mensaje tipo numero" << std::endl;
+	MensajeNumero mensajeNumeroParaLeer;
+	queue->read(1,static_cast<void*>(&mensajeNumeroParaLeer),sizeof(mensajeNumeroParaLeer));
+	std::cout << "Primer msj leido: " << mensajeNumeroParaLeer.numero << std::endl;
+
+
+	std::cout << "Leyendo mtype 2, espero un mensaje tipo letra" << std::endl;
+	MensajeLetra mensajeLetraParaLeer;
+	queue->read(2,static_cast<void*>(&mensajeLetraParaLeer),sizeof(mensajeLetraParaLeer));
+	std::cout << "Segundo msj leido: " << (char) mensajeLetraParaLeer.letra << std::endl;
+
+	queue->destroy();
+	delete queue;
+
+	logSessionFinished();
+
+
+	return 0;
+}
