@@ -1,5 +1,3 @@
-#include <string>
-
 #ifndef MESSAGES_H_
 #define MESSAGES_H_
 

@@ -33,4 +33,4 @@ int logSessionStarted();
 int logSessionFinished();
 void flushLog();
 
-#endif
+#endif // LOGGER_H

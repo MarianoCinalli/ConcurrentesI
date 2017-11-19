@@ -28,7 +28,7 @@ std::string getMessageLevelString(int messageLevel) {
             return "INFORMATION";
             break;
         default: 
-            return "LEVELERROR";
+            return "WrongMessageLevel";
             break;
     }
 }
