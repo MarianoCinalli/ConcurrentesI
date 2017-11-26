@@ -1,0 +1,12 @@
+========================================================================================================== 
+Program started at 2017-11-25 22:54:37 by 8540
+========================================================================================================== 
+[2017-11-25 22:54:37 - 8540 - INFORMATION] : Proceso creado, su pid es 8541
+[2017-11-25 22:54:37 - 8541 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+========================================================================================================== 
+Program finished at 2017-11-25 22:54:37 by 8540
