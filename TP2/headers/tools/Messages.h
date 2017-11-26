@@ -2,6 +2,7 @@
 #define MESSAGES_H_
 
 #include "Constants.h"
+#include <string>
 
 	// Mensajes para Altas, modificaciones y consultas. ----------------------------
 	// Por ahora consideremos que los clientes (el administrador tambien) 
@@ -47,4 +48,11 @@
 		int errorId;
 	};
 
+	struct weatherDAO {
+		int cityId;
+		std::string name;
+		int temperature;
+		int pressure;
+		int humidity;
+	};
 #endif // MESSAGES_H_

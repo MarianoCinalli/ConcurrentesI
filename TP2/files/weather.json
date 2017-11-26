@@ -1,0 +1,29 @@
+[
+  {
+    "id": "000",
+    "data": {
+      "nombre": "VICENTE LÓPEZ",
+      "temperatura": "26.0°C",
+      "humedad": "45%",
+      "presion": "1006.1 mb"
+    }
+  },
+  {
+    "id": "001",
+    "data": {
+      "nombre": "BELÉN DE ESCOBAR",
+      "temperatura": "26.0°C",
+      "humedad": "39%",
+      "presion": "1007.1 mb "
+    }
+  },
+  {
+    "id": "002",
+    "data": {
+      "nombre": "PILAR",
+      "temperatura": "26.0°C",
+      "humedad": "39%",
+      "presion": "1007.1 mb "
+    }
+  }
+]

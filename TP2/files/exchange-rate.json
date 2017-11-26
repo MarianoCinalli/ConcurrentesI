@@ -1,0 +1,23 @@
+[
+  {
+    "id": "000",
+    "data": {
+      "moneda": "US DOLLAR",
+      "rate": "0.058"
+    }
+  },
+  {
+    "id": "001",
+    "data": {
+      "moneda": "BITCOIN",
+      "rate": "0.0000061"
+    }
+  },
+  {
+    "id": "001",
+    "data": {
+      "moneda": "EURO",
+      "rate": "0.048"
+    }
+  }
+]
