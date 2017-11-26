@@ -48,11 +48,17 @@
 		int errorId;
 	};
 
-	struct weatherDAO {
+	struct weather {
 		int cityId;
 		std::string name;
 		int temperature;
 		int pressure;
 		int humidity;
+	};
+
+	struct exchangeRate {
+		int currencyId;
+		std::string currency;
+		float rate;
 	};
 #endif // MESSAGES_H_

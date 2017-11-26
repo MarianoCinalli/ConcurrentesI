@@ -8,9 +8,9 @@ class WeatherDAO {
 public:
     WeatherDAO();
     ~WeatherDAO();
-    weatherDAO get(int cityID);
-    int update(weatherDAO city);
-    int create(weatherDAO city);
+    weather get(int cityId);
+    int update(weather weather);
+    int create(weather weather);
     int remove(int cityID);
 };
 #endif // WEATHERDAO_H
