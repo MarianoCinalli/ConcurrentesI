@@ -47,4 +47,15 @@
 		int errorId;
 	};
 
+	struct messageConection{
+		long mtype;
+		long senderType;
+	};
+	
+	struct messageQuery{
+		long mtype;
+		int queryType;
+		std::string query;
+	};
+
 #endif // MESSAGES_H_

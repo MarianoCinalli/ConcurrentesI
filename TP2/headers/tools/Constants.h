@@ -20,4 +20,12 @@ enum servicesOperations {
 	SERVICE_OP_READ = 2
 };
 
+// Tipos de consulta de un cliente a un servidor.
+enum servicesQuery {
+	SERVICE_WEATHER = 0,
+	SERVICE_EXCHANGERATE = 1,
+	END_CONECTION = 2,
+};
+
+
 #endif // CONSTANTS_H_

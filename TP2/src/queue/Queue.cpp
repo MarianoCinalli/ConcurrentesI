@@ -1,8 +1,8 @@
 
-#include "cola/Queue.h"
+#include "queue/Queue.h"
 #include <iostream>
 
-Queue::Queue ( const std::string &file, const char letter ){
+Queue::Queue (const std::string &file, const char letter){
     this->key = ftok(file.c_str(),letter);
     if(this->key == -1 ){
         perror("Error en ftok");
