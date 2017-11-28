@@ -21,7 +21,8 @@ class ServerAbstract : public Loggable{
 	public:
 		ServerAbstract(const std::string& file,const char letter,int clientType);
 		~ServerAbstract();
-		void execute();
+		virtual void execute()=0;
+
     	std::string logMemberVariables();
         
 };

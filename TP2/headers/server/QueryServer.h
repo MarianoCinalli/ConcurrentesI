@@ -7,13 +7,10 @@ class QueryServer : ServerAbstract{
 	const std::string QUERY_SERVER_NAME = typeid(QueryServer).name();
 	private:
         void parseMessage(struct messageQuery message);
-		void solveQueryExchangeRate(struct messageQuery message);
-		void solveQueryWeather(struct messageQuery message);
 	public:
 		QueryServer(const std::string& file,const char letter,int clientType);
 		~QueryServer();
 		void execute();
-    	std::string logMemberVariables();
         
 };
 

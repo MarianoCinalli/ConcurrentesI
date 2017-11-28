@@ -3,7 +3,6 @@
 AdministratorServer::AdministratorServer(const std::string& file,const char letter,int clientType) : ServerAbstract(file, letter, clientType) {}
 
 AdministratorServer::~AdministratorServer(){
-        deleteResources();
 }
 
 void AdministratorServer::execute(){
@@ -39,35 +38,4 @@ void AdministratorServer::parseMessage(struct messageQuery message){
             this->finalized = true;
             break;
     }
-}
-
-std::string AdministratorServer::logMemberVariables(){
-    std::string registerLog = "mType: " + std::to_string(this->mType) + 
-    " reciverType: " + std::to_string(this->reciverType);
-    return registerLog;
-}
-
-
-void AdministratorServer::solveQueryWeather(struct messageQuery message){
-    std::cout<<"Consultarlo con el servicio del clima"<<std::endl;
-    std::cout<<"Consulta: "<< message.query<<std::endl;
-    struct messageReplyWeatherService reply;
-    reply.mtype = this->reciverType;
-    reply.temperature = 20;
-    reply.pressure = 20;
-	reply.humidity = 20;
-    reply.errorId = 0;
-    this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyWeatherService));
-    log("Envio respuesta del clima al cliente con id: ",this->reciverType,INFORMATION);
-}
-
-void AdministratorServer::solveQueryExchangeRate(struct messageQuery message){
-    std::cout<<"Consultarlo con el servicio de tiepo de cambio"<<std::endl;
-    std::cout<<"Consulta: "<< message.query<<std::endl;
-    struct messageReplyExchangeRatesService reply;
-    reply.mtype = this->reciverType;    
-    reply.exchangeRate = 10;
-    reply.errorId = 0;    
-    this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyExchangeRatesService));
-    log(ADMINISTRATOR_SERVER_NAME + " : Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
 }
