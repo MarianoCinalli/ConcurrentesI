@@ -1,19 +1,10 @@
 #ifndef QUERYSERVER_H_
 #define QUERYSERVER_H_
 
-#include <string>
+#include "ServerAbstract.h"
 
-#include "tools/Messages.h"
-#include "tools/logger.h"
-#include "queue/Queue.h"
-#include "interfaces/Loggable.h"
-
-class QueryServer : public Loggable{
+class QueryServer : ServerAbstract{
 	private:
-		long int mType;
-		long int reciverType;
-        bool finalized;
-		Queue *mQueue;
         void parseMessage(struct messageQuery message);
 		void solveQueryExchangeRate(struct messageQuery message);
 		void solveQueryWeather(struct messageQuery message);

@@ -1,12 +1,12 @@
-#include "server/QueryServer.h"
+#include "server/AdministratorServer.h"
 
-QueryServer::QueryServer(const std::string& file,const char letter,int clientType) : ServerAbstract(file, letter, clientType) {}
+AdministratorServer::AdministratorServer(const std::string& file,const char letter,int clientType) : ServerAbstract(file, letter, clientType) {}
 
-QueryServer::~QueryServer(){
-    deleteResources();
+AdministratorServer::~AdministratorServer(){
+        deleteResources();
 }
 
-void QueryServer::execute(){
+void AdministratorServer::execute(){
     //aceptando la conexión
     struct messageConection conection;
     conection.mtype = this->reciverType;
@@ -22,7 +22,7 @@ void QueryServer::execute(){
     }
 }
 
-void QueryServer::parseMessage(struct messageQuery message){
+void AdministratorServer::parseMessage(struct messageQuery message){
     switch(message.queryType){
         
         case servicesQuery::SERVICE_WEATHER :
@@ -41,14 +41,14 @@ void QueryServer::parseMessage(struct messageQuery message){
     }
 }
 
-std::string QueryServer::logMemberVariables(){
+std::string AdministratorServer::logMemberVariables(){
     std::string registerLog = "mType: " + std::to_string(this->mType) + 
     " reciverType: " + std::to_string(this->reciverType);
     return registerLog;
 }
 
 
-void QueryServer::solveQueryWeather(struct messageQuery message){
+void AdministratorServer::solveQueryWeather(struct messageQuery message){
     std::cout<<"Consultarlo con el servicio del clima"<<std::endl;
     std::cout<<"Consulta: "<< message.query<<std::endl;
     struct messageReplyWeatherService reply;
@@ -61,7 +61,7 @@ void QueryServer::solveQueryWeather(struct messageQuery message){
     log("Envio respuesta del clima al cliente con id: ",this->reciverType,INFORMATION);
 }
 
-void QueryServer::solveQueryExchangeRate(struct messageQuery message){
+void AdministratorServer::solveQueryExchangeRate(struct messageQuery message){
     std::cout<<"Consultarlo con el servicio de tiepo de cambio"<<std::endl;
     std::cout<<"Consulta: "<< message.query<<std::endl;
     struct messageReplyExchangeRatesService reply;
