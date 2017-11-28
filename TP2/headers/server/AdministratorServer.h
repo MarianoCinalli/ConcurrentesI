@@ -2,8 +2,10 @@
 #define ADMINISTRATORSERVER_H_
 
 #include "ServerAbstract.h"
+#include <typeinfo>
 
 class AdministratorServer : public ServerAbstract{
+	const std::string ADMINISTRATOR_SERVER_NAME = typeid(AdministratorServer).name();
 	private:
 		void parseMessage(struct messageQuery message);
 		/*

@@ -89,6 +89,7 @@ void Client::connect(){
     struct messageConection conection;
     conection.mtype = this->reciverType;
     conection.senderType = this->mType;
+    conection.typeClient = typesClientConections::CLIENT_CONECTION;
     this->mQueue->write(static_cast<const void*>(&conection),sizeof(messageConection));
     log("Conexión iniciada por el cliente con id: ",this->mType,INFORMATION);
     this->mQueue->read(this->mType,static_cast<void*>(&conection),sizeof(messageConection));

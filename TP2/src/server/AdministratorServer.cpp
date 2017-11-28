@@ -17,7 +17,7 @@ void AdministratorServer::execute(){
     struct messageQuery message;
     while(!finalized){
         this->mQueue->read(this->mType,static_cast<void*>(&message),sizeof(messageQuery));
-        log("Consulta del cliente con id: ",this->reciverType,INFORMATION);
+        log(ADMINISTRATOR_SERVER_NAME + " : Consulta del cliente con id: ",this->reciverType,INFORMATION);
         this->parseMessage(message);  
     }
 }
@@ -34,7 +34,7 @@ void AdministratorServer::parseMessage(struct messageQuery message){
             break;
     
         case servicesQuery::END_CONECTION :
-            log("Se recibe el mensaje de finalización de conexión, cliente con id: ",this->reciverType,INFORMATION);
+            log(ADMINISTRATOR_SERVER_NAME + " : Se recibe el mensaje de finalización de conexión, cliente con id: ",this->reciverType,INFORMATION);
             std::cout<<"Fin de la conexión"<<std::endl; 
             this->finalized = true;
             break;
@@ -69,5 +69,5 @@ void AdministratorServer::solveQueryExchangeRate(struct messageQuery message){
     reply.exchangeRate = 10;
     reply.errorId = 0;    
     this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyExchangeRatesService));
-    log("Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
+    log(ADMINISTRATOR_SERVER_NAME + " : Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
 }
