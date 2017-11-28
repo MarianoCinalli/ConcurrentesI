@@ -2,8 +2,9 @@
 #define QUERYSERVER_H_
 
 #include "ServerAbstract.h"
-
+#include <typeinfo>
 class QueryServer : ServerAbstract{
+	const std::string QUERY_SERVER_NAME = typeid(QueryServer).name();
 	private:
         void parseMessage(struct messageQuery message);
 		void solveQueryExchangeRate(struct messageQuery message);

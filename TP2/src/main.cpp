@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
         Client* client = new Client(file,letter);
         client->execute();
         delete client;
+        exit(0);
     }else{
         Server* server = new Server(file,letter,0,0);
         server->execute();

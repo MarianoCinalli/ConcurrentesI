@@ -22,11 +22,12 @@ class ClientAbstract : public Loggable{
 		long int reciverType;
 		Queue* mQueue;
 		bool finalize;
-        int mTypeClient;
 		struct messageReplyWeatherService queryWeather(std::string cityId);
 		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
+	    enum typesClientConections mTypeClient;
+		
 	public:
-		ClientAbstract(const std::string& file,const char letter, int typeClient);
+		ClientAbstract(const std::string& file,const char letter, enum typesClientConections typeClient);
 		~ClientAbstract();
         void connect();
 		void disconnect();

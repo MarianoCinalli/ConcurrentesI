@@ -1,6 +1,6 @@
 #include "client/ClientAbstract.h"
 
-ClientAbstract::ClientAbstract (const std::string& file,const char letter, int typeClient){
+ClientAbstract::ClientAbstract (const std::string& file,const char letter, enum typesClientConections typeClient){
     this->mQueue = new Queue(file,letter);
     this->mType = getpid();
     //mensage por defecto para iniciar la conexión con el servidor

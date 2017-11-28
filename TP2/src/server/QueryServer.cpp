@@ -3,7 +3,7 @@
 QueryServer::QueryServer(const std::string& file,const char letter,int clientType) : ServerAbstract(file, letter, clientType) {}
 
 QueryServer::~QueryServer(){
-    deleteResources();
+    //deleteResources();
 }
 
 void QueryServer::execute(){
@@ -17,10 +17,10 @@ void QueryServer::execute(){
     struct messageQuery message;
     while(!this->finalized){
         this->mQueue->read(this->mType,static_cast<void*>(&message),sizeof(messageQuery));
-        log("Consulta del cliente con id: ",this->reciverType,INFORMATION);
+        log(QUERY_SERVER_NAME + " : Consulta del cliente con id: ",this->reciverType,INFORMATION);
         this->parseMessage(message);  
     }
-    log("Se cierra el Servidor de consultas con id: ",this->mType,INFORMATION);
+    log(QUERY_SERVER_NAME + " : Finaliza query server",INFORMATION);
 }
 
 void QueryServer::parseMessage(struct messageQuery message){
@@ -35,7 +35,7 @@ void QueryServer::parseMessage(struct messageQuery message){
             break;
     
         case servicesQuery::END_CONECTION :
-            log("Se recibe el mensaje de finalización de conexión, cliente con id: ",this->reciverType,INFORMATION);
+            log(QUERY_SERVER_NAME + " : Se recibe el mensaje de finalización de conexión, cliente con id: ",this->reciverType,INFORMATION);
             std::cout<<"Fin de la conexión"<<std::endl; 
             this->finalized = true;
             break;
@@ -59,7 +59,7 @@ void QueryServer::solveQueryWeather(struct messageQuery message){
 	reply.humidity = 20;
     reply.errorId = 0;
     this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyWeatherService));
-    log("Envio respuesta del clima al cliente con id: ",this->reciverType,INFORMATION);
+    log(QUERY_SERVER_NAME + " : Envio respuesta del clima al cliente con id: ",this->reciverType,INFORMATION);
 }
 
 void QueryServer::solveQueryExchangeRate(struct messageQuery message){
@@ -70,5 +70,5 @@ void QueryServer::solveQueryExchangeRate(struct messageQuery message){
     reply.exchangeRate = 10;
     reply.errorId = 0;    
     this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyExchangeRatesService));
-    log("Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
+    log(QUERY_SERVER_NAME + " : Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
 }

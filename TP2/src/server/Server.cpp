@@ -27,7 +27,7 @@ void Server::execute(){
         //if(){
          //   this->assingQueryServer(conection.senderType);
         //}else{
-            this->createQueryServer(conection.senderType);
+            this->createQueryServer(conection);
         //}
     }
 }
@@ -40,18 +40,26 @@ void Server::assingQueryServer(int clientType){
 }
 
 
-void Server::createQueryServer(int clientType){
+void Server::createQueryServer(struct messageConection connection){
     pid_t pid;
     pid = fork();
     bool isChild = pid ==0;
     if(isChild){
-        log("Se crea un servidor para atender al cliente con id: ",clientType,INFORMATION);
-        QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
-        queryServer->execute();
-        delete queryServer;
-        exit(0);
+        if (connection.typeClient == typesClientConections::CLIENT_CONECTION) {
+            log(SERVER_NAME + " : Se crea un servidor para atender al cliente con id: ",connection.senderType,INFORMATION);
+            QueryServer *queryServer = new QueryServer(this->file,this->letter,connection.senderType);
+            queryServer->execute();
+            delete queryServer;
+            exit(0);
+        } else if (connection.typeClient == typesClientConections::ADMINISTRATOR_CONECTION) {
+            log(SERVER_NAME + " : Se crea un servidor para atender al administrador con id: ",connection.senderType,INFORMATION);
+            AdministratorServer *administratorServer = new AdministratorServer(this->file,this->letter,connection.senderType);
+            administratorServer->execute();
+            delete administratorServer;
+            exit(0);
+        }
     }else if(pid < 0){
-        log("Error no se pudo crear un servidor para atender al cliente con id: ",clientType,ERROR);
+        log(SERVER_NAME + " : Error no se pudo crear un servidor para atender al consumidor de servicios con id: ",connection.senderType,ERROR);
     }
 }
 
