@@ -28,10 +28,12 @@ void Client::execute(){
     }
 
     std::cout<<"CONEXIÓN INICIADA"<<std::endl;
-    std::cout<<"OPCIONES:"<<std::endl;
+    std::cout<<"-----------------------OPCIONES:--------------------------"<<std::endl;
     std::cout<<"PARA CONSULTAR EL CLIMA INGRESAR LA OPCIÓN: 2"<<std::endl;
     std::cout<<"PARA CONSULTAR EL EL TIPO DE CAMBIO INGRESAR LA OPCIÓN: 3"<<std::endl;
     std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
+    std::cout<<"----------------------------------------------------------"<<std::endl;
+    
 
     while(!this->finalize){
         char option = '\0';
@@ -54,6 +56,12 @@ void Client::execute(){
             default :
                  std::cout<<"opcion ingresada: "<<option<<" incorrecta"<<std::endl;
         }
+
+        std::cout<<"-----------------------OPCIONES:--------------------------"<<std::endl;
+        std::cout<<"PARA CONSULTAR EL CLIMA INGRESAR LA OPCIÓN: 2"<<std::endl;
+        std::cout<<"PARA CONSULTAR EL EL TIPO DE CAMBIO INGRESAR LA OPCIÓN: 3"<<std::endl;
+        std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
+        std::cout<<"----------------------------------------------------------"<<std::endl;
     }
 }
 
