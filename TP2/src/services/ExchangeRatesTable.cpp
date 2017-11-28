@@ -16,3 +16,11 @@ int ExchangeRatesTable::get(int id) {
     }
     return exchangeRate;
 };
+
+void ExchangeRatesTable::saveChanges() {
+    // Write prettified JSON to file. With four spaces
+    log("ExchangeRatesTable: Saving JSON db", INFORMATION);
+    std::ofstream o("db/exchangeRates.json", std::ios_base::trunc);
+    o << std::setw(4) << this->table << std::endl;
+    log("ExchangeRatesTable: JSON saved!", INFORMATION);
+}

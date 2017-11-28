@@ -6,6 +6,7 @@ ExchangeRatesService::ExchangeRatesService(int queueId) {
 };
 
 ExchangeRatesService::~ExchangeRatesService() {
+	this->table->saveChanges();
 };
 
 int ExchangeRatesService::getExchangeRateForCurrency(int currencyId) {
@@ -16,7 +17,11 @@ messageReplyExchangeRatesService ExchangeRatesService::getReply(messageRequestEx
 	messageReplyExchangeRatesService reply;
 	reply.mtype = messageToReply.replyTo;
 	reply.exchangeRate = this->getExchangeRateForCurrency(messageToReply.currencyId);
-	reply.errorId = NO_ERROR;
+	if (reply.exchangeRate < 0) {
+		reply.errorId = NOT_FOUND;
+	} else {
+		reply.errorId = NO_ERROR;
+	}
 	return reply;
 };
 
@@ -34,7 +39,7 @@ void ExchangeRatesService::run() {
 			getpid(),
 			0
 		);
-    	log("ExchangeRatesService: Request recibido.", INFORMATION);
+		log("ExchangeRatesService: Request recibido.", INFORMATION);
 		messageReplyExchangeRatesService reply = getReply(readMessage);
 		msgsnd(
 			this->queueId,
@@ -42,7 +47,7 @@ void ExchangeRatesService::run() {
 			sizeof(reply) - sizeof(long),
 			0
 		);
-    	log("ExchangeRatesService: Respuesta envidada.", INFORMATION);
-    	shouldRun = false;
+		log("ExchangeRatesService: Respuesta envidada.", INFORMATION);
+		shouldRun = false; // DELETE cuando agrego la op
 	}
 };

@@ -2,6 +2,7 @@
 #define EXCHANGERATESTABLE_H
 
 #include <string>
+#include <fstream>
 
 #include "tools/logger.h"
 #include "tools/Constants.h"
@@ -19,6 +20,7 @@ public:
 	ExchangeRatesTable();
 	~ExchangeRatesTable();
 	int get(int id);
+	void saveChanges();
 };
 
 #endif // EXCHANGERATESTABLE_H
