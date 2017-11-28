@@ -56,7 +56,12 @@ void ExchangeRatesService::run() {
 		log("ExchangeRatesService: Esperando por un nuevo request.", INFORMATION);
 		messageRequestExchangeRatesService readMessage = this->getRequest();
 		log("ExchangeRatesService: Request recibido.", INFORMATION);
-		this->reply(&readMessage);
-		shouldRun = false; // DELETE cuando agrego la op
+		if (readMessage.operationType == SERVICE_OP_END) {
+			log("ExchangeRatesService: Operacion finalizar.", INFORMATION);
+			shouldRun = false;
+		} else {
+			log("ExchangeRatesService: Operacion leer.", INFORMATION);
+			this->reply(&readMessage);
+		}
 	}
 };

@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
     message.mtype = exchangeRatesServicePid; // El servicio esta identificado por si pid.
     message.replyTo = getpid(); // Y le responde al pid de este proceso.
     message.currencyId = 2;
+    message.operationType = SERVICE_OP_READ;
 	std::cout << "Enviando mensaje al servicio." << std::endl;
 	msgsnd(
 		exchangeRatesQueueId,
@@ -74,6 +75,18 @@ int main(int argc, char* argv[]) {
 		std::cout << "Espero un 20 para libra, recibi: " << reply.exchangeRate << std::endl;
 	}
 
+    messageRequestExchangeRatesService endMessage;
+    endMessage.mtype = exchangeRatesServicePid; // El servicio esta identificado por si pid.
+    endMessage.operationType = SERVICE_OP_END;
+	std::cout << "Enviando mensaje de finalizacion al servicio." << std::endl;
+	msgsnd(
+		exchangeRatesQueueId,
+		static_cast<const void*>(&endMessage),
+		sizeof(endMessage) - sizeof(long),
+		0
+	);
+	std::cout << "Mensaje enviado." << std::endl;
+
 	/*
 		Obs.:
 		1 - Tal vez convenga tener una clase (podria ser global) para
@@ -82,6 +95,10 @@ int main(int argc, char* argv[]) {
 		2 - El servicio por ahora no muere seguramente le agregue un
 		tipo de commando para finalice su ejecucion.
 	*/
+	std::cout << "Waiting..." << std::endl;
+	int status;
+	waitpid(exchangeRatesServicePid, &status, WUNTRACED);
+	std::cout << "Waited! Status:" << status << std::endl;
 	msgctl(exchangeRatesQueueId, IPC_RMID, NULL);
 	logSessionFinished();
 	return 0;
