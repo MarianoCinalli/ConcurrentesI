@@ -40,6 +40,7 @@ void QueryServer::parseMessage(struct messageQuery message){
             break;
     
         case servicesQuery::END_CONECTION :
+            log("Se recibe el mensaje de finalización de conexión, cliente con id: ",this->reciverType,INFORMATION);
             std::cout<<"Fin de la conexión"<<std::endl; 
             this->finalized = true;
             break;

@@ -19,7 +19,7 @@ Server::~Server(){
 
 void Server::execute(){
     //this->createQueryServers();
-    int i = 0;
+
     while(!this->finalized){
         //escuchar conexiones
         struct messageConection conection;
@@ -29,10 +29,6 @@ void Server::execute(){
         //}else{
             this->createQueryServer(conection.senderType);
         //}
-        i++;
-        if(i>10){
-            this->finalized = true;
-        }
     }
 }
 
@@ -53,6 +49,7 @@ void Server::createQueryServer(int clientType){
         QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
         queryServer->execute();
         delete queryServer;
+        exit(0);
     }else if(pid < 0){
         log("Error no se pudo crear un servidor para atender al cliente con id: ",clientType,ERROR);
     }
