@@ -14,11 +14,11 @@ void QueryServer::execute(){
     this->mQueue->write(static_cast<const void*>(&conection),sizeof(messageConection));
 
     
-    struct messageQuery message;
+    struct messageQuery *message = new struct messageQuery;
     while(!this->finalized){
-        this->mQueue->read(this->mType,static_cast<void*>(&message),sizeof(messageQuery));
+        this->mQueue->read(this->mType,static_cast<void*>(message),sizeof(messageQuery));
         log(QUERY_SERVER_NAME + " : Consulta del cliente con id: ",this->reciverType,INFORMATION);
-        this->parseMessage(message);  
+        this->parseMessage(*message);  
     }
     log(QUERY_SERVER_NAME + " : Finaliza query server",INFORMATION);
 }
