@@ -50,6 +50,7 @@
 	struct messageConection{
 		long mtype;
 		long senderType;
+		enum typesClientConections typeClient;
 	};
 	
 	struct messageQuery{

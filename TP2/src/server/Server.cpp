@@ -22,12 +22,12 @@ void Server::execute(){
 
     while(!this->finalized){
         //escuchar conexiones
-        struct messageConection conection;
-        this->mQueue->read(this->mType,static_cast<void*>(&conection),sizeof(messageConection));
+        struct messageConection connection;
+        this->mQueue->read(this->mType,static_cast<void*>(&connection),sizeof(messageConection));
         //if(){
          //   this->assingQueryServer(conection.senderType);
         //}else{
-            this->createQueryServer(conection.senderType);
+            this->createQueryServer(connection.senderType, connection.typeClient);
         //}
     }
 }
@@ -40,16 +40,24 @@ void Server::assingQueryServer(int clientType){
 }
 
 
-void Server::createQueryServer(int clientType){
+void Server::createQueryServer(int clientType, int typeClient){
     pid_t pid;
     pid = fork();
     bool isChild = pid ==0;
     if(isChild){
-        log("Se crea un servidor para atender al cliente con id: ",clientType,INFORMATION);
-        QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
-        queryServer->execute();
-        delete queryServer;
-        exit(0);
+        if(typeClient == typesClientConections::CLIENT_CONECTION){
+            log("Se crea un servidor para atender al cliente con id: ",clientType,INFORMATION);
+            QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
+            queryServer->execute();
+            delete queryServer;
+            exit(0);
+        }else if(typeClient == typesClientConections::ADMINISTRATOR_CONECTION){
+            log("Se crea un servidor para atender al Administrador con id: ",clientType,INFORMATION);
+            QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
+            queryServer->execute();
+            delete queryServer;
+            exit(0);
+        }
     }else if(pid < 0){
         log("Error no se pudo crear un servidor para atender al cliente con id: ",clientType,ERROR);
     }

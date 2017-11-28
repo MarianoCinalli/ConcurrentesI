@@ -27,4 +27,9 @@ enum servicesQuery {
 	END_CONECTION = 2,
 };
 
+enum typesClientConections{
+	CLIENT_CONECTION = 0,
+	ADMINISTRATOR_CONECTION =1
+};
+
 #endif // CONSTANTS_H_

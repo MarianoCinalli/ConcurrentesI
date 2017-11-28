@@ -7,21 +7,22 @@
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
+#include "server/ServerAbstract.h"
 
-class QueryServer : public Loggable{
+class QueryServer : public ServerAbstract{
 	private:
-		long int mType;
+		/*long int mType;
 		long int reciverType;
         bool finalized;
 		Queue *mQueue;
-        void parseMessage(struct messageQuery message);
 		void solveQueryExchangeRate(struct messageQuery message);
 		void solveQueryWeather(struct messageQuery message);
+		*/void parseMessage(struct messageQuery message);
 	public:
 		QueryServer(const std::string& file,const char letter,int clientType);
 		~QueryServer();
 		void execute();
-    	std::string logMemberVariables();
+    	//std::string logMemberVariables();
         
 };
 

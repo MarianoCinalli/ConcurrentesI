@@ -23,7 +23,7 @@ class Server : public Loggable{
 		bool finalized;
 		void createQueryServers();
         void assingQueryServer(int clientType);
-        void createQueryServer(int clientType);
+        void createQueryServer(int clientType, int typesClient);
 	public:
 		Server(const std::string& file,const char letter,int amountQueryServers,int maxQueryServer);
 		~Server();
