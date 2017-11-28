@@ -26,7 +26,9 @@ public:
 
 private:
 	int getExchangeRateForCurrency(int currencyId);
-	messageReplyExchangeRatesService getReply(messageRequestExchangeRatesService messageToReply);
+	messageReplyExchangeRatesService getReply(messageRequestExchangeRatesService* messageToReply);
+	messageRequestExchangeRatesService getRequest();
+	void reply(messageRequestExchangeRatesService* messageToReply);
 };
 
 #endif // EXCHANGERATESSERVICE_H

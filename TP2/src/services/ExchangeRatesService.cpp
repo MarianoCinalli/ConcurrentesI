@@ -13,10 +13,10 @@ int ExchangeRatesService::getExchangeRateForCurrency(int currencyId) {
 	return this->table->get(currencyId);
 };
 
-messageReplyExchangeRatesService ExchangeRatesService::getReply(messageRequestExchangeRatesService messageToReply) {
+messageReplyExchangeRatesService ExchangeRatesService::getReply(messageRequestExchangeRatesService* messageToReply) {
 	messageReplyExchangeRatesService reply;
-	reply.mtype = messageToReply.replyTo;
-	reply.exchangeRate = this->getExchangeRateForCurrency(messageToReply.currencyId);
+	reply.mtype = messageToReply->replyTo;
+	reply.exchangeRate = this->getExchangeRateForCurrency(messageToReply->currencyId);
 	if (reply.exchangeRate < 0) {
 		reply.errorId = NOT_FOUND;
 	} else {
@@ -25,29 +25,38 @@ messageReplyExchangeRatesService ExchangeRatesService::getReply(messageRequestEx
 	return reply;
 };
 
+messageRequestExchangeRatesService ExchangeRatesService::getRequest() {
+	messageRequestExchangeRatesService readMessage;
+	msgrcv(
+		this->queueId,
+		static_cast<void *>(&readMessage),
+		sizeof(readMessage) - sizeof(long),
+		getpid(),
+		0
+	);
+	return readMessage;
+}
+
+void ExchangeRatesService::reply(messageRequestExchangeRatesService* messageToReply) {
+	messageReplyExchangeRatesService reply = this->getReply(messageToReply);
+	msgsnd(
+		this->queueId,
+		static_cast<const void*>(&reply),
+		sizeof(reply) - sizeof(long),
+		0
+	);
+	log("ExchangeRatesService: Respuesta envidada.", INFORMATION);
+}
+
 void ExchangeRatesService::run() {
 	bool shouldRun = true;
-	messageRequestExchangeRatesService readMessage;
-    log("ExchangeRatesService: Runing.", INFORMATION);
+	log("ExchangeRatesService: Runing.", INFORMATION);
 	while (shouldRun) {
 		// Busco en la cola un mensaje para este servicio (se envian con mtype = pid del servicio)
-    	log("ExchangeRatesService: Esperando por un nuevo request.", INFORMATION);
-		msgrcv(
-			this->queueId,
-			static_cast<void *>(&readMessage),
-			sizeof(readMessage) - sizeof(long),
-			getpid(),
-			0
-		);
+		log("ExchangeRatesService: Esperando por un nuevo request.", INFORMATION);
+		messageRequestExchangeRatesService readMessage = this->getRequest();
 		log("ExchangeRatesService: Request recibido.", INFORMATION);
-		messageReplyExchangeRatesService reply = getReply(readMessage);
-		msgsnd(
-			this->queueId,
-			static_cast<const void*>(&reply),
-			sizeof(reply) - sizeof(long),
-			0
-		);
-		log("ExchangeRatesService: Respuesta envidada.", INFORMATION);
+		this->reply(&readMessage);
 		shouldRun = false; // DELETE cuando agrego la op
 	}
 };
