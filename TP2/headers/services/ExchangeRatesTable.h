@@ -19,7 +19,7 @@ private:
 public:
 	ExchangeRatesTable();
 	~ExchangeRatesTable();
-	int get(int id);
+	int get(std::string currency);
 	void saveChanges();
 };
 

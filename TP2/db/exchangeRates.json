@@ -1,9 +1,9 @@
 {
-    "1": 18,
-    "2": 20,
-    "3": 22,
-    "4": 2,
-    "5": 44,
-    "6": 5,
-    "7": 2
+    "dolar": 18,
+    "euro": 20,
+    "libra": 22,
+    "peso chileno": 1,
+    "peso mexicano": 1,
+    "peso uruguayo": 3,
+    "yen": 1
 }

@@ -9,14 +9,14 @@ ExchangeRatesService::~ExchangeRatesService() {
 	this->table->saveChanges();
 };
 
-int ExchangeRatesService::getExchangeRateForCurrency(int currencyId) {
-	return this->table->get(currencyId);
+int ExchangeRatesService::getExchangeRateForCurrency(std::string currency) {
+	return this->table->get(currency);
 };
 
 messageReplyExchangeRatesService ExchangeRatesService::getReply(messageRequestExchangeRatesService* messageToReply) {
 	messageReplyExchangeRatesService reply;
 	reply.mtype = messageToReply->replyTo;
-	reply.exchangeRate = this->getExchangeRateForCurrency(messageToReply->currencyId);
+	reply.exchangeRate = this->getExchangeRateForCurrency(messageToReply->currency);
 	if (reply.exchangeRate < 0) {
 		reply.errorId = NOT_FOUND;
 	} else {
@@ -50,7 +50,7 @@ void ExchangeRatesService::reply(messageRequestExchangeRatesService* messageToRe
 
 void ExchangeRatesService::run() {
 	bool shouldRun = true;
-	log("ExchangeRatesService: Runing.", INFORMATION);
+	log("ExchangeRatesService: Servicio iniciado.", INFORMATION);
 	while (shouldRun) {
 		// Busco en la cola un mensaje para este servicio (se envian con mtype = pid del servicio)
 		log("ExchangeRatesService: Esperando por un nuevo request.", INFORMATION);
@@ -64,4 +64,5 @@ void ExchangeRatesService::run() {
 			this->reply(&readMessage);
 		}
 	}
+	log("ExchangeRatesService: Servicio finalizado.", INFORMATION);
 };

@@ -25,7 +25,7 @@ public:
 	void run();
 
 private:
-	int getExchangeRateForCurrency(int currencyId);
+	int getExchangeRateForCurrency(std::string currency);
 	messageReplyExchangeRatesService getReply(messageRequestExchangeRatesService* messageToReply);
 	messageRequestExchangeRatesService getRequest();
 	void reply(messageRequestExchangeRatesService* messageToReply);

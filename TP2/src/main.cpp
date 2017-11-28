@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
     messageRequestExchangeRatesService message;
     message.mtype = exchangeRatesServicePid; // El servicio esta identificado por si pid.
     message.replyTo = getpid(); // Y le responde al pid de este proceso.
-    message.currencyId = 2;
+    strcpy(message.currency, "peso uruguayo");
     message.operationType = SERVICE_OP_READ;
 	std::cout << "Enviando mensaje al servicio." << std::endl;
 	msgsnd(
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 	if (reply.errorId == NOT_FOUND) {
 		std::cout << "Error!!!" << std::endl;
 	} else {
-		std::cout << "Espero un 20 para libra, recibi: " << reply.exchangeRate << std::endl;
+		std::cout << "Espero un 3 para peso uruguayo, recibi: " << reply.exchangeRate << std::endl;
 	}
 
     messageRequestExchangeRatesService endMessage;

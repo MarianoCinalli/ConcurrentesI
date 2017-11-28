@@ -6,13 +6,12 @@ ExchangeRatesTable::ExchangeRatesTable() {
     this->table = json::parse(i);
 };
 
-int ExchangeRatesTable::get(int id) {
-	std::string key = std::to_string(id);
+int ExchangeRatesTable::get(std::string currency) {
 	int exchangeRate = -1;
-    if (this->table.find(key) == this->table.end()) {
-        log("ExchangeRatesTable: **error** No se encontro la key: " + key , ERROR);
+    if (this->table.find(currency) == this->table.end()) {
+        log("ExchangeRatesTable: **error** No se encontro la key: " + currency , ERROR);
     } else {
-        exchangeRate = this->table[key];
+        exchangeRate = this->table[currency];
     }
     return exchangeRate;
 };

@@ -16,7 +16,7 @@
 		long mtype;
 		long replyTo;
 		int operationType;
-		int cityId;
+		char city[50];
 		int newTemperature;
 		int newPressure;
 		int newHumidity;
@@ -26,7 +26,7 @@
 		long mtype;
 		long replyTo;
 		int operationType;
-		int currencyId;
+		char currency[50];
 		int newExchangeRate;
 	};
 
