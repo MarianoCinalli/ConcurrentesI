@@ -34,7 +34,7 @@ void Client::execute(){
     std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
 
     while(!this->finalize){
-        int option;
+        char option = '\0';
         std::cin>>option;
     
         switch(option){
@@ -95,6 +95,7 @@ void Client::disconnect(){
     message.queryType = servicesQuery::END_CONECTION;
     message.query = "";
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
+    this->finalize = false;
     log("Terminando la conexión con el servidor, cliente con id: ",this->mType,INFORMATION);
 } 
 
