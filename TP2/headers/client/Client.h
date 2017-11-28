@@ -23,17 +23,17 @@ class Client : public Loggable{
 		long int reciverType;
 		Queue* mQueue;
 		bool finalize;
-		void execute();
-	public:
-		Client(const std::string& file,const char letter);
-		~Client();
+		struct messageReplyWeatherService queryWeather(std::string cityId);
+		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
 		void connect();
 		void disconnect();
 		void solveQueryWeaher();
 		void solveQueryExchangeRate();
-		struct messageReplyWeatherService queryWeather(std::string cityId);
-		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
 		std::string logMemberVariables();
+	public:
+		Client(const std::string& file,const char letter);
+		~Client();
+		void execute();
 };
 
 #endif /* CLIENTE_H_ */

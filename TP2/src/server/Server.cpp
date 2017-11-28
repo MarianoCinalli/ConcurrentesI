@@ -19,7 +19,7 @@ Server::~Server(){
 
 void Server::execute(){
     //this->createQueryServers();
-
+    int i = 0;
     while(!this->finalized){
         //escuchar conexiones
         struct messageConection conection;
@@ -29,6 +29,10 @@ void Server::execute(){
         //}else{
             this->createQueryServer(conection.senderType);
         //}
+        i++;
+        if(i>10){
+            this->finalized = true;
+        }
     }
 }
 

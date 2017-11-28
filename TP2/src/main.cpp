@@ -21,8 +21,18 @@ int main(int argc, char* argv[]) {
     std::string file = "main.cpp";
     char letter = 'a';
 
-    Server* server = new Server(file,letter,0,0);
-    Client* client = new Client(file,letter);
+    pid_t pid;
+    pid = fork();
+
+    if(pid == 0){
+        Client* client = new Client(file,letter);
+        client->execute();
+        delete client;
+    }else{
+        Server* server = new Server(file,letter,0,0);
+        server->execute();
+        delete server;
+    }
     
 	logSessionFinished();
 	return 0;

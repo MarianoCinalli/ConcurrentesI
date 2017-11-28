@@ -6,13 +6,15 @@ Queue::Queue (const std::string &file, const char letter){
     this->key = ftok(file.c_str(),letter);
     if(this->key == -1 ){
         perror("Error en ftok");
-        log("Error en ftok ", ERROR);   
+        log("Error en ftok ", ERROR);
+        exit(-1);   
     }
 
     this->id  = msgget(this->key, 0777 | IPC_CREAT);
     if(this->id == -1){
         perror("Error al obtener la cola con msgget");
         log("Error al obtener la cola con msgget ", ERROR);
+        exit(-1);
     }
 }
 
