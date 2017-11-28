@@ -12,7 +12,6 @@ ServerAbstract::~ServerAbstract(){
 }
 
 void ServerAbstract::deleteResources() {
-    this->mQueue->destroy();
     delete this->mQueue;
 }
 

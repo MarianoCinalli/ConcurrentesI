@@ -15,11 +15,12 @@ void QueryServer::execute(){
 
     
     struct messageQuery message;
-    while(!finalized){
+    while(!this->finalized){
         this->mQueue->read(this->mType,static_cast<void*>(&message),sizeof(messageQuery));
         log("Consulta del cliente con id: ",this->reciverType,INFORMATION);
         this->parseMessage(message);  
     }
+    log("Se cierra el Servidor de consultas con id: ",this->mType,INFORMATION);
 }
 
 void QueryServer::parseMessage(struct messageQuery message){
