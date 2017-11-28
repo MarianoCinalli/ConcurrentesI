@@ -14,23 +14,31 @@ Client::~Client(){
     delete this->mQueue;
 }
 
-
 void Client::execute(){
-    std::cout<<"INICIA EL CLIENTE"<<std::endl;
-    std::cout<<"OPCIONES:"<<std::endl;
+    
+    bool connect = false;
     std::cout<<"PARA INCIAR LA CONEXIÓN INGRESAR LA OPCIÓN: 1"<<std::endl;
+    while(!connect){
+        char option = '\0';
+        std::cin>>option;
+        if(option == optionConnect){
+            this->connect();
+            connect = true;
+        }
+    }
+
+    std::cout<<"CONEXIÓN INICIADA"<<std::endl;
+    std::cout<<"OPCIONES:"<<std::endl;
     std::cout<<"PARA CONSULTAR EL CLIMA INGRESAR LA OPCIÓN: 2"<<std::endl;
     std::cout<<"PARA CONSULTAR EL EL TIPO DE CAMBIO INGRESAR LA OPCIÓN: 3"<<std::endl;
     std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
-    
+
     while(!this->finalize){
         int option;
         std::cin>>option;
+    
         switch(option){
-            case optionConnect:
-                this->connect();
-                break;
-                
+
             case optionQueryWeather:
                 this->solveQueryWeaher();
                 break;
@@ -42,6 +50,9 @@ void Client::execute(){
             case optionDisconnect:
                 this->disconnect();
                 break;
+
+            default :
+                 std::cout<<"opcion ingresada: "<<option<<" incorrecta"<<std::endl;
         }
     }
 }

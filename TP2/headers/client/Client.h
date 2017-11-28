@@ -10,11 +10,10 @@
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
 
-#define optionConnect 1
-#define optionQueryWeather 2
-#define optionQueryExchangeRate 3
-#define optionDisconnect 0
-
+#define optionConnect '1'
+#define optionQueryWeather '2'
+#define optionQueryExchangeRate '3'
+#define optionDisconnect '0'
 
 class Client : public Loggable{
 

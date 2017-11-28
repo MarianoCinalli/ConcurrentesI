@@ -27,5 +27,4 @@ enum servicesQuery {
 	END_CONECTION = 2,
 };
 
-
 #endif // CONSTANTS_H_
