@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     // End Initialization
     logSessionStarted();
 
-    std::string file = "main.cpp";
+    std::string file = "test.txt";
     char letter = 'a';
 
     pid_t pid;

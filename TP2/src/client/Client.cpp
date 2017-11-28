@@ -30,6 +30,7 @@ void Client::execute(){
             case optionConnect:
                 this->connect();
                 break;
+                
             case optionQueryWeather:
                 this->solveQueryWeaher();
                 break;
