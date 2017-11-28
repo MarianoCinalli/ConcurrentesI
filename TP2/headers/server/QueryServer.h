@@ -15,6 +15,8 @@ class QueryServer : public Loggable{
         bool finalized;
 		Queue *mQueue;
         void parseMessage(struct messageQuery message);
+		void solveQueryExchangeRate(struct messageQuery message);
+		void solveQueryWeather(struct messageQuery message);
 	public:
 		QueryServer(const std::string& file,const char letter,int clientType);
 		~QueryServer();
