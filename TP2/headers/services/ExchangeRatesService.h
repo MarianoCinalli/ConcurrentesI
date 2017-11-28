@@ -6,6 +6,7 @@
 #include "tools/logger.h"
 #include "tools/Messages.h"
 #include "tools/Constants.h"
+#include "services/ExchangeRatesTable.h"
 
 // To send message to the queue.
 #include <sys/types.h>
@@ -16,6 +17,7 @@ class ExchangeRatesService {
 
 private:
 	int queueId;
+	ExchangeRatesTable* table;
 
 public:
 	ExchangeRatesService(int queueId);
@@ -24,8 +26,7 @@ public:
 
 private:
 	int getExchangeRateForCurrency(int currencyId);
-	messageReplyExchangeRatesService getReply(messageRequestExchangeRatesService* messageToReply);
-	void waitChilds();
+	messageReplyExchangeRatesService getReply(messageRequestExchangeRatesService messageToReply);
 };
 
 #endif // EXCHANGERATESSERVICE_H

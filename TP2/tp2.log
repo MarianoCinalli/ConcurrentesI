@@ -1,12 +1,112 @@
 ========================================================================================================== 
-Program started at 2017-11-25 22:54:37 by 8540
+Program started at 2017-11-27 22:36:32 by 7782
 ========================================================================================================== 
-[2017-11-25 22:54:37 - 8540 - INFORMATION] : Proceso creado, su pid es 8541
-[2017-11-25 22:54:37 - 8541 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
-[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Runing.
-[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
-[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Request recibido.
-[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
-[2017-11-25 22:54:37 - 8541 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:36:32 - 7782 - INFORMATION] : Proceso creado, su pid es 7783
+[2017-11-27 22:36:32 - 7783 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:36:32 - 7783 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:36:32 - 7783 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:36:32 - 7783 - INFORMATION] : ExchangeRatesService: Request recibido.
 ========================================================================================================== 
-Program finished at 2017-11-25 22:54:37 by 8540
+Program started at 2017-11-27 22:38:41 by 8156
+========================================================================================================== 
+[2017-11-27 22:38:41 - 8156 - INFORMATION] : Proceso creado, su pid es 8157
+[2017-11-27 22:38:41 - 8157 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:41 - 8157 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:41 - 8157 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:41 - 8157 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:41 - 8157 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:41 - 8157 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+[2017-11-27 22:38:41 - 8157 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:41 by 8156
+========================================================================================================== 
+Program started at 2017-11-27 22:38:46 by 8160
+========================================================================================================== 
+[2017-11-27 22:38:46 - 8160 - INFORMATION] : Proceso creado, su pid es 8161
+[2017-11-27 22:38:46 - 8161 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:46 - 8161 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:46 - 8161 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:46 - 8161 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:46 - 8161 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:46 - 8161 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:46 by 8160
+[2017-11-27 22:38:46 - 8161 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program started at 2017-11-27 22:38:46 by 8162
+========================================================================================================== 
+[2017-11-27 22:38:46 - 8162 - INFORMATION] : Proceso creado, su pid es 8163
+[2017-11-27 22:38:46 - 8163 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:46 - 8163 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:46 - 8163 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:46 - 8163 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:46 - 8163 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:46 - 8163 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:46 by 8162
+[2017-11-27 22:38:46 - 8163 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program started at 2017-11-27 22:38:46 by 8164
+========================================================================================================== 
+[2017-11-27 22:38:46 - 8164 - INFORMATION] : Proceso creado, su pid es 8165
+[2017-11-27 22:38:46 - 8165 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:46 - 8165 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:46 - 8165 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:46 - 8165 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:46 - 8165 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:46 - 8165 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:46 by 8164
+[2017-11-27 22:38:46 - 8165 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program started at 2017-11-27 22:38:47 by 8166
+========================================================================================================== 
+[2017-11-27 22:38:47 - 8166 - INFORMATION] : Proceso creado, su pid es 8167
+[2017-11-27 22:38:47 - 8167 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:47 - 8167 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:47 - 8167 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:47 - 8167 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:47 - 8167 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:47 - 8167 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:47 by 8166
+[2017-11-27 22:38:47 - 8167 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program started at 2017-11-27 22:38:47 by 8168
+========================================================================================================== 
+[2017-11-27 22:38:47 - 8168 - INFORMATION] : Proceso creado, su pid es 8169
+[2017-11-27 22:38:47 - 8169 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:47 - 8169 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:47 - 8169 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:47 - 8169 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:47 - 8169 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:47 - 8169 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+[2017-11-27 22:38:47 - 8169 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:47 by 8168
+========================================================================================================== 
+Program started at 2017-11-27 22:38:47 by 8170
+========================================================================================================== 
+[2017-11-27 22:38:47 - 8170 - INFORMATION] : Proceso creado, su pid es 8171
+[2017-11-27 22:38:47 - 8171 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:47 - 8171 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:47 - 8171 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:47 - 8171 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:47 - 8171 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:47 - 8171 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+[2017-11-27 22:38:47 - 8171 - INFORMATION] : main: Fin del servicio de cambio de moneda.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:47 by 8170
+========================================================================================================== 
+Program started at 2017-11-27 22:38:48 by 8172
+========================================================================================================== 
+[2017-11-27 22:38:48 - 8172 - INFORMATION] : Proceso creado, su pid es 8173
+[2017-11-27 22:38:48 - 8173 - INFORMATION] : main: Inicio del servicion de cambio de moneda.
+[2017-11-27 22:38:48 - 8173 - INFORMATION] : ExchangeRatesService: Runing.
+[2017-11-27 22:38:48 - 8173 - INFORMATION] : ExchangeRatesService: Esperando por un nuevo request.
+[2017-11-27 22:38:48 - 8173 - INFORMATION] : ExchangeRatesService: Request recibido.
+[2017-11-27 22:38:48 - 8173 - ERROR] : ExchangeRatesTable: Encontro 20
+[2017-11-27 22:38:48 - 8173 - INFORMATION] : ExchangeRatesService: Respuesta envidada.
+========================================================================================================== 
+Program finished at 2017-11-27 22:38:48 by 8172
+[2017-11-27 22:38:48 - 8173 - INFORMATION] : main: Fin del servicio de cambio de moneda.

@@ -17,10 +17,10 @@ std::ofstream LOG_FILE_POINTER;
 // Functions ------------------------------------------------------
 void executeExchangeRatesService(int parameters[]){
     log("main: Inicio del servicion de cambio de moneda.",INFORMATION);
-    ExchangeRatesService* service = new ExchangeRatesService(parameters[1]);
+    ExchangeRatesService* service = new ExchangeRatesService(parameters[0]);
     service->run();
     delete service;
-    log("main: Fin del servicion de cambio de moneda.",INFORMATION);
+    log("main: Fin del servicio de cambio de moneda.",INFORMATION);
 }
 
 typedef void (*functiontype)();
@@ -33,8 +33,8 @@ int main(int argc, char* argv[]) {
     logSessionStarted();
 
     // Creating exchange rates message queue.
-    key_t clave = ftok("tp2.log", 'A');
-	int exchangeRatesQueueId = msgget(clave, 0777 | IPC_CREAT);
+    key_t clave = ftok("archiasdvo.txt", 'A');
+	int exchangeRatesQueueId = msgget(clave, 0777 | IPC_CREAT | IPC_EXCL);
 
     ProcessSpawner* processSpawner = new ProcessSpawner();
 
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 	if (reply.errorId == NOT_FOUND) {
 		std::cout << "Error!!!" << std::endl;
 	} else {
-		std::cout << "Espero un 2 (esta harcodeado por ahora), recibi: " << reply.exchangeRate << std::endl;
+		std::cout << "Espero un 20 para libra, recibi: " << reply.exchangeRate << std::endl;
 	}
 
 	/*
