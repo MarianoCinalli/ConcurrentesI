@@ -24,7 +24,12 @@ enum servicesOperations {
 enum servicesQuery {
 	SERVICE_WEATHER = 0,
 	SERVICE_EXCHANGERATE = 1,
-	END_CONECTION = 2,
+	END_CONECTION = 2
+};
+
+enum typesClientConections{
+	CLIENT_CONECTION = 0,
+	ADMINISTRATOR_CONECTION = 1
 };
 
 #endif // CONSTANTS_H_
