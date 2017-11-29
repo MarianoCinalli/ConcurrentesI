@@ -2,7 +2,7 @@
 
 ExchangeRatesTable::ExchangeRatesTable() {
     // Cargo las configuraciones default.
-    std::ifstream i("db/exchangeRates.json");
+    std::ifstream i(EXCHANGE_RATES_DB_FILE);
     this->table = json::parse(i);
 };
 
@@ -38,7 +38,7 @@ void ExchangeRatesTable::erase(std::string currency) {
 void ExchangeRatesTable::saveChanges() {
     // Write prettified JSON to file. With four spaces
     log("ExchangeRatesTable: Saving JSON db", INFORMATION);
-    std::ofstream o("db/exchangeRates.json", std::ios_base::trunc);
+    std::ofstream o(EXCHANGE_RATES_DB_FILE, std::ios_base::trunc);
     o << std::setw(4) << this->table << std::endl;
     log("ExchangeRatesTable: JSON saved!", INFORMATION);
 }

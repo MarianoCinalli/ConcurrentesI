@@ -2,7 +2,7 @@
 
 WeatherTable::WeatherTable() {
     // Cargo las configuraciones default.
-    std::ifstream i("db/weather.json");
+    std::ifstream i(WEATHER_DB_FILE);
     this->table = json::parse(i);
 };
 
@@ -41,7 +41,7 @@ void WeatherTable::erase(std::string city) {
 void WeatherTable::saveChanges() {
     // Write prettified JSON to file. With four spaces
     log("WeatherTable: Saving JSON db", INFORMATION);
-    std::ofstream o("db/weather.json", std::ios_base::trunc);
+    std::ofstream o(WEATHER_DB_FILE, std::ios_base::trunc);
     o << std::setw(4) << this->table << std::endl;
     log("WeatherTable: JSON saved!", INFORMATION);
 }

@@ -1,6 +1,9 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+const std::string WEATHER_DB_FILE = "db/weather.json";
+const std::string EXCHANGE_RATES_DB_FILE = "db/exchangeRates.json";
+
 enum logLevels {
 	ERROR = 1,
 	WARNING = 2,
