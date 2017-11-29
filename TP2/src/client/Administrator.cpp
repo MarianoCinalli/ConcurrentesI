@@ -73,7 +73,7 @@ void Administrator::updateWeather(){
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 ;
-    if(reply.status != -1){
+    if(reply.status != typesStatusOperation::ERROR_OPERATION){
         log(ADMINISTRATOR_NAME + " : el clima en la ciudad "+city+" se ha actualizado corretamente",INFORMATION);          
     }else{
         log(ADMINISTRATOR_NAME + " : no se pudo actualizar el clima en la ciudad "+city,INFORMATION);                
@@ -103,7 +103,7 @@ void Administrator::updateExchangeRate(){
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 
-    if(reply.status != -1){
+    if(reply.status != typesStatusOperation::ERROR_OPERATION){
         log(ADMINISTRATOR_NAME + " : el valor de la moneda "+currency+" se ha actualizado corretamente",INFORMATION);    
     }else{
         log(ADMINISTRATOR_NAME + " : no se pudo actualizar el valor de la moneda "+currency,INFORMATION);                

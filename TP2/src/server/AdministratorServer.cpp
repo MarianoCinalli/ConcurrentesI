@@ -95,17 +95,33 @@ void AdministratorServer::serviceExchangeRate(struct messageAdministrator messag
 }
 
 void AdministratorServer::solveUpdateWeather(struct messageAdministrator message){
-
+    std::cout<<"Actualizar un registro del servicio del clima"<<std::endl;
+    struct messageReplyOperation messageReply;
+    messageReply.mtype = this->reciverType;
+    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
+    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
 }
 
 void AdministratorServer::solveEraseWeather(struct messageAdministrator message){
-
+    std::cout<<"Eliminar un registro del servicio del clima"<<std::endl;
+    struct messageReplyOperation messageReply;
+    messageReply.mtype = this->reciverType;
+    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
+    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
 }
 
 void AdministratorServer::solveUpdateExchangeRate(struct messageAdministrator message){
-
+    std::cout<<"Actualizar un registros del servicio de tipo de cambio "<<std::endl;
+    struct messageReplyOperation messageReply;
+    messageReply.mtype = this->reciverType;
+    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
+    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
 }
 
 void AdministratorServer::solveEraseExchangeRate(struct messageAdministrator message){
-
+    std::cout<<"Eliminar un registro del servicio de tipo de cambio"<<std::endl;
+    struct messageReplyOperation messageReply;
+    messageReply.mtype = this->reciverType;
+    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
+    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));   
 }

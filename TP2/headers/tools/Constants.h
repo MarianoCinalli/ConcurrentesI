@@ -33,4 +33,9 @@ enum typesClientConections{
 	ADMINISTRATOR_CONECTION =1
 };
 
+enum typesStatusOperation{
+	ERROR_OPERATION = -1,
+	SUCCESS_OPERATION =0
+};
+
 #endif // CONSTANTS_H_
