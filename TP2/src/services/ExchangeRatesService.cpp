@@ -48,6 +48,19 @@ void ExchangeRatesService::reply(messageRequestExchangeRatesService* messageToRe
 	log("ExchangeRatesService: Respuesta envidada.", INFORMATION);
 }
 
+void ExchangeRatesService::erase(messageRequestExchangeRatesService* message) {
+	this->table->erase(
+		message->currency
+	);
+}
+
+void ExchangeRatesService::update(messageRequestExchangeRatesService* message) {
+	this->table->update(
+		message->currency,
+		message->newExchangeRate
+	);
+}
+
 void ExchangeRatesService::run() {
 	bool shouldRun = true;
 	log("ExchangeRatesService: Servicio iniciado.", INFORMATION);
@@ -56,12 +69,26 @@ void ExchangeRatesService::run() {
 		log("ExchangeRatesService: Esperando por un nuevo request.", INFORMATION);
 		messageRequestExchangeRatesService readMessage = this->getRequest();
 		log("ExchangeRatesService: Request recibido.", INFORMATION);
-		if (readMessage.operationType == SERVICE_OP_END) {
-			log("ExchangeRatesService: Operacion finalizar.", INFORMATION);
-			shouldRun = false;
-		} else {
-			log("ExchangeRatesService: Operacion leer.", INFORMATION);
-			this->reply(&readMessage);
+		switch(readMessage.operationType) {
+			case SERVICE_OP_END:
+				log("ExchangeRatesService: Operacion finalizar.", INFORMATION);
+				shouldRun = false;
+				break;
+			case SERVICE_OP_ERASE:
+				log("ExchangeRatesService: Operacion eliminar.", INFORMATION);
+				this->erase(&readMessage);
+				break;
+			case SERVICE_OP_UPDATE:
+				log("ExchangeRatesService: Operacion actualizar.", INFORMATION);
+				this->update(&readMessage);
+				break;
+			case SERVICE_OP_READ:
+				log("ExchangeRatesService: Operacion leer.", INFORMATION);
+				this->reply(&readMessage);
+				break;
+			default:
+				log("ExchangeRatesService: Operacion erronea.", INFORMATION);
+				break;
 		}
 	}
 	log("ExchangeRatesService: Servicio finalizado.", INFORMATION);

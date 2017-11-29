@@ -29,6 +29,8 @@ private:
 	messageReplyExchangeRatesService getReply(messageRequestExchangeRatesService* messageToReply);
 	messageRequestExchangeRatesService getRequest();
 	void reply(messageRequestExchangeRatesService* messageToReply);
+	void erase(messageRequestExchangeRatesService* message);
+	void update(messageRequestExchangeRatesService* message);
 };
 
 #endif // EXCHANGERATESSERVICE_H

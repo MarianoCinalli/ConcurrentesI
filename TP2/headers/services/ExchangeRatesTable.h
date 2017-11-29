@@ -20,6 +20,8 @@ public:
 	ExchangeRatesTable();
 	~ExchangeRatesTable();
 	int get(std::string currency);
+	void update(std::string currency, int exchangeRate);
+	void erase(std::string currency);
 	void saveChanges();
 };
 

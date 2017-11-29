@@ -15,7 +15,7 @@ enum servicesErrorsIds {
 
 // Tipos de operaciones soportadas por servicios.
 enum servicesOperations {
-	SERVICE_OP_CREATE = 0,
+	SERVICE_OP_ERASE = 0,
 	SERVICE_OP_UPDATE = 1,
 	SERVICE_OP_READ = 2,
 	SERVICE_OP_END = 3
