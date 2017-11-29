@@ -51,14 +51,15 @@ void Server::createQueryServer(int clientType, int typeClient){
             log(SERVER_NAME + " :Se crea un QUERYSERVER para atender al cliente con id: ",clientType,INFORMATION);
             QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
             queryServer->execute();
-             log(SERVER_NAME + " :Fin del QUERYSERVER para atender al cliente con id: ",clientType,INFORMATION);
+            log(SERVER_NAME + " :Fin del QUERYSERVER para atender al cliente con id: ",clientType,INFORMATION);
             delete queryServer;
             exit(0);
         }else if(typeClient == typesClientConections::ADMINISTRATOR_CONECTION){
             log(SERVER_NAME + " :Se crea un servidor para atender al Administrador con id: ",clientType,INFORMATION);
-            QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
-            queryServer->execute();
-            delete queryServer;
+            AdministratorServer *administratorServer = new AdministratorServer(this->file,this->letter,clientType);
+            administratorServer->execute();
+            log(SERVER_NAME + " :Fin del ADMINISTRATORSERVER para atender al cliente con id: ",clientType,INFORMATION);
+            delete administratorServer;
             exit(0);
         }
     }else if(pid < 0){

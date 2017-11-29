@@ -3,13 +3,14 @@
 
 #include <string>
 #include <string.h>
+#include <typeinfo>
 
 #include "tools/Messages.h"
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
 #include "QueryServer.h"
-#include <typeinfo>
+#include "AdministratorServer.h"
 
 class Server : public Loggable{
 	const std::string SERVER_NAME = typeid(Server).name();
