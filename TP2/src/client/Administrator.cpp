@@ -71,13 +71,14 @@ void Administrator::updateWeather(){
 
     log(ADMINISTRATOR_NAME + " : Se actualizará el clima en la ciudad "+city,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
-    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
-;
+/*    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
+
     if(reply.status != typesStatusOperation::ERROR_OPERATION){
         log(ADMINISTRATOR_NAME + " : el clima en la ciudad "+city+" se ha actualizado corretamente",INFORMATION);          
     }else{
         log(ADMINISTRATOR_NAME + " : no se pudo actualizar el clima en la ciudad "+city,INFORMATION);                
     }
+*/
 }
 
 void Administrator::updateExchangeRate(){
@@ -101,13 +102,14 @@ void Administrator::updateExchangeRate(){
 
     log(ADMINISTRATOR_NAME + " : Se actualizará el valor de la moneda "+currency,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
-    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
+/*    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 
     if(reply.status != typesStatusOperation::ERROR_OPERATION){
         log(ADMINISTRATOR_NAME + " : el valor de la moneda "+currency+" se ha actualizado corretamente",INFORMATION);    
     }else{
         log(ADMINISTRATOR_NAME + " : no se pudo actualizar el valor de la moneda "+currency,INFORMATION);                
     }
+*/
 }
 
 void Administrator::deleteWeather(){
@@ -129,13 +131,13 @@ void Administrator::deleteWeather(){
     log(ADMINISTRATOR_NAME + " : Se eliminará del registro del clima la ciudad "+city,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
-;
+/*
     if(reply.status != -1){
         log(ADMINISTRATOR_NAME + " : se ha eliminado del registro del clima la ciudad "+city,INFORMATION);          
     }else{
         log(ADMINISTRATOR_NAME + " : no se pudo eliminar del registro del clima la ciudad "+city,INFORMATION);                
     }
-
+*/
 }
 
 void Administrator::deleteExchangeRate(){
@@ -157,12 +159,13 @@ void Administrator::deleteExchangeRate(){
     log(ADMINISTRATOR_NAME + " : Se eliminará la moneda "+currency,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
-
+/*
     if(reply.status != -1){
         log(ADMINISTRATOR_NAME + " : la moneda "+currency+" se ha eliminado corretamente",INFORMATION);    
     }else{
         log(ADMINISTRATOR_NAME + " : no se pudo eliminar la moneda "+currency,INFORMATION);                
     }
+*/
 }
 
 void Administrator::finalizeServer(){
