@@ -7,8 +7,9 @@
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
-
+#include <typeinfo>
 class ServerAbstract : public Loggable{
+	const std::string SERVER_ABSTRACT_NAME = typeid(ServerAbstract).name();
 	protected:
 		long int mType;
 		long int reciverType;

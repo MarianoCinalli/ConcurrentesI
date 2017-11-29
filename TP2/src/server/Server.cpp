@@ -10,6 +10,7 @@ Server::Server(const std::string& file,const char letter,int amountQueryServers,
     this->amountQueryServers = amountQueryServers;
     this->maxQueryServer = maxQueryServer;
     this->finalized = false;
+    log(SERVER_NAME + " : Inicializador",INFORMATION);
 }
 
 Server::~Server(){
@@ -23,6 +24,7 @@ void Server::execute(){
     while(!this->finalized){
         //escuchar conexiones
         struct messageConection connection;
+        log(SERVER_NAME + " :Execute loop",INFORMATION);
         this->mQueue->read(this->mType,static_cast<void*>(&connection),sizeof(messageConection));
         //if(){
          //   this->assingQueryServer(conection.senderType);
@@ -43,23 +45,24 @@ void Server::assingQueryServer(int clientType){
 void Server::createQueryServer(int clientType, int typeClient){
     pid_t pid;
     pid = fork();
-    bool isChild = pid ==0;
+    bool isChild = pid == 0;
     if(isChild){
         if(typeClient == typesClientConections::CLIENT_CONECTION){
-            log("Se crea un servidor para atender al cliente con id: ",clientType,INFORMATION);
+            log(SERVER_NAME + " :Se crea un QUERYSERVER para atender al cliente con id: ",clientType,INFORMATION);
             QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
             queryServer->execute();
+             log(SERVER_NAME + " :Fin del QUERYSERVER para atender al cliente con id: ",clientType,INFORMATION);
             delete queryServer;
             exit(0);
         }else if(typeClient == typesClientConections::ADMINISTRATOR_CONECTION){
-            log("Se crea un servidor para atender al Administrador con id: ",clientType,INFORMATION);
+            log(SERVER_NAME + " :Se crea un servidor para atender al Administrador con id: ",clientType,INFORMATION);
             QueryServer *queryServer = new QueryServer(this->file,this->letter,clientType);
             queryServer->execute();
             delete queryServer;
             exit(0);
         }
     }else if(pid < 0){
-        log("Error no se pudo crear un servidor para atender al cliente con id: ",clientType,ERROR);
+        log(SERVER_NAME + " :Error no se pudo crear un servidor para atender al cliente con id: ",clientType,ERROR);
     }
 }
 

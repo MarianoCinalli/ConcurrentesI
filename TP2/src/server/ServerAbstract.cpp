@@ -5,6 +5,7 @@ ServerAbstract::ServerAbstract(const std::string& file,const char letter,int cli
     this->mType = getpid();
     this->reciverType = clientType;
     this->finalized = false;
+    log(SERVER_ABSTRACT_NAME + " :Inicializador Server Abstract, para atender a cliente con id: ",clientType,INFORMATION);
 }
 
 ServerAbstract::~ServerAbstract(){

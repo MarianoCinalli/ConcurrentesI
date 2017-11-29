@@ -9,9 +9,10 @@
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
 #include "QueryServer.h"
+#include <typeinfo>
 
 class Server : public Loggable{
-
+	const std::string SERVER_NAME = typeid(Server).name();
 	private:
 		long int mType;
 		long int reciverType;
