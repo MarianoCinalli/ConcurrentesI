@@ -25,7 +25,7 @@ std::string ServerAbstract::logMemberVariables(){
 
 void ServerAbstract::solveQueryWeather(struct messageQuery message){
     std::cout<<"Consultarlo con el servicio del clima"<<std::endl;
-    std::cout<<"Consulta: "<< message.query<<std::endl;
+    std::cout<<"Consulta Recibida: "<< message.query<<std::endl;
     struct messageReplyWeatherService reply;
     reply.mtype = this->reciverType;
     reply.temperature = 20;
@@ -38,7 +38,7 @@ void ServerAbstract::solveQueryWeather(struct messageQuery message){
 
 void ServerAbstract::solveQueryExchangeRate(struct messageQuery message){
     std::cout<<"Consultarlo con el servicio de tiepo de cambio"<<std::endl;
-    std::cout<<"Consulta: "<< message.query<<std::endl;
+    std::cout<<"Consulta Recibida: "<< message.query<<std::endl;
     struct messageReplyExchangeRatesService reply;
     reply.mtype = this->reciverType;    
     reply.exchangeRate = 10;

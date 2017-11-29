@@ -61,6 +61,7 @@ struct messageReplyWeatherService ClientAbstract::queryWeather(std::string city)
     message.mtype = this->reciverType;
     message.queryType = servicesQuery::SERVICE_WEATHER;
     strcpy(message.query,city.c_str());
+    std::cout<<"lo que va a enviar el cliente: "<<message.query<<std::endl;        
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     log("Consulta de Clima por parte del cliente con id: ",this->mType,INFORMATION);
 
@@ -75,7 +76,7 @@ struct messageReplyExchangeRatesService ClientAbstract::queryExchangeRate(std::s
     struct messageQuery message;
     message.mtype = this->reciverType;
     message.queryType = servicesQuery::SERVICE_EXCHANGERATE;
-    strcpy(message.query,currency.c_str());    
+    strcpy(message.query,currency.c_str());  
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     log("Consulta de Tipo de Cambio por parte del cliente con id: ",this->mType,INFORMATION);
 

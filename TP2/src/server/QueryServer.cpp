@@ -17,6 +17,7 @@ void QueryServer::execute(){
     
     struct messageQuery message;
     while(!finalized){
+        memset(&message,'\0',sizeof(messageQuery));
         this->mQueue->read(this->mType,static_cast<void*>(&message),sizeof(messageQuery));
         log("Consulta del cliente con id: ",this->reciverType,INFORMATION);
         this->parseMessage(message);  
@@ -30,7 +31,6 @@ void QueryServer::parseMessage(struct messageQuery message){
         
         case servicesQuery::SERVICE_WEATHER :
             this->solveQueryWeather(message);
-            
             break;
         
         case servicesQuery::SERVICE_EXCHANGERATE :
