@@ -16,7 +16,7 @@
 		long mtype;
 		long replyTo;
 		int operationType;
-		int cityId;
+		char city[50];
 		int newTemperature;
 		int newPressure;
 		int newHumidity;
@@ -26,7 +26,7 @@
 		long mtype;
 		long replyTo;
 		int operationType;
-		int currencyId;
+		char currency[50];
 		int newExchangeRate;
 	};
 
@@ -57,6 +57,17 @@
 		long mtype;
 		int queryType;
 		char query[50];
+	};
+
+	struct messageAdministrator{
+		long mtype;
+		int typeService;	// SERVICE_WEATHER, SERVICE_EXCHANGERATE
+		int operationType; 	// SERVICE_OP_ERASE, SERVICE_OP_UPDATE, SERVICE_OP_READ
+		char type[50];		// city, currency
+		int newTemperature;
+		int newPressure;
+		int newHumidity;
+		int newExchangeRate;
 	};
 
 	struct messageReplyOperation{

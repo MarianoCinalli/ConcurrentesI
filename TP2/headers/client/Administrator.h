@@ -26,6 +26,8 @@ class Administrator : public ClientAbstract{
 		void parseMessage(char option);
 		void finalizeServer();
 	public:
+		struct messageReplyWeatherService queryWeather(std::string cityId);
+		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
 		Administrator(const std::string& file,const char letter);
 		~Administrator();
 		void execute();

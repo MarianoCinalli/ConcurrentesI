@@ -4,6 +4,7 @@
 
 
 #include"client/Client.h"
+#include"client/Administrator.h"
 #include"server/Server.h"
 
 // Constants ------------------------------------------------------
@@ -24,7 +25,10 @@ void client(){
 
 void administrator(){
     std::cout<<"SOY UN ADMINISTRADOR"<<std::endl;
-    exit(0);    
+    Administrator* admin = new Administrator(file,letter);
+    admin->execute();
+    delete admin;
+    exit(0);   
 }
 
 void server(){

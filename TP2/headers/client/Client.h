@@ -17,6 +17,8 @@ class Client : public ClientAbstract{
 	private:
 		int pid;
 	public:
+		struct messageReplyWeatherService queryWeather(std::string cityId);
+		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
 		Client(const std::string& file,const char letter);
 		~Client();
 		void execute();

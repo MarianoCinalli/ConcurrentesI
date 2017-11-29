@@ -26,8 +26,6 @@ class ClientAbstract : public Loggable{
 		bool finalize;
 
 	private:
-		struct messageReplyWeatherService queryWeather(std::string cityId);
-		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
 	    enum typesClientConections mTypeClient;
 		
 	public:
@@ -39,6 +37,8 @@ class ClientAbstract : public Loggable{
 		void solveQueryExchangeRate();
 		std::string logMemberVariables();
 		virtual void execute()=0;
+		virtual struct messageReplyExchangeRatesService queryExchangeRate(std::string currency)=0;
+		virtual struct messageReplyWeatherService queryWeather(std::string city)=0;
         bool getFinalizeProcess(){return this->finalize;}
 };
 

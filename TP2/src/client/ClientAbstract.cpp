@@ -57,37 +57,6 @@ void ClientAbstract::disconnect(){
     log(CLIENT_ABSTRACT_NAME + " :Terminando la conexión con el servidor, cliente con id: ",this->mType,INFORMATION);
 } 
 
-struct messageReplyWeatherService ClientAbstract::queryWeather(std::string city){
-    struct messageQuery message;
-    message.mtype = this->reciverType;
-    message.queryType = servicesQuery::SERVICE_WEATHER;
-    strcpy(message.query,city.c_str());
-    std::cout<<"lo que va a enviar el cliente: "<<message.query<<std::endl;        
-    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
-    log(CLIENT_ABSTRACT_NAME + " :Consulta de Clima por parte del cliente con id: ",this->mType,INFORMATION);
-
-    struct messageReplyWeatherService messageReply;
-    memset(&messageReply,0,sizeof(messageReplyWeatherService));
-    this->mQueue->read(this->mType,static_cast<void*>(&messageReply),sizeof(messageReplyWeatherService));
-    log(CLIENT_ABSTRACT_NAME + " :Respuesta del Clima recibida por el cliente con id: ",this->mType,INFORMATION); 
-    return messageReply;   
-}
-
-struct messageReplyExchangeRatesService ClientAbstract::queryExchangeRate(std::string currency){
-    struct messageQuery message;
-    message.mtype = this->reciverType;
-    message.queryType = servicesQuery::SERVICE_EXCHANGERATE;
-    strcpy(message.query,currency.c_str());  
-    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
-    log(CLIENT_ABSTRACT_NAME + " :Consulta de Tipo de Cambio por parte del cliente con id: ",this->mType,INFORMATION);
-
-    struct messageReplyExchangeRatesService messageReply;
-    memset(&messageReply,0,sizeof(messageReplyExchangeRatesService));       
-    this->mQueue->read(this->mType,static_cast<void*>(&messageReply),sizeof(messageReplyExchangeRatesService));
-    log(CLIENT_ABSTRACT_NAME + " :Respuesta del Tipo de Cambio recibida por el cliente con id: ",this->mType,INFORMATION);
-    return messageReply;             
-}
-
 std::string ClientAbstract::logMemberVariables(){
     std::string registerLog = "mType: " + std::to_string(this->mType) + 
     " reciverType: " + std::to_string(this->reciverType);

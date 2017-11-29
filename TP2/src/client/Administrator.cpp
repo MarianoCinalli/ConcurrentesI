@@ -7,16 +7,57 @@ Administrator::Administrator(const std::string& file,const char letter)
 Administrator::~Administrator(){
 }
 
+struct messageReplyExchangeRatesService Administrator::queryExchangeRate(std::string currency){
+   
+    struct messageAdministrator message;
+    message.mtype = this->reciverType;
+    message.typeService = servicesQuery::SERVICE_EXCHANGERATE;
+    message.operationType = servicesOperations::SERVICE_OP_READ;
+    strcpy(message.type,currency.c_str());
+
+    std::cout<<"lo que va a enviar el administrador: "<<message.type<<std::endl;        
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
+    log(ADMINISTRATOR_NAME + " :Consulta del Tipo de cambio por el Administrador, moneda: "+currency,INFORMATION);
+
+    struct messageReplyExchangeRatesService messageReply;
+    memset(&messageReply,0,sizeof(messageReplyWeatherService));
+    this->mQueue->read(this->mType,static_cast<void*>(&messageReply),sizeof(messageReplyExchangeRatesService));
+    log(ADMINISTRATOR_NAME + " :Respuesta del Tipo de cambio al Administrador, moneda: "+currency,INFORMATION); 
+    return messageReply;    
+}
+
+
+struct messageReplyWeatherService Administrator::queryWeather(std::string city){
+
+    struct messageAdministrator message;
+    message.mtype = this->reciverType;
+    message.typeService = servicesQuery::SERVICE_WEATHER;
+    message.operationType = servicesOperations::SERVICE_OP_READ;
+    strcpy(message.type,city.c_str());
+
+    std::cout<<"lo que va a enviar el administrador: "<<message.type<<std::endl;        
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
+    log(ADMINISTRATOR_NAME + " :Consulta del Clima por el Administrador, ciudad: "+city,INFORMATION);
+
+    struct messageReplyWeatherService messageReply;
+    memset(&messageReply,0,sizeof(messageReplyWeatherService));
+    this->mQueue->read(this->mType,static_cast<void*>(&messageReply),sizeof(messageReplyWeatherService));
+    log(ADMINISTRATOR_NAME + " :Respuesta del Clima al Administrador, ciudad: "+city,INFORMATION); 
+    return messageReply;    
+}
+
 void Administrator::updateWeather(){
     std::string city;
-    struct messageRequestWeatherService message;
+    struct messageAdministrator message;
     struct messageReplyOperation reply;
 
-    memset(&message,'\0',sizeof(messageRequestWeatherService));
+    memset(&message,'\0',sizeof(messageAdministrator));
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE LA CIUDAD DONDE QUIERE ACTUALIZAR EL CLIMA"<<std::endl;
     std::cin>>city;
+    strcpy(message.type,city.c_str());
+
     std::cout<<"INGRESE EL VALOR DE TEMPERATURA"<<std::endl;
     std::cin>>message.newTemperature;
     std::cout<<"INGRESE EL VALOR DE PRESIÓN"<<std::endl;
@@ -26,9 +67,10 @@ void Administrator::updateWeather(){
 
     message.mtype = this->reciverType;
     message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+    message.typeService = servicesQuery::SERVICE_WEATHER;
 
     log(ADMINISTRATOR_NAME + " : Se actualizará el clima en la ciudad "+city,INFORMATION);
-    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestWeatherService));
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 ;
     if(reply.status != -1){
@@ -40,22 +82,25 @@ void Administrator::updateWeather(){
 
 void Administrator::updateExchangeRate(){
     std::string currency;
-    struct messageRequestExchangeRatesService message;
+    struct messageAdministrator message;
     struct messageReplyOperation reply;
 
-    memset(&message,'\0',sizeof(messageRequestExchangeRatesService));
+    memset(&message,'\0',sizeof(messageAdministrator));
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE EL NOMBRE DE LA MONEDA QUE QUIERE ACTUALIZAR"<<std::endl;
     std::cin>>currency;
+    strcpy(message.type,currency.c_str());
+    
     std::cout<<"INGRESE EL VALOR DE TIPO DE CAMBIO"<<std::endl;
     std::cin>>message.newExchangeRate;
 
     message.mtype = this->reciverType;
     message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+    message.typeService = servicesQuery::SERVICE_EXCHANGERATE;    
 
     log(ADMINISTRATOR_NAME + " : Se actualizará el valor de la moneda "+currency,INFORMATION);
-    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestExchangeRatesService));
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 
     if(reply.status != -1){
@@ -67,20 +112,22 @@ void Administrator::updateExchangeRate(){
 
 void Administrator::deleteWeather(){
     std::string city;
-    struct messageRequestWeatherService message;
+    struct messageAdministrator message;
     struct messageReplyOperation reply;
 
-    memset(&message,'\0',sizeof(messageRequestWeatherService));
+    memset(&message,'\0',sizeof(messageAdministrator));
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE LA CIUDAD QUE QUIERE ELIMINAR DEL REGISTRO DEL CLIMA"<<std::endl;
     std::cin>>city;
+    strcpy(message.type,city.c_str());    
 
     message.mtype = this->reciverType;
-    message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+    message.operationType = servicesOperations::SERVICE_OP_ERASE;
+    message.typeService = servicesQuery::SERVICE_WEATHER;        
 
     log(ADMINISTRATOR_NAME + " : Se eliminará del registro del clima la ciudad "+city,INFORMATION);
-    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestWeatherService));
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 ;
     if(reply.status != -1){
@@ -93,20 +140,22 @@ void Administrator::deleteWeather(){
 
 void Administrator::deleteExchangeRate(){
     std::string currency;
-    struct messageRequestExchangeRatesService message;
+    struct messageAdministrator message;
     struct messageReplyOperation reply;
 
-    memset(&message,'\0',sizeof(messageRequestExchangeRatesService));
+    memset(&message,'\0',sizeof(messageAdministrator));
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE EL NOMBRE DE LA MONEDA QUE QUIERE ELIMINAR"<<std::endl;
     std::cin>>currency;
+    strcpy(message.type,currency.c_str());    
 
     message.mtype = this->reciverType;
-    message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+    message.operationType = servicesOperations::SERVICE_OP_ERASE;
+    message.typeService = servicesQuery::SERVICE_EXCHANGERATE;            
 
     log(ADMINISTRATOR_NAME + " : Se eliminará la moneda "+currency,INFORMATION);
-    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestExchangeRatesService));
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 
     if(reply.status != -1){
