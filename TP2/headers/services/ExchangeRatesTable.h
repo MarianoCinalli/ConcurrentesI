@@ -7,7 +7,6 @@
 #include "tools/logger.h"
 #include "tools/Constants.h"
 #include "tools/json.hpp"
-#include "services/ExchangeRatesTable.h"
 
 using json = nlohmann::json;
 
