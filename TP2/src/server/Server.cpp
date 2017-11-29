@@ -19,18 +19,12 @@ Server::~Server(){
 }
 
 void Server::execute(){
-    //this->createQueryServers();
-
     while(!this->finalized){
         //escuchar conexiones
         struct messageConection connection;
         log(SERVER_NAME + " :Execute loop",INFORMATION);
         this->mQueue->read(this->mType,static_cast<void*>(&connection),sizeof(messageConection));
-        //if(){
-         //   this->assingQueryServer(conection.senderType);
-        //}else{
-            this->createQueryServer(connection.senderType, connection.typeClient);
-        //}
+        this->createQueryServer(connection.senderType, connection.typeClient);
     }
 }
 

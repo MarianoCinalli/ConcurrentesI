@@ -19,12 +19,13 @@
 class ClientAbstract : public Loggable{
 	
 	const std::string CLIENT_ABSTRACT_NAME = typeid(ClientAbstract).name();
-
-	private:
+	protected:
 		long int mType;
 		long int reciverType;
 		Queue* mQueue;
 		bool finalize;
+
+	private:
 		struct messageReplyWeatherService queryWeather(std::string cityId);
 		struct messageReplyExchangeRatesService queryExchangeRate(std::string currencyId);
 	    enum typesClientConections mTypeClient;

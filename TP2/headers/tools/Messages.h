@@ -59,4 +59,9 @@
 		char query[50];
 	};
 
+	struct messageReplyOperation{
+		long mtype;
+		int status;
+	};
+
 #endif // MESSAGES_H_

@@ -1,0 +1,202 @@
+#include "client/Administrator.h"
+
+Administrator::Administrator(const std::string& file,const char letter)
+: ClientAbstract(file,letter,typesClientConections::ADMINISTRATOR_CONECTION){
+}
+
+Administrator::~Administrator(){
+}
+
+void Administrator::updateWeather(){
+    std::string city;
+    struct messageRequestWeatherService message;
+    struct messageReplyOperation reply;
+
+    memset(&message,'\0',sizeof(messageRequestWeatherService));
+    memset(&reply,'\0',sizeof(messageReplyOperation));
+
+    std::cout<<"INGRESE LA CIUDAD DONDE QUIERE ACTUALIZAR EL CLIMA"<<std::endl;
+    std::cin>>city;
+    std::cout<<"INGRESE EL VALOR DE TEMPERATURA"<<std::endl;
+    std::cin>>message.newTemperature;
+    std::cout<<"INGRESE EL VALOR DE PRESIÓN"<<std::endl;
+    std::cin>>message.newPressure;
+    std::cout<<"INGRESE EL VALOR DE HUMEDAD"<<std::endl;
+    std::cin>>message.newHumidity;
+
+    message.mtype = this->reciverType;
+    message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+
+    log(ADMINISTRATOR_NAME + " : Se actualizará el clima en la ciudad "+city,INFORMATION);
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestWeatherService));
+    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
+;
+    if(reply.status != -1){
+        log(ADMINISTRATOR_NAME + " : el clima en la ciudad "+city+" se ha actualizado corretamente",INFORMATION);          
+    }else{
+        log(ADMINISTRATOR_NAME + " : no se pudo actualizar el clima en la ciudad "+city,INFORMATION);                
+    }
+}
+
+void Administrator::updateExchangeRate(){
+    std::string currency;
+    struct messageRequestExchangeRatesService message;
+    struct messageReplyOperation reply;
+
+    memset(&message,'\0',sizeof(messageRequestExchangeRatesService));
+    memset(&reply,'\0',sizeof(messageReplyOperation));
+
+    std::cout<<"INGRESE EL NOMBRE DE LA MONEDA QUE QUIERE ACTUALIZAR"<<std::endl;
+    std::cin>>currency;
+    std::cout<<"INGRESE EL VALOR DE TIPO DE CAMBIO"<<std::endl;
+    std::cin>>message.newExchangeRate;
+
+    message.mtype = this->reciverType;
+    message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+
+    log(ADMINISTRATOR_NAME + " : Se actualizará el valor de la moneda "+currency,INFORMATION);
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestExchangeRatesService));
+    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
+
+    if(reply.status != -1){
+        log(ADMINISTRATOR_NAME + " : el valor de la moneda "+currency+" se ha actualizado corretamente",INFORMATION);    
+    }else{
+        log(ADMINISTRATOR_NAME + " : no se pudo actualizar el valor de la moneda "+currency,INFORMATION);                
+    }
+}
+
+void Administrator::deleteWeather(){
+    std::string city;
+    struct messageRequestWeatherService message;
+    struct messageReplyOperation reply;
+
+    memset(&message,'\0',sizeof(messageRequestWeatherService));
+    memset(&reply,'\0',sizeof(messageReplyOperation));
+
+    std::cout<<"INGRESE LA CIUDAD QUE QUIERE ELIMINAR DEL REGISTRO DEL CLIMA"<<std::endl;
+    std::cin>>city;
+
+    message.mtype = this->reciverType;
+    message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+
+    log(ADMINISTRATOR_NAME + " : Se eliminará del registro del clima la ciudad "+city,INFORMATION);
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestWeatherService));
+    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
+;
+    if(reply.status != -1){
+        log(ADMINISTRATOR_NAME + " : se ha eliminado del registro del clima la ciudad "+city,INFORMATION);          
+    }else{
+        log(ADMINISTRATOR_NAME + " : no se pudo eliminar del registro del clima la ciudad "+city,INFORMATION);                
+    }
+
+}
+
+void Administrator::deleteExchangeRate(){
+    std::string currency;
+    struct messageRequestExchangeRatesService message;
+    struct messageReplyOperation reply;
+
+    memset(&message,'\0',sizeof(messageRequestExchangeRatesService));
+    memset(&reply,'\0',sizeof(messageReplyOperation));
+
+    std::cout<<"INGRESE EL NOMBRE DE LA MONEDA QUE QUIERE ELIMINAR"<<std::endl;
+    std::cin>>currency;
+
+    message.mtype = this->reciverType;
+    message.operationType = servicesOperations::SERVICE_OP_UPDATE;
+
+    log(ADMINISTRATOR_NAME + " : Se eliminará la moneda "+currency,INFORMATION);
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageRequestExchangeRatesService));
+    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
+
+    if(reply.status != -1){
+        log(ADMINISTRATOR_NAME + " : la moneda "+currency+" se ha eliminado corretamente",INFORMATION);    
+    }else{
+        log(ADMINISTRATOR_NAME + " : no se pudo eliminar la moneda "+currency,INFORMATION);                
+    }
+}
+
+void Administrator::finalizeServer(){
+    
+}
+
+void Administrator::parseMessage(char option){
+
+    switch(option){
+
+        case optionQueryWeather:
+            this->solveQueryWeaher();
+            break;
+
+        case optionQueryExchangeRate:
+            this->solveQueryExchangeRate();
+            break;
+
+        case optionUpdateWeather:
+            this->updateWeather();
+            break;
+
+        case optionUpdateExchangeRate:
+            this->updateExchangeRate();
+            break;
+
+        case optionDeleteWeather:
+            this->deleteWeather();
+            break;
+
+        case optionDeleteExchangeRate:
+            this->deleteExchangeRate();
+            break;
+
+        case optionFinalizeServer:
+            this->finalizeServer();
+            break;                                                                
+            
+        case optionDisconnect:
+            this->disconnect();
+            break;  
+
+        default :
+                std::cout<<"opcion ingresada: "<<option<<" incorrecta"<<std::endl;
+    }
+}
+
+void Administrator::execute(){
+       
+    bool connect = false;
+    std::cout<<"PARA INCIAR LA CONEXIÓN INGRESAR LA OPCIÓN: 1"<<std::endl;
+    while(!connect){
+        char option = '\0';
+        std::cin>>option;
+        if(option == optionConnect){
+            this->connect();
+            connect = true;
+        }else{
+             std::cout<<"OPCION INCORRECTA"<<std::endl;
+        }
+    }
+
+    std::cout<<"CONEXIÓN INICIADA"<<std::endl;
+    
+
+    while(!this->getFinalizeProcess()){
+
+        std::cout<<"--------------------------OPCIONES:-------------------------------"<<std::endl;
+        std::cout<<"PARA CONSULTAR EL CLIMA DE UNA CIUDAD INGRESAR LA OPCIÓN: 2"<<std::endl;
+        std::cout<<"PARA CONSULTAR EL TIPO DE CAMBIO DE UN PAIS INGRESAR LA OPCIÓN: 3"<<std::endl;
+        std::cout<<"------------------------------------------------------------------"<<std::endl;
+        std::cout<<"PARA ACTUALIZAR EL CLIMA DE UNA CIUDAD INGRESAR LA OPCIÓN: 4"<<std::endl;
+        std::cout<<"PARA ACTUALIZAR EL TIPO DE CAMBIO DE UN PAIS INGRESAR LA OPCIÓN: 5"<<std::endl;
+        std::cout<<"------------------------------------------------------------------"<<std::endl;
+        std::cout<<"PARA ELIMINAR EL CLIMA DE UNA CIUDAD INGRESAR LA OPCIÓN: 6"<<std::endl;
+        std::cout<<"PARA ELIMINAR EL TIPO DE CAMBIO DE UN PAIS INGRESAR LA OPCIÓN: 7"<<std::endl;
+        std::cout<<"------------------------------------------------------------------"<<std::endl;
+        std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
+        std::cout<<"PARA FINALIZAR EL SERVIDOR INGRESAR LA OPCIÓN: 9"<<std::endl;
+        std::cout<<"------------------------------------------------------------------"<<std::endl;
+
+        char optionInput = '\0';
+        std::cin>>optionInput;
+        this->parseMessage(optionInput);
+    }
+}
