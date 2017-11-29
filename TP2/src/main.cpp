@@ -15,16 +15,21 @@ char letter = 'a';
 
 
 void client(){
+    std::cout<<"SOY UN CLIENTE"<<std::endl;    
     Client* client = new Client(file,letter);
     client->execute();
     delete client;
+    exit(0);
 }
 
 void administrator(){
-    std::cout<<"Soy un administrador"<<std::endl;
+    std::cout<<"SOY UN ADMINISTRADOR"<<std::endl;
+    exit(0);    
 }
 
 void server(){
+    std::cout<<"SOY UN SERVER"<<std::endl;    
+    std::cout<<"ESCUCHANDO CONEXIONES....."<<std::endl;    
     Server* server = new Server(file,letter,0,0);
     server->execute();
     delete server; 
@@ -58,21 +63,6 @@ int main(int argc, char* argv[]) {
         default:     
             std::cout<<"Opción Incorrecta"<<std::endl;
     }
-
-/*    pid_t pid;
-    pid = fork();
-
-    if(pid == 0){
-        Client* client = new Client(file,letter);
-        client->execute();
-        delete client;
-        exit(0);
-    }else{
-        Server* server = new Server(file,letter,0,0);
-        server->execute();
-        delete server;
-    }
-*/  
 	logSessionFinished();
 	return 0;
 }

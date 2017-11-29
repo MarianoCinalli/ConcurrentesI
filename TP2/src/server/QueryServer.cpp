@@ -24,10 +24,13 @@ void QueryServer::execute(){
 }
 
 void QueryServer::parseMessage(struct messageQuery message){
+
+    
     switch(message.queryType){
         
         case servicesQuery::SERVICE_WEATHER :
             this->solveQueryWeather(message);
+            
             break;
         
         case servicesQuery::SERVICE_EXCHANGERATE :

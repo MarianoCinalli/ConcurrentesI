@@ -17,7 +17,7 @@ void ClientAbstract::solveQueryWeaher(){
     std::cout<<"INGRESE LA CIUDAD DE LA CUAL DESEA SABER EL CLIMA"<<std::endl;
     std::string city;
     std::cin>>city;
-    struct messageReplyWeatherService reply = this->queryWeather(city);
+    struct messageReplyWeatherService reply = this->queryWeather(city.c_str());
     std::cout<<"Temperatura: "<<reply.temperature<<std::endl;
     std::cout<<"Presión: "<<reply.pressure<<std::endl;
     std::cout<<"Humedad: "<<reply.humidity<<std::endl;
@@ -27,7 +27,7 @@ void ClientAbstract::solveQueryExchangeRate(){
     std::cout<<"INGRESE LA MONEDA DE LA CUAL DESEA SABER EL TIPO DE CAMBIO EN RELACION AL PESO ARGENTINO"<<std::endl;
     std::string currency;
     std::cin>>currency;
-    struct messageReplyExchangeRatesService reply = this->queryExchangeRate(currency);
+    struct messageReplyExchangeRatesService reply = this->queryExchangeRate(currency.c_str());
     std::cout<<"Tipo de Cambio: "<<reply.exchangeRate<<std::endl;
 }
 
@@ -50,7 +50,7 @@ void ClientAbstract::disconnect(){
     struct messageQuery message;
     message.mtype = this->reciverType;
     message.queryType = servicesQuery::END_CONECTION;
-    message.query = "";
+    strcpy(message.query,"");    
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     this->finalize = true;
     log("Terminando la conexión con el servidor, cliente con id: ",this->mType,INFORMATION);
@@ -60,7 +60,7 @@ struct messageReplyWeatherService ClientAbstract::queryWeather(std::string city)
     struct messageQuery message;
     message.mtype = this->reciverType;
     message.queryType = servicesQuery::SERVICE_WEATHER;
-    message.query = city;
+    strcpy(message.query,city.c_str());
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     log("Consulta de Clima por parte del cliente con id: ",this->mType,INFORMATION);
 
@@ -75,7 +75,7 @@ struct messageReplyExchangeRatesService ClientAbstract::queryExchangeRate(std::s
     struct messageQuery message;
     message.mtype = this->reciverType;
     message.queryType = servicesQuery::SERVICE_EXCHANGERATE;
-    message.query = currency;
+    strcpy(message.query,currency.c_str());    
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     log("Consulta de Tipo de Cambio por parte del cliente con id: ",this->mType,INFORMATION);
 

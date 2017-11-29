@@ -14,15 +14,13 @@ class ServerAbstract : public Loggable{
 		long int reciverType;
         bool finalized;
 		Queue *mQueue;
-        void parseMessage(struct messageQuery message);
-		void solveQueryExchangeRate(struct messageQuery message);
-        void solveQueryWeather(struct messageQuery message);
         void deleteResources();
 	public:
+		void solveQueryExchangeRate(struct messageQuery message);
+        void solveQueryWeather(struct messageQuery message);
 		ServerAbstract(const std::string& file,const char letter,int clientType);
 		~ServerAbstract();
 		virtual void execute()=0;
-
     	std::string logMemberVariables();
         
 };

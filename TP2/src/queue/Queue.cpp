@@ -26,6 +26,7 @@ int Queue::write(const void* message,size_t size) const {
     int value = msgsnd(this->id,message,size - sizeof(long),0);
     if( value == -1){
         log("Error al escribir datos en la cola de mensajes --> ",value, ERROR);
+        exit(-1);        
     }
     return value;
 }
@@ -34,6 +35,7 @@ int Queue::read(const long type, void* buffer, size_t size){
     int value = msgrcv(this->id,buffer,size - sizeof(long),type,0);
     if(value == -1 ){
         log("Error al leer datos en la cola de mensajes --> ",value, ERROR);
+        exit(-1);
     }
     return value;
 }

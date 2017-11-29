@@ -56,7 +56,7 @@
 	struct messageQuery{
 		long mtype;
 		int queryType;
-		std::string query;
+		char query[50];
 	};
 
 #endif // MESSAGES_H_
