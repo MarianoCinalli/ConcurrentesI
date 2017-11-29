@@ -47,8 +47,17 @@ int main(int argc, char* argv[]) {
     // End Initialization
     logSessionStarted();
 
+    std::cout<<"--------------------------OPCIONES:----------------"<<std::endl;
+    std::cout<<"PARA EJECUTAR AL SERVIDOR INGRESE LA OPCION: 1"<<std::endl;
+    std::cout<<"---------------------------------------------------"<<std::endl;
+    std::cout<<"PARA EJECUTAR AL CLIENTE INGRESE LA OPCIÓN: 2"<<std::endl;
+    std::cout<<"---------------------------------------------------"<<std::endl;
+    std::cout<<"PARA EJECUTAR AL ADMINISTRADOR INGRESE LA OPCIÓN: 3"<<std::endl;
+    std::cout<<"---------------------------------------------------"<<std::endl;
+
+
     char imput;
-    std::cout<<"Ingrese la opción "<<std::endl;
+    std::cout<<std::endl;
     std::cin>>imput;
 
     switch(imput){
