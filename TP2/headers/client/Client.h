@@ -4,18 +4,18 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <typeinfo>
 
 #include "ClientAbstract.h"
 #include "tools/Messages.h"
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
-#include <typeinfo>
 
 class Client : public ClientAbstract{
 	const std::string CLIENT_NAME = typeid(Client).name();
 	private:
-
+		int pid;
 	public:
 		Client(const std::string& file,const char letter);
 		~Client();

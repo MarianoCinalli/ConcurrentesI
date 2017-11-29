@@ -7,6 +7,7 @@ ClientAbstract::ClientAbstract (const std::string& file,const char letter, enum 
     this->reciverType = 1;
     this->finalize = false;
     this->mTypeClient = typeClient;
+    log(CLIENT_ABSTRACT_NAME + " :Conexión iniciada por el cliente con id: ",this->mType,INFORMATION);
 }
 
 ClientAbstract::~ClientAbstract(){
@@ -38,10 +39,10 @@ void ClientAbstract::connect(){
     conection.senderType = this->mType;
     conection.typeClient = this->mTypeClient;    
     this->mQueue->write(static_cast<const void*>(&conection),sizeof(messageConection));
-    log("Conexión iniciada por el cliente con id: ",this->mType,INFORMATION);
+    log(CLIENT_ABSTRACT_NAME + " :Conexión iniciada por el cliente con id: ",this->mType,INFORMATION);
     flushLog();
     this->mQueue->read(this->mType,static_cast<void*>(&conection),sizeof(messageConection));
-    log("Conexión aceptada pora el cliente con id: ",this->mType,INFORMATION);  
+    log(CLIENT_ABSTRACT_NAME + " :Conexión aceptada pora el cliente con id: ",this->mType,INFORMATION);  
     this->reciverType = conection.senderType;
 }
 
@@ -53,7 +54,7 @@ void ClientAbstract::disconnect(){
     strcpy(message.query,"");    
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     this->finalize = true;
-    log("Terminando la conexión con el servidor, cliente con id: ",this->mType,INFORMATION);
+    log(CLIENT_ABSTRACT_NAME + " :Terminando la conexión con el servidor, cliente con id: ",this->mType,INFORMATION);
 } 
 
 struct messageReplyWeatherService ClientAbstract::queryWeather(std::string city){
@@ -63,12 +64,12 @@ struct messageReplyWeatherService ClientAbstract::queryWeather(std::string city)
     strcpy(message.query,city.c_str());
     std::cout<<"lo que va a enviar el cliente: "<<message.query<<std::endl;        
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
-    log("Consulta de Clima por parte del cliente con id: ",this->mType,INFORMATION);
+    log(CLIENT_ABSTRACT_NAME + " :Consulta de Clima por parte del cliente con id: ",this->mType,INFORMATION);
 
     struct messageReplyWeatherService messageReply;
     memset(&messageReply,0,sizeof(messageReplyWeatherService));
     this->mQueue->read(this->mType,static_cast<void*>(&messageReply),sizeof(messageReplyWeatherService));
-    log("Respuesta del Clima recibida por el cliente con id: ",this->mType,INFORMATION); 
+    log(CLIENT_ABSTRACT_NAME + " :Respuesta del Clima recibida por el cliente con id: ",this->mType,INFORMATION); 
     return messageReply;   
 }
 
@@ -78,12 +79,12 @@ struct messageReplyExchangeRatesService ClientAbstract::queryExchangeRate(std::s
     message.queryType = servicesQuery::SERVICE_EXCHANGERATE;
     strcpy(message.query,currency.c_str());  
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
-    log("Consulta de Tipo de Cambio por parte del cliente con id: ",this->mType,INFORMATION);
+    log(CLIENT_ABSTRACT_NAME + " :Consulta de Tipo de Cambio por parte del cliente con id: ",this->mType,INFORMATION);
 
     struct messageReplyExchangeRatesService messageReply;
     memset(&messageReply,0,sizeof(messageReplyExchangeRatesService));       
     this->mQueue->read(this->mType,static_cast<void*>(&messageReply),sizeof(messageReplyExchangeRatesService));
-    log("Respuesta del Tipo de Cambio recibida por el cliente con id: ",this->mType,INFORMATION);
+    log(CLIENT_ABSTRACT_NAME + " :Respuesta del Tipo de Cambio recibida por el cliente con id: ",this->mType,INFORMATION);
     return messageReply;             
 }
 

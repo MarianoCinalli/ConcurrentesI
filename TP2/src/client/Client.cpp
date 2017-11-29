@@ -1,8 +1,9 @@
 #include "client/Client.h"
 #include "tools/logger.h"
 
-Client::Client (const std::string& file,const char letter) : ClientAbstract(file,letter,typesClientConections::CLIENT_CONECTION){
-    log(CLIENT_NAME + " : Inicializador cliente con id: " + std::to_string(getpid()),INFORMATION);
+Client::Client (const std::string& file,const char letter) :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            (file,letter,typesClientConections::CLIENT_CONECTION){
+    this->pid = getpid();
+    log(CLIENT_NAME + " " + to_string(this->pid) + " : Inicializador cliente con id: ",INFORMATION);
 }
 
 Client::~Client(){

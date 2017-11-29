@@ -4,6 +4,7 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <typeinfo>
 
 #include "tools/Messages.h"
 #include "tools/logger.h"
@@ -16,6 +17,8 @@
 #define optionDisconnect '0'
 
 class ClientAbstract : public Loggable{
+	
+	const std::string CLIENT_ABSTRACT_NAME = typeid(ClientAbstract).name();
 
 	private:
 		long int mType;
