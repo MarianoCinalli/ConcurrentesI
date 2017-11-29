@@ -17,7 +17,7 @@ void QueryServer::execute()
     conection.mtype = this->reciverType;
     conection.senderType = this->mType;
     this->mQueue->write(static_cast<const void *>(&conection), sizeof(messageConection));
-    log(QUERY_SERVER_NAME + " :Execute para atender a cliente con id: ", this->mType, INFORMATION);
+    log(QUERY_SERVER_NAME + " :Execute loop para atender a cliente con id: ", this->mType, INFORMATION);
 
     struct messageQuery message;
     while (!finalized)

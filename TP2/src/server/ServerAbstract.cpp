@@ -27,6 +27,7 @@ std::string ServerAbstract::logMemberVariables(){
 void ServerAbstract::solveQueryWeather(struct messageQuery message){
     std::cout<<"Consultarlo con el servicio del clima"<<std::endl;
     std::cout<<"Consulta Recibida: "<< message.query<<std::endl;
+    log(SERVER_ABSTRACT_NAME + " :solveQueryWeather para cliente con id: ",this->reciverType,INFORMATION);
     struct messageReplyWeatherService reply;
     reply.mtype = this->reciverType;
     reply.temperature = 20;
@@ -34,16 +35,17 @@ void ServerAbstract::solveQueryWeather(struct messageQuery message){
 	reply.humidity = 20;
     reply.errorId = 0;
     this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyWeatherService));
-    log("Envio respuesta del clima al cliente con id: ",this->reciverType,INFORMATION);
+    log(SERVER_ABSTRACT_NAME + " :Envio respuesta del clima al cliente con id: ",this->reciverType,INFORMATION);
 }
 
 void ServerAbstract::solveQueryExchangeRate(struct messageQuery message){
     std::cout<<"Consultarlo con el servicio de tiepo de cambio"<<std::endl;
     std::cout<<"Consulta Recibida: "<< message.query<<std::endl;
+    log(SERVER_ABSTRACT_NAME + " :solveQueryExchangeRate para cliente con id: ",this->reciverType,INFORMATION);
     struct messageReplyExchangeRatesService reply;
     reply.mtype = this->reciverType;    
     reply.exchangeRate = 10;
     reply.errorId = 0;    
     this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyExchangeRatesService));
-    log("Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
+    log(SERVER_ABSTRACT_NAME + " :Envio respuesta de tipo de cambio al cliente con id: ",this->reciverType,INFORMATION);    
 }
