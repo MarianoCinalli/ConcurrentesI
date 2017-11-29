@@ -8,8 +8,10 @@
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
 #include "server/ServerAbstract.h"
+#include <typeinfo>
 
 class QueryServer : public ServerAbstract{
+	const std::string QUERY_SERVER_NAME = typeid(QueryServer).name();
 	private:
 		/*long int mType;
 		long int reciverType;

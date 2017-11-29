@@ -10,9 +10,10 @@
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
+#include <typeinfo>
 
 class Client : public ClientAbstract{
-
+	const std::string CLIENT_NAME = typeid(Client).name();
 	private:
 
 	public:
