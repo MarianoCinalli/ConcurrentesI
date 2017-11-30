@@ -1,10 +1,12 @@
 {
     "3": 12,
+    "bitcoin": 14400,
     "dolar": 18,
     "euro": 20,
     "libra": 22,
     "peso chileno": 1,
     "peso mexicano": 1,
     "peso uruguayo": 3,
+    "soles": 4,
     "yen": 1
 }
