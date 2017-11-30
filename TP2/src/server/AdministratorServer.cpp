@@ -96,6 +96,12 @@ void AdministratorServer::serviceExchangeRate(struct messageAdministrator messag
 
 void AdministratorServer::solveUpdateWeather(struct messageAdministrator message){
     std::cout<<"Actualizar un registro del servicio del clima"<<std::endl;
+    std::string city = message.type;
+    std::string messageLog = " : datos a actualizar, ciudad: "+city+", temp: "+std::to_string(message.newTemperature)+ 
+    ", pres: "+std::to_string(message.newPressure)+", hum: "+std::to_string(message.newHumidity)+
+    ", idAdmin: ";
+    log(ADMINISTRATOR_SERVER_NAME + messageLog,this->reciverType,INFORMATION);
+
     /*struct messageReplyOperation messageReply;
     messageReply.mtype = this->reciverType;
     messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
@@ -114,6 +120,11 @@ void AdministratorServer::solveEraseWeather(struct messageAdministrator message)
 
 void AdministratorServer::solveUpdateExchangeRate(struct messageAdministrator message){
     std::cout<<"Actualizar un registros del servicio de tipo de cambio "<<std::endl;
+    std::string currency = message.type;
+    std::string messageLog = " : datos a actualizar, moneda: "+currency+", tipoDeCambio: "+std::to_string(message.newExchangeRate)
+    + ", idAdmin: ";
+    log(ADMINISTRATOR_SERVER_NAME + messageLog,this->reciverType,INFORMATION);
+
     /*struct messageReplyOperation messageReply;
     messageReply.mtype = this->reciverType;
     messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
