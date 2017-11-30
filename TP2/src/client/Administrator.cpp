@@ -55,7 +55,8 @@ void Administrator::updateWeather(){
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE LA CIUDAD DONDE QUIERE ACTUALIZAR EL CLIMA"<<std::endl;
-    std::cin>>city;
+    std::cin.ignore();
+    std::getline(std::cin, city, '\n');
     strcpy(message.type,city.c_str());
 
     std::cout<<"INGRESE EL VALOR DE TEMPERATURA"<<std::endl;

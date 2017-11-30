@@ -83,7 +83,7 @@ void AdministratorServer::serviceExchangeRate(struct messageAdministrator messag
         struct messageQuery messageQuery;
         memset(&messageQuery,'\0',sizeof(messageQuery));
         strcpy(messageQuery.query,message.type);
-        this->solveQueryWeather(messageQuery);
+        this->solveQueryExchangeRate(messageQuery);
         break;
 
     case servicesOperations::SERVICE_OP_UPDATE:
