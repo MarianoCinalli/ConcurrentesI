@@ -79,6 +79,7 @@ struct messageReplyExchangeRatesService Client::queryExchangeRate(std::string cu
     message.mtype = this->reciverType;
     message.queryType = servicesQuery::SERVICE_EXCHANGERATE;
     strcpy(message.query,currency.c_str());  
+    std::cout<<"lo que va a enviar el cliente: "<<message.query<<std::endl; 
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
     log(CLIENT_NAME + " :Consulta de Tipo de Cambio por parte del cliente con id: ",this->mType,INFORMATION);
 

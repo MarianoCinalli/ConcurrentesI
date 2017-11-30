@@ -17,8 +17,9 @@ ClientAbstract::~ClientAbstract(){
 void ClientAbstract::solveQueryWeaher(){
     std::cout<<"INGRESE LA CIUDAD DE LA CUAL DESEA SABER EL CLIMA"<<std::endl;
     std::string city;
-    std::cin>>city;
-    struct messageReplyWeatherService reply = this->queryWeather(city.c_str());
+    std::cin.ignore();
+    std::getline(std::cin, city, '\n');
+    struct messageReplyWeatherService reply = this->queryWeather(city);
     std::cout<<"Temperatura: "<<reply.temperature<<std::endl;
     std::cout<<"Presión: "<<reply.pressure<<std::endl;
     std::cout<<"Humedad: "<<reply.humidity<<std::endl;
@@ -27,8 +28,9 @@ void ClientAbstract::solveQueryWeaher(){
 void ClientAbstract::solveQueryExchangeRate(){
     std::cout<<"INGRESE LA MONEDA DE LA CUAL DESEA SABER EL TIPO DE CAMBIO EN RELACION AL PESO ARGENTINO"<<std::endl;
     std::string currency;
-    std::cin>>currency;
-    struct messageReplyExchangeRatesService reply = this->queryExchangeRate(currency.c_str());
+    std::cin.ignore();
+    std::getline(std::cin, currency, '\n');
+    struct messageReplyExchangeRatesService reply = this->queryExchangeRate(currency);
     std::cout<<"Tipo de Cambio: "<<reply.exchangeRate<<std::endl;
 }
 
