@@ -70,7 +70,7 @@ void Administrator::updateWeather(){
     message.operationType = servicesOperations::SERVICE_OP_UPDATE;
     message.typeService = servicesQuery::SERVICE_WEATHER;
 
-    log(ADMINISTRATOR_NAME + " : Se actualizará el clima en la ciudad "+city,INFORMATION);
+    log(ADMINISTRATOR_NAME + " :Se actualizará el clima en la ciudad "+city,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
 /*    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
 
@@ -160,7 +160,7 @@ void Administrator::deleteExchangeRate(){
     message.operationType = servicesOperations::SERVICE_OP_ERASE;
     message.typeService = servicesQuery::SERVICE_EXCHANGERATE;            
 
-    log(ADMINISTRATOR_NAME + " : Se eliminará la moneda "+currency,INFORMATION);
+    log(ADMINISTRATOR_NAME + " :Se eliminará la moneda "+currency,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
 
 /*   this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
@@ -173,7 +173,12 @@ void Administrator::deleteExchangeRate(){
 }
 
 void Administrator::finalizeServer(){
-    
+    struct messageAdministrator message;
+    memset(&message,'\0',sizeof(messageAdministrator));
+    message.mtype = this->reciverType;
+    message.operationType = servicesOperations::SERVICE_OP_END;  
+    log(ADMINISTRATOR_NAME + " :Se eliminará el Servidor "+std::to_string(message.mtype),INFORMATION);        
+    this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
 }
 
 void Administrator::parseMessage(char option){
@@ -247,8 +252,9 @@ void Administrator::execute(){
         std::cout<<"PARA ELIMINAR EL CLIMA DE UNA CIUDAD INGRESAR LA OPCIÓN: 6"<<std::endl;
         std::cout<<"PARA ELIMINAR EL TIPO DE CAMBIO DE UN PAIS INGRESAR LA OPCIÓN: 7"<<std::endl;
         std::cout<<"------------------------------------------------------------------"<<std::endl;
-        std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
         std::cout<<"PARA FINALIZAR EL SERVIDOR INGRESAR LA OPCIÓN: 9"<<std::endl;
+        std::cout<<"------------------------------------------------------------------"<<std::endl;
+        std::cout<<"PARA TERMINAR LA CONEXIÓN INGRESAR LA OPCIÓN: 0"<<std::endl;
         std::cout<<"------------------------------------------------------------------"<<std::endl;
 
         char optionInput = '\0';
