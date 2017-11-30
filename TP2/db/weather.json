@@ -4,6 +4,11 @@
         "pressure": 1,
         "temperature": 25
     },
+    "chubut": {
+        "humidity": 20,
+        "pressure": 20,
+        "temperature": 20
+    },
     "maipu": {
         "humidity": 30,
         "pressure": 1,

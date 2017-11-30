@@ -35,19 +35,15 @@ void AdministratorServer::execute()
         memset(&message, '\0', sizeof(messageAdministrator));
         this->mQueue->read(this->mType, static_cast<void *>(&message), sizeof(messageAdministrator));
         log(ADMINISTRATOR_SERVER_NAME + " :Consulta del administrador con id: ", this->reciverType, INFORMATION);
-        this->parseMessage(message);
+        if(sigint_handler.getGracefulQuit() == 0)
+            this->parseMessage(message);
     }
 }
 
 void AdministratorServer::parseMessage(struct messageAdministrator message)
 {
     if (message.operationType == servicesOperations::SERVICE_OP_END)
-    {   /*
-        log(ADMINISTRATOR_SERVER_NAME + " :Apagar a los servidores por parte del Administrador: ", this->reciverType, INFORMATION);
-        this->serverIsDied->escribir(true);
-        this->finalized = true;
-        return;
-        */
+    {
         log(ADMINISTRATOR_SERVER_NAME + " : Kill a mi parent (SERVER): with pid: ",getppid(),INFORMATION);
         kill(getppid(), SIGINT);
     }
@@ -126,12 +122,6 @@ void AdministratorServer::solveUpdateWeather(struct messageAdministrator message
                              ", pres: " + std::to_string(message.newPressure) + ", hum: " + std::to_string(message.newHumidity) +
                              ", idAdmin: ";
     log(ADMINISTRATOR_SERVER_NAME + messageLog, this->reciverType, INFORMATION);
-
-    /*struct messageReplyOperation messageReply;
-    messageReply.mtype = this->reciverType;
-    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
-    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
-    */
     ADMINISTRATOR->sendUpdateMessageToWeatherService(this->mType, city,
                                                      message.newTemperature, message.newPressure, message.newHumidity);
 }
@@ -140,11 +130,6 @@ void AdministratorServer::solveEraseWeather(struct messageAdministrator message)
 {
     std::cout << "Eliminar un registro del servicio del clima" << std::endl;
     std::string city = message.type;
-    /*struct messageReplyOperation messageReply;
-    messageReply.mtype = this->reciverType;
-    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
-    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
-    */
     ADMINISTRATOR->sendEraseMessageToWeatherService(this->mType, city);
 }
 
@@ -154,12 +139,6 @@ void AdministratorServer::solveUpdateExchangeRate(struct messageAdministrator me
     std::string currency = message.type;
     std::string messageLog = " : datos a actualizar, moneda: " + currency + ", tipoDeCambio: " + std::to_string(message.newExchangeRate) + ", idAdmin: ";
     log(ADMINISTRATOR_SERVER_NAME + messageLog, this->reciverType, INFORMATION);
-
-    /*struct messageReplyOperation messageReply;
-    messageReply.mtype = this->reciverType;
-    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
-    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
-    */
     ADMINISTRATOR->sendUpdateMessageToCurrencyExchangeService(this->mType, currency, message.newExchangeRate);
 }
 
@@ -167,10 +146,5 @@ void AdministratorServer::solveEraseExchangeRate(struct messageAdministrator mes
 {
     std::cout << "Eliminar un registro del servicio de tipo de cambio" << std::endl;
     std::string currency = message.type;
-    /*struct messageReplyOperation messageReply;
-    messageReply.mtype = this->reciverType;
-    messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
-    this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation)); 
-    */
     ADMINISTRATOR->sendEraseMessageToCurrencyExchangeService(this->mType, currency);
 }

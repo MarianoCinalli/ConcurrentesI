@@ -28,7 +28,7 @@ class Server : public Loggable{
 		void createQueryServers();
         void assingQueryServer(int clientType);
 		void createServerImpl(int clientType, int typesClient);
-		MemoriaCompartida *serverIsDied;
+		//MemoriaCompartida *serverIsDied;
 		std::vector<__pid_t> *pids;
 	public:
 		Server(const std::string& file,const char letter,int amountQueryServers,int maxQueryServer);

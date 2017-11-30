@@ -13,16 +13,16 @@ Server::Server(const std::string &file, const char letter, int amountQueryServer
     this->amountQueryServers = amountQueryServers;
     this->maxQueryServer = maxQueryServer;
     this->finalized = false;
-    this->serverIsDied = new MemoriaCompartida();
-    this->serverIsDied->crear(SHM, LETRA);
-    this->serverIsDied->escribir(0);
+    //this->serverIsDied = new MemoriaCompartida();
+    //this->serverIsDied->crear(SHM, LETRA);
+    //this->serverIsDied->escribir(0);
     this->pids = new std::vector<__pid_t>();
     log(SERVER_NAME + " : Inicializador", INFORMATION);
 }
 
 Server::~Server()
 {
-    this->serverIsDied->liberar();
+    //this->serverIsDied->liberar();
     this->mQueue->destroy();
     delete this->mQueue;
     this->pids->clear();
