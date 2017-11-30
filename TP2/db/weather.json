@@ -1,0 +1,32 @@
+{
+    "buenos aires": {
+        "humidity": 70,
+        "pressure": 1,
+        "temperature": 25
+    },
+    "maipu": {
+        "humidity": 30,
+        "pressure": 1,
+        "temperature": 11
+    },
+    "salta": {
+        "humidity": 50,
+        "pressure": 1,
+        "temperature": 15
+    },
+    "san luis": {
+        "humidity": 12,
+        "pressure": 1,
+        "temperature": 9
+    },
+    "tolhuin": {
+        "humidity": 13,
+        "pressure": 1,
+        "temperature": 11
+    },
+    "tucuman": {
+        "humidity": 25,
+        "pressure": 1,
+        "temperature": 30
+    }
+}
