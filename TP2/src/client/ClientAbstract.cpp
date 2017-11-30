@@ -19,9 +19,16 @@ void ClientAbstract::solveQueryWeaher(){
     std::string city;
     std::cin>>city;
     struct messageReplyWeatherService reply = this->queryWeather(city.c_str());
-    std::cout<<"Temperatura: "<<reply.temperature<<std::endl;
-    std::cout<<"Presión: "<<reply.pressure<<std::endl;
-    std::cout<<"Humedad: "<<reply.humidity<<std::endl;
+    
+    if (reply.errorId == NO_ERROR) {
+        std::cout<<"Temperatura: "<<reply.temperature<<std::endl;
+        std::cout<<"Presión: "<<reply.pressure<<std::endl;
+        std::cout<<"Humedad: "<<reply.humidity<<std::endl;
+    } else {
+        std::cout<<"Error la ciudad ingresada no existe"<<std::endl;
+    }
+    std::cout<<std::endl;
+    std::cout<<std::endl;
 }
 
 void ClientAbstract::solveQueryExchangeRate(){
@@ -29,7 +36,14 @@ void ClientAbstract::solveQueryExchangeRate(){
     std::string currency;
     std::cin>>currency;
     struct messageReplyExchangeRatesService reply = this->queryExchangeRate(currency.c_str());
-    std::cout<<"Tipo de Cambio: "<<reply.exchangeRate<<std::endl;
+
+    if (reply.errorId == NO_ERROR) {
+        std::cout<<"Tipo de Cambio: "<<reply.exchangeRate<<std::endl;
+    } else {
+        std::cout<<"Error la moneda ingresada no existe"<<std::endl;
+    }
+    std::cout<<std::endl;
+    std::cout<<std::endl;
 }
 
 

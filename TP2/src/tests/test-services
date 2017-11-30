@@ -1,0 +1,39 @@
+
+    // READ AND REPLY EXAMPLES
+    administrator->sendReadMessageToWeatherService(thisPocessPid, "buenos aires");
+
+    messageReplyWeatherService weatherReply = administrator->recieveMessageFromWeatherService(thisPocessPid);
+    if (weatherReply.errorId == NO_ERROR) {
+        std::cout << "Temperatura: " << weatherReply.temperature <<
+            " - Presion:" << weatherReply.pressure <<
+            " - Humedad:" << weatherReply.humidity << std::endl;
+    } else {
+        std::cout << "Error" << std::endl;
+    }
+
+    administrator->sendReadMessageToCurrencyExchangeService(thisPocessPid, "dolar");
+
+    messageReplyExchangeRatesService currencyReply = administrator->recieveMessageFromCurrencyExchangeService(thisPocessPid);
+    if (currencyReply.errorId == NO_ERROR) {
+        std::cout << "1 peso = " << currencyReply.exchangeRate << " dolares" << std::endl;
+    } else {
+        std::cout << "Error" << std::endl;
+    }
+
+    // UPDATE EXAMPLES
+    administrator->sendUpdateMessageToCurrencyExchangeService(thisPocessPid, "peso uruguayo", 4); // Actualizar
+    administrator->sendUpdateMessageToWeatherService(thisPocessPid, "ciudadInexistente", 23, 1, 100); // Crear porque no existe
+
+    // ERASE EXAMPLES
+    administrator->sendEraseMessageToCurrencyExchangeService(thisPocessPid, "euro");
+    administrator->sendEraseMessageToWeatherService(thisPocessPid, "maipu");
+
+    /*
+    // END SERVICES EXAMPLE
+    administrator->endServicesAndReturnWhenFinished();
+
+    delete(administrator);
+    // -----------------------------------------------------
+
+    msgctl(queueId, IPC_RMID, NULL);
+*/

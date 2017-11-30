@@ -1,4 +1,6 @@
 #include "server/AdministratorServer.h"
+#include "services/ServicesAdministrator.h"
+extern ServicesAdministrator* ADMINISTRATOR;
 
 AdministratorServer::AdministratorServer(const std::string &file, const char letter, int clientType)
     : ServerAbstract(file, letter, clientType)
@@ -107,15 +109,19 @@ void AdministratorServer::solveUpdateWeather(struct messageAdministrator message
     messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
     this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
     */
+    ADMINISTRATOR->sendUpdateMessageToWeatherService(this->mType, city,
+    message.newTemperature, message.newPressure, message.newHumidity);
 }
 
 void AdministratorServer::solveEraseWeather(struct messageAdministrator message){
     std::cout<<"Eliminar un registro del servicio del clima"<<std::endl;
+    std::string city = message.type;
     /*struct messageReplyOperation messageReply;
     messageReply.mtype = this->reciverType;
     messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
     this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
     */
+    ADMINISTRATOR->sendEraseMessageToWeatherService(this->mType, city);
 }
 
 void AdministratorServer::solveUpdateExchangeRate(struct messageAdministrator message){
@@ -130,13 +136,16 @@ void AdministratorServer::solveUpdateExchangeRate(struct messageAdministrator me
     messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
     this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation));
     */
+    ADMINISTRATOR->sendUpdateMessageToCurrencyExchangeService(this->mType, currency, message.newExchangeRate);
 }
 
 void AdministratorServer::solveEraseExchangeRate(struct messageAdministrator message){
     std::cout<<"Eliminar un registro del servicio de tipo de cambio"<<std::endl;
+    std::string currency = message.type;
     /*struct messageReplyOperation messageReply;
     messageReply.mtype = this->reciverType;
     messageReply.status = typesStatusOperation::SUCCESS_OPERATION;
     this->mQueue->write(static_cast<const void*>(&messageReply),sizeof(messageReplyOperation)); 
     */  
+    ADMINISTRATOR->sendEraseMessageToCurrencyExchangeService(this->mType, currency);
 }

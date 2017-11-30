@@ -17,6 +17,10 @@ int LOG_MIN_LEVEL = 1;
 std::ofstream LOG_FILE_POINTER;
 std::string file = "tp2.log";
 char letter = 'A';
+//------------------------------------------
+ServicesAdministrator* ADMINISTRATOR;
+int THISPROCESSPID;
+int QUEUEID;
 // Constants ------------------------------------------------------
 
 // Spawn Services -------------------------------------------------
@@ -62,6 +66,16 @@ void server(){
     delete server; 
 }
 
+void services(){
+    key_t clave = ftok("tp2.log", 'A');
+    QUEUEID = msgget(clave, 0777 | IPC_CREAT);
+
+    ADMINISTRATOR = new ServicesAdministrator(QUEUEID);
+    ADMINISTRATOR->spawnServices(&executeWeatherService, &executeExchangeRatesService);
+
+    THISPROCESSPID = getpid();
+}
+
 
 int main(int argc, char* argv[]) {
     // Initialization
@@ -69,7 +83,6 @@ int main(int argc, char* argv[]) {
     // End Initialization
     logSessionStarted();
 
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     std::cout<<"--------------------------OPCIONES:----------------"<<std::endl;
     std::cout<<"PARA EJECUTAR AL SERVIDOR INGRESE LA OPCION: 1"<<std::endl;
     std::cout<<"---------------------------------------------------"<<std::endl;
@@ -85,6 +98,7 @@ int main(int argc, char* argv[]) {
 
     switch(imput){
         case '1':
+            services();
             server();
             break;
 
@@ -99,54 +113,7 @@ int main(int argc, char* argv[]) {
         default:     
             std::cout<<"Opción Incorrecta"<<std::endl;
     }
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-    // -----------------------------------------------------
-    key_t clave = ftok("tp2.log", 'A');
-    int queueId = msgget(clave, 0777 | IPC_CREAT);
-
-    ServicesAdministrator* administrator = new ServicesAdministrator(queueId);
-    administrator->spawnServices(&executeWeatherService, &executeExchangeRatesService);
-
-    int thisPocessPid = getpid();
-
-    // READ AND REPLY EXAMPLES
-    administrator->sendReadMessageToWeatherService(thisPocessPid, "buenos aires");
-
-    messageReplyWeatherService weatherReply = administrator->recieveMessageFromWeatherService(thisPocessPid);
-    if (weatherReply.errorId == NO_ERROR) {
-        std::cout << "Temperatura: " << weatherReply.temperature <<
-            " - Presion:" << weatherReply.pressure <<
-            " - Humedad:" << weatherReply.humidity << std::endl;
-    } else {
-        std::cout << "Error" << std::endl;
-    }
-
-    administrator->sendReadMessageToCurrencyExchangeService(thisPocessPid, "dolar");
-
-    messageReplyExchangeRatesService currencyReply = administrator->recieveMessageFromCurrencyExchangeService(thisPocessPid);
-    if (currencyReply.errorId == NO_ERROR) {
-        std::cout << "1 peso = " << currencyReply.exchangeRate << " dolares" << std::endl;
-    } else {
-        std::cout << "Error" << std::endl;
-    }
-
-    // UPDATE EXAMPLES
-    administrator->sendUpdateMessageToCurrencyExchangeService(thisPocessPid, "peso uruguayo", 4); // Actualizar
-    administrator->sendUpdateMessageToWeatherService(thisPocessPid, "ciudadInexistente", 23, 1, 100); // Crear porque no existe
-
-    // ERASE EXAMPLES
-    administrator->sendEraseMessageToCurrencyExchangeService(thisPocessPid, "euro");
-    administrator->sendEraseMessageToWeatherService(thisPocessPid, "maipu");
-
-    // END SERVICES EXAMPLE
-    administrator->endServicesAndReturnWhenFinished();
-
-    delete(administrator);
-    // -----------------------------------------------------
-
-    msgctl(queueId, IPC_RMID, NULL);
     logSessionFinished();
     return 0;
 }
