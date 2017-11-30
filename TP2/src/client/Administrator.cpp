@@ -90,7 +90,8 @@ void Administrator::updateExchangeRate(){
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE EL NOMBRE DE LA MONEDA QUE QUIERE ACTUALIZAR"<<std::endl;
-    std::cin>>currency;
+    std::cin.ignore();
+    std::getline(std::cin, currency, '\n');
     strcpy(message.type,currency.c_str());
     
     std::cout<<"INGRESE EL VALOR DE TIPO DE CAMBIO"<<std::endl;
@@ -121,7 +122,8 @@ void Administrator::deleteWeather(){
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE LA CIUDAD QUE QUIERE ELIMINAR DEL REGISTRO DEL CLIMA"<<std::endl;
-    std::cin>>city;
+    std::cin.ignore();
+    std::getline(std::cin, city, '\n');
     strcpy(message.type,city.c_str());    
 
     message.mtype = this->reciverType;
@@ -130,8 +132,8 @@ void Administrator::deleteWeather(){
 
     log(ADMINISTRATOR_NAME + " : Se eliminará del registro del clima la ciudad "+city,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
-    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
-/*
+
+/*    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
     if(reply.status != -1){
         log(ADMINISTRATOR_NAME + " : se ha eliminado del registro del clima la ciudad "+city,INFORMATION);          
     }else{
@@ -149,7 +151,8 @@ void Administrator::deleteExchangeRate(){
     memset(&reply,'\0',sizeof(messageReplyOperation));
 
     std::cout<<"INGRESE EL NOMBRE DE LA MONEDA QUE QUIERE ELIMINAR"<<std::endl;
-    std::cin>>currency;
+    std::cin.ignore();
+    std::getline(std::cin, currency, '\n');
     strcpy(message.type,currency.c_str());    
 
     message.mtype = this->reciverType;
@@ -158,8 +161,8 @@ void Administrator::deleteExchangeRate(){
 
     log(ADMINISTRATOR_NAME + " : Se eliminará la moneda "+currency,INFORMATION);
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
-    this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
-/*
+
+/*   this->mQueue->read(this->mType,static_cast<void*>(&reply),sizeof(messageReplyOperation));
     if(reply.status != -1){
         log(ADMINISTRATOR_NAME + " : la moneda "+currency+" se ha eliminado corretamente",INFORMATION);    
     }else{

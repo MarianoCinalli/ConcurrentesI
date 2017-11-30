@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
         default:     
             std::cout<<"Opción Incorrecta"<<std::endl;
     }
-
+    
     logSessionFinished();
     return 0;
 }

@@ -9,7 +9,7 @@ WeatherTable::WeatherTable() {
 Weather* WeatherTable::get(std::string city) {
 	Weather* weather = new Weather();
     if (this->table.find(city) == this->table.end()) {
-        log("WeatherTable: **error** No se encontro la ciudad: " + city , ERROR);
+        log("WeatherTable: **WARNING** No se encontro la ciudad: " + city , WARNING);
     } else {
         weather->setTemperature(this->table[city]["temperature"]);
         weather->setPressure(this->table[city]["pressure"]);
@@ -31,7 +31,7 @@ void WeatherTable::update(std::string city, Weather* newWeather) {
 
 void WeatherTable::erase(std::string city) {
     if (this->table.find(city) == this->table.end()) {
-        log("WeatherTable: **error** No se encontro la ciudad: " + city , ERROR);
+        log("WeatherTable: **WARNING** No se encontro la ciudad: " + city , WARNING);
     } else {
         log("WeatherTable: Eliminando " + city , INFORMATION);
         this->table.erase(city);

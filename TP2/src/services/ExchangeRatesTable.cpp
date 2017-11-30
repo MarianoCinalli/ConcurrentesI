@@ -9,7 +9,7 @@ ExchangeRatesTable::ExchangeRatesTable() {
 int ExchangeRatesTable::get(std::string currency) {
 	int exchangeRate = -1;
     if (this->table.find(currency) == this->table.end()) {
-        log("ExchangeRatesTable: **error** No se encontro la moneda: " + currency , ERROR);
+        log("ExchangeRatesTable: **WARNING** No se encontro la moneda: " + currency , WARNING);
     } else {
         exchangeRate = this->table[currency];
     }
@@ -28,7 +28,7 @@ void ExchangeRatesTable::update(std::string currency, int exchangeRate) {
 
 void ExchangeRatesTable::erase(std::string currency) {
     if (this->table.find(currency) == this->table.end()) {
-        log("ExchangeRatesTable: **error** No se encontro la moneda: " + currency , ERROR);
+        log("ExchangeRatesTable: **WARNING** No se encontro la moneda: " + currency , WARNING);
     } else {
         log("ExchangeRatesTable: Eliminando " + currency , INFORMATION);
         this->table.erase(currency);
