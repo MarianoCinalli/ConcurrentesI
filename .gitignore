@@ -33,8 +33,11 @@
 
 main
 TP1/beachVoley.log
+TP2/src/.vscode/*
+TP2/.vscode/*
 TP2/tp2.log
-TP2/db/*
+TP2/db/exchangeRates.json
+TP2/db/weather.json
 TP1/src/.vscode/*
 TP1/.vscode/*
 .vscode/*
