@@ -33,6 +33,9 @@ void AdministratorServer::execute()
 
 void AdministratorServer::parseMessage(struct messageAdministrator message)
 {
+    if (message.operationType == servicesOperations::SERVICE_OP_END) {
+        log(ADMINISTRATOR_SERVER_NAME + " :Apagar a los servidores por parte del Administrador: ", this->reciverType, INFORMATION);
+    }
 
     switch (message.typeService)
     {

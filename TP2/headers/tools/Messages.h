@@ -62,7 +62,7 @@
 	struct messageAdministrator{
 		long mtype;
 		int typeService;	// SERVICE_WEATHER, SERVICE_EXCHANGERATE
-		int operationType; 	// SERVICE_OP_ERASE, SERVICE_OP_UPDATE, SERVICE_OP_READ
+		enum servicesOperations operationType; 	// SERVICE_OP_ERASE, SERVICE_OP_UPDATE, SERVICE_OP_READ
 		char type[50];		// city, currency
 		int newTemperature;
 		int newPressure;
