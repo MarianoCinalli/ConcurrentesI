@@ -104,7 +104,13 @@ int main(int argc, char* argv[]) {
 
     // -----------------------------------------------------
     key_t clave = ftok("tp2.log", 'A');
+    if (clave < 0) {
+        log("Error al generar un token para la cola de mensajes.", ERROR);
+    }
     int queueId = msgget(clave, 0777 | IPC_CREAT);
+    if (queueId < 0) {
+        log("Error al crear la cola de mensajes.", ERROR);
+    }
 
     ServicesAdministrator* administrator = new ServicesAdministrator(queueId);
     administrator->spawnServices(&executeWeatherService, &executeExchangeRatesService);
@@ -146,7 +152,10 @@ int main(int argc, char* argv[]) {
     delete(administrator);
     // -----------------------------------------------------
 
-    msgctl(queueId, IPC_RMID, NULL);
+    int status = msgctl(queueId, IPC_RMID, NULL);
+    if (status < 0) {
+        log("Error al eliminar la cola de mensajes.", ERROR);
+    }
     logSessionFinished();
     return 0;
 }
