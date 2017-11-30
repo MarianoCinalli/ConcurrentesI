@@ -5,7 +5,7 @@ ClientAbstract::ClientAbstract (const std::string& file,const char letter, enum 
     this->mType = getpid();
     //mensage por defecto para iniciar la conexión con el servidor
     this->reciverType = 1;
-    this->finalize = false;
+    this->finalized = false;
     this->mTypeClient = typeClient;
     log(CLIENT_ABSTRACT_NAME + " :Conexión iniciada por el cliente con id: ",this->mType,INFORMATION);
 }
@@ -23,10 +23,14 @@ void ClientAbstract::solveQueryWeaher(){
     struct messageReplyWeatherService reply = this->queryWeather(city.c_str());
     
     if (reply.errorId == NO_ERROR) {
+        std::cout<<std::endl;
+        std::cout<<"------Respuesta-----"<<std::endl;        
         std::cout<<"Temperatura: "<<reply.temperature<<std::endl;
         std::cout<<"Presión: "<<reply.pressure<<std::endl;
         std::cout<<"Humedad: "<<reply.humidity<<std::endl;
     } else {
+        std::cout<<std::endl;
+        std::cout<<"------Respuesta-----"<<std::endl;  
         std::cout<<"Error la ciudad ingresada no existe"<<std::endl;
     }
     std::cout<<std::endl;
@@ -42,8 +46,12 @@ void ClientAbstract::solveQueryExchangeRate(){
     struct messageReplyExchangeRatesService reply = this->queryExchangeRate(currency.c_str());
 
     if (reply.errorId == NO_ERROR) {
+        std::cout<<std::endl;
+        std::cout<<"------Respuesta-----"<<std::endl;  
         std::cout<<"Tipo de Cambio: "<<reply.exchangeRate<<std::endl;
     } else {
+        std::cout<<std::endl;
+        std::cout<<"------Respuesta-----"<<std::endl;  
         std::cout<<"Error la moneda ingresada no existe"<<std::endl;
     }
     std::cout<<std::endl;
@@ -71,7 +79,7 @@ void ClientAbstract::disconnect(){
     message.queryType = servicesQuery::END_CONECTION;
     strcpy(message.query,"");    
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageQuery));
-    this->finalize = true;
+    this->finalized = true;
     log(CLIENT_ABSTRACT_NAME + " :Terminando la conexión con el servidor, cliente con id: ",this->mType,INFORMATION);
 } 
 

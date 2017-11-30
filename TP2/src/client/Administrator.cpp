@@ -15,7 +15,6 @@ struct messageReplyExchangeRatesService Administrator::queryExchangeRate(std::st
     message.operationType = servicesOperations::SERVICE_OP_READ;
     strcpy(message.type,currency.c_str());
 
-    std::cout<<"lo que va a enviar el administrador: "<<message.type<<std::endl;        
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     log(ADMINISTRATOR_NAME + " :Consulta del Tipo de cambio por el Administrador, moneda: "+currency,INFORMATION);
 
@@ -35,7 +34,6 @@ struct messageReplyWeatherService Administrator::queryWeather(std::string city){
     message.operationType = servicesOperations::SERVICE_OP_READ;
     strcpy(message.type,city.c_str());
 
-    std::cout<<"lo que va a enviar el administrador: "<<message.type<<std::endl;        
     this->mQueue->write(static_cast<const void*>(&message),sizeof(messageAdministrator));
     log(ADMINISTRATOR_NAME + " :Consulta del Clima por el Administrador, ciudad: "+city,INFORMATION);
 
@@ -140,6 +138,7 @@ void Administrator::deleteExchangeRate(){
 }
 
 void Administrator::finalizeServer(){
+    this->finalized = true;
     struct messageAdministrator message;
     memset(&message,'\0',sizeof(messageAdministrator));
     message.mtype = this->reciverType;

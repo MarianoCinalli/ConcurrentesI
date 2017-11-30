@@ -23,7 +23,7 @@ class ClientAbstract : public Loggable{
 		long int mType;
 		long int reciverType;
 		Queue* mQueue;
-		bool finalize;
+		bool finalized;
 
 	private:
 	    enum typesClientConections mTypeClient;
@@ -39,7 +39,7 @@ class ClientAbstract : public Loggable{
 		virtual void execute()=0;
 		virtual struct messageReplyExchangeRatesService queryExchangeRate(std::string currency)=0;
 		virtual struct messageReplyWeatherService queryWeather(std::string city)=0;
-        bool getFinalizeProcess(){return this->finalize;}
+        bool getFinalizeProcess(){return this->finalized;}
 };
 
 #endif /* CLIENTABSTRACT_H_ */
