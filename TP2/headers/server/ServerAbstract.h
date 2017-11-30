@@ -17,7 +17,7 @@ class ServerAbstract : public Loggable{
         bool finalized;
 		Queue *mQueue;
 		void deleteResources();
-		MemoriaCompartida<int> *serverIsDied;
+		MemoriaCompartida *serverIsDied;
 	public:
 		void solveQueryExchangeRate(struct messageQuery message);
         void solveQueryWeather(struct messageQuery message);

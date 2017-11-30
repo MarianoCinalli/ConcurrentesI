@@ -24,6 +24,8 @@ class ServicesAdministrator {
 		int currencyExchangeServicePid;
 
 	public:
+		int getWeatherServicePid();
+		int getCurrencyExchangeServicePid();
 		ServicesAdministrator(int queueId);
 		~ServicesAdministrator();
 		void spawnServices(functionWithIntParametersType weatherService, functionWithIntParametersType exchangeRatesService);

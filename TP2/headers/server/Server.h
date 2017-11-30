@@ -4,6 +4,7 @@
 #include <string>
 #include <string.h>
 #include <typeinfo>
+#include <vector>
 
 #include "tools/Messages.h"
 #include "tools/logger.h"
@@ -26,8 +27,9 @@ class Server : public Loggable{
 		bool finalized;
 		void createQueryServers();
         void assingQueryServer(int clientType);
-		void createQueryServer(int clientType, int typesClient);
-		MemoriaCompartida<int> *serverIsDied;
+		void createServerImpl(int clientType, int typesClient);
+		MemoriaCompartida *serverIsDied;
+		std::vector<__pid_t> *pids;
 	public:
 		Server(const std::string& file,const char letter,int amountQueryServers,int maxQueryServer);
 		~Server();

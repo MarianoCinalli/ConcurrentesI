@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include "tools/logger.h"
+#include <sys/wait.h>
+
 
 //clients Admins Servers
 #include"client/Client.h"
@@ -63,6 +65,12 @@ void server(){
     std::cout<<"ESCUCHANDO CONEXIONES....."<<std::endl;    
     Server* server = new Server(file,letter,0,0);
     server->execute();
+    log("MAIN : Kill a CURRENCYEXCHANGESERVICE con pid: ", ADMINISTRATOR->getCurrencyExchangeServicePid(), INFORMATION);
+    kill(ADMINISTRATOR->getCurrencyExchangeServicePid(), SIGINT);
+    wait(0);
+    log("MAIN : Kill a WEATHERSERVICE con pid: ", ADMINISTRATOR->getWeatherServicePid(), INFORMATION);
+    kill(ADMINISTRATOR->getWeatherServicePid(), SIGINT);
+    wait(0);
     delete server; 
 }
 

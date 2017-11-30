@@ -1,4 +1,6 @@
 #include "server/QueryServer.h"
+#include "signals/SIGINT_Handler.h"
+#include "signals/SignalHandler.h"
 
 QueryServer::QueryServer(const std::string &file, const char letter, int clientType)
     : ServerAbstract(file, letter, clientType)
@@ -20,13 +22,18 @@ void QueryServer::execute()
     log(QUERY_SERVER_NAME + " :Execute loop para atender a cliente con id: ", this->mType, INFORMATION);
 
     struct messageQuery message;
-    while (!finalized)
-    {
-        memset(&message, '\0', sizeof(messageQuery));
-        this->mQueue->read(this->mType, static_cast<void *>(&message), sizeof(messageQuery));
-        log(QUERY_SERVER_NAME + " :Consulta del cliente con id: ", this->reciverType, INFORMATION);
-        this->parseMessage(message);
-    }
+    // event handler para la senial SIGINT (-2)
+    SIGINT_Handler sigint_handler;
+ 
+    // se registra el event handler declarado antes
+    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
+    while (!finalized && sigint_handler.getGracefulQuit() == 0)
+        {
+            memset(&message, '\0', sizeof(messageQuery));
+            this->mQueue->read(this->mType, static_cast<void *>(&message), sizeof(messageQuery));
+            log(QUERY_SERVER_NAME + " :Consulta del cliente con id: ", this->reciverType, INFORMATION);
+            this->parseMessage(message);
+        }
 }
 
 void QueryServer::parseMessage(struct messageQuery message)

@@ -1,4 +1,6 @@
 #include "services/WeatherService.h"
+#include "signals/SIGINT_Handler.h"
+#include "signals/SignalHandler.h"
 
 WeatherService::WeatherService(int queueId) {
 	this->queueId = queueId;
@@ -71,7 +73,12 @@ void WeatherService::update(messageRequestWeatherService* message) {
 void WeatherService::run() {
 	bool shouldRun = true;
 	log("WeatherService: Servicio iniciado.", INFORMATION);
-	while (shouldRun) {
+	    // event handler para la senial SIGINT (-2)
+    SIGINT_Handler sigint_handler;
+
+    // se registra el event handler declarado antes
+    SignalHandler ::getInstance()->registrarHandler(SIGINT, &sigint_handler);
+	while (shouldRun && sigint_handler.getGracefulQuit() == 0) {
 		// Busco en la cola un mensaje para este servicio (se envian con mtype = pid del servicio)
 		log("WeatherService: Esperando por un nuevo request.", INFORMATION);
 		messageRequestWeatherService readMessage = this->getRequest();

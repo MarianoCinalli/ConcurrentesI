@@ -1,4 +1,6 @@
 #include "services/ExchangeRatesService.h"
+#include "signals/SIGINT_Handler.h"
+#include "signals/SignalHandler.h"
 
 ExchangeRatesService::ExchangeRatesService(int queueId) {
 	this->queueId = queueId;
@@ -64,7 +66,12 @@ void ExchangeRatesService::update(messageRequestExchangeRatesService* message) {
 void ExchangeRatesService::run() {
 	bool shouldRun = true;
 	log("ExchangeRatesService: Servicio iniciado.", INFORMATION);
-	while (shouldRun) {
+	    // event handler para la senial SIGINT (-2)
+    SIGINT_Handler sigint_handler;
+
+    // se registra el event handler declarado antes
+    SignalHandler ::getInstance()->registrarHandler(SIGINT, &sigint_handler);
+	while (shouldRun && sigint_handler.getGracefulQuit() == 0) {
 		// Busco en la cola un mensaje para este servicio (se envian con mtype = pid del servicio)
 		log("ExchangeRatesService: Esperando por un nuevo request.", INFORMATION);
 		messageRequestExchangeRatesService readMessage = this->getRequest();
