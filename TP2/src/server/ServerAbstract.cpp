@@ -7,15 +7,19 @@ ServerAbstract::ServerAbstract(const std::string& file,const char letter,int cli
     this->mType = getpid();
     this->reciverType = clientType;
     this->finalized = false;
+    this->serverIsDied = new MemoriaCompartida<int>();
+    this->serverIsDied->crear ( SHM,LETRA );
     log(SERVER_ABSTRACT_NAME + " :Inicializador Server Abstract, para atender a cliente con id: ",clientType,INFORMATION);
 }
 
 ServerAbstract::~ServerAbstract(){
+    this->serverIsDied->liberar ();
     this->deleteResources();
 }
 
 void ServerAbstract::deleteResources() {
     delete this->mQueue;
+    delete this->serverIsDied;
 }
 
 

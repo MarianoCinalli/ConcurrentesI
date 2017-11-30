@@ -22,7 +22,7 @@ void AdministratorServer::execute()
     log(ADMINISTRATOR_SERVER_NAME + " :Execute loop para atender a cliente con id: ", this->mType, INFORMATION);
 
     struct messageAdministrator message;
-    while (!finalized)
+    while (!finalized && !this->serverIsDied->leer())
     {
         memset(&message, '\0', sizeof(messageAdministrator));
         this->mQueue->read(this->mType, static_cast<void *>(&message), sizeof(messageAdministrator));
@@ -35,6 +35,7 @@ void AdministratorServer::parseMessage(struct messageAdministrator message)
 {
     if (message.operationType == servicesOperations::SERVICE_OP_END) {
         log(ADMINISTRATOR_SERVER_NAME + " :Apagar a los servidores por parte del Administrador: ", this->reciverType, INFORMATION);
+        serverIsDied->escribir(true);
     }
 
     switch (message.typeService)

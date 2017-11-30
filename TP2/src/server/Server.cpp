@@ -10,16 +10,20 @@ Server::Server(const std::string& file,const char letter,int amountQueryServers,
     this->amountQueryServers = amountQueryServers;
     this->maxQueryServer = maxQueryServer;
     this->finalized = false;
+    this->serverIsDied = new MemoriaCompartida<int>();
+    this->serverIsDied->crear ( SHM,LETRA );
+    this->serverIsDied->escribir(false);
     log(SERVER_NAME + " : Inicializador",INFORMATION);
 }
 
 Server::~Server(){
+    this->serverIsDied->liberar ();
     this->mQueue->destroy();
     delete this->mQueue;
 }
 
 void Server::execute(){
-    while(!this->finalized){
+    while(!this->finalized && !this->serverIsDied->leer()){
         //escuchar conexiones
         struct messageConection connection;
         log(SERVER_NAME + " :Execute loop",INFORMATION);

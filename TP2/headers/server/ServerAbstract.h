@@ -2,12 +2,13 @@
 #define SERVERABSTRACT_H_
 
 #include <string>
-
+#include <typeinfo>
 #include "tools/Messages.h"
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
-#include <typeinfo>
+#include "shareMemory/MemoriaCompartida.h"
+
 class ServerAbstract : public Loggable{
 	const std::string SERVER_ABSTRACT_NAME = typeid(ServerAbstract).name();
 	protected:
@@ -15,7 +16,8 @@ class ServerAbstract : public Loggable{
 		long int reciverType;
         bool finalized;
 		Queue *mQueue;
-        void deleteResources();
+		void deleteResources();
+		MemoriaCompartida<int> *serverIsDied;
 	public:
 		void solveQueryExchangeRate(struct messageQuery message);
         void solveQueryWeather(struct messageQuery message);

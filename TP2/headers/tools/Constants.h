@@ -3,6 +3,8 @@
 
 const std::string WEATHER_DB_FILE = "db/weather.json";
 const std::string EXCHANGE_RATES_DB_FILE = "db/exchangeRates.json";
+static const std::string SHM = "/opt/memoria.txt";
+static const char LETRA = 'a';
 
 enum logLevels {
 	ERROR = 1,
