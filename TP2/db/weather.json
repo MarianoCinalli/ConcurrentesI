@@ -4,15 +4,20 @@
         "pressure": 1,
         "temperature": 25
     },
-    "chubut": {
-        "humidity": 20,
-        "pressure": 20,
-        "temperature": 20
-    },
     "maipu": {
         "humidity": 30,
         "pressure": 1,
         "temperature": 11
+    },
+    "punta": {
+        "humidity": 0,
+        "pressure": 0,
+        "temperature": 0
+    },
+    "punta alta": {
+        "humidity": 23,
+        "pressure": 23,
+        "temperature": 23
     },
     "salta": {
         "humidity": 50,
