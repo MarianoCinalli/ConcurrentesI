@@ -12,7 +12,6 @@
 #include "interfaces/Loggable.h"
 #include "QueryServer.h"
 #include "AdministratorServer.h"
-#include "shareMemory/MemoriaCompartida.h"
 
 class Server : public Loggable{
 	const std::string SERVER_NAME = typeid(Server).name();
@@ -28,7 +27,6 @@ class Server : public Loggable{
 		void createQueryServers();
         void assingQueryServer(int clientType);
 		void createServerImpl(int clientType, int typesClient);
-		//MemoriaCompartida *serverIsDied;
 		std::vector<__pid_t> *pids;
 	public:
 		Server(const std::string& file,const char letter,int amountQueryServers,int maxQueryServer);

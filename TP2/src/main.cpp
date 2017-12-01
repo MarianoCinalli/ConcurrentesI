@@ -60,24 +60,6 @@ void administrator(){
     exit(0);   
 }
 
-void server(){
-    std::cout<<"SOY UN SERVER"<<std::endl;    
-    std::cout<<"ESCUCHANDO CONEXIONES....."<<std::endl;    
-    Server* server = new Server(file,letter,0,0);
-    server->execute();
-    ADMINISTRATOR->endServicesAndReturnWhenFinished();
-    log("MAIN : se cierran los servicios CURRENCYEXCHANGESERVICE y WEATHERSERVICEcon pid: ", INFORMATION);
-    /*log("MAIN : Kill a CURRENCYEXCHANGESERVICE con pid: ", ADMINISTRATOR->getCurrencyExchangeServicePid(), INFORMATION);
-    kill(ADMINISTRATOR->getCurrencyExchangeServicePid(), SIGINT);
-    wait(0);
-    log("MAIN : Kill a WEATHERSERVICE con pid: ", ADMINISTRATOR->getWeatherServicePid(), INFORMATION);
-    kill(ADMINISTRATOR->getWeatherServicePid(), SIGINT);
-    wait(0);
-    */
-    delete(ADMINISTRATOR);
-    delete server; 
-}
-
 void services(){
     key_t clave = ftok("tp2.log", 'A');
     QUEUEID = msgget(clave, 0777 | IPC_CREAT);
@@ -88,12 +70,26 @@ void services(){
     THISPROCESSPID = getpid();
 }
 
+void server(){
+    logSessionStarted();
+    services();
+    std::cout<<"SOY UN SERVER"<<std::endl;    
+    std::cout<<"ESCUCHANDO CONEXIONES....."<<std::endl;    
+    Server* server = new Server(file,letter,0,0);
+    server->execute();
+    ADMINISTRATOR->endServicesAndReturnWhenFinished();
+    log("MAIN : se cierran los servicios CURRENCYEXCHANGESERVICE y WEATHERSERVICEcon pid: ", INFORMATION);
+
+    delete(ADMINISTRATOR);
+    logSessionFinished();
+    delete server; 
+}
+
 
 int main(int argc, char* argv[]) {
     // Initialization
     LOG_FILE_POINTER.open("tp2.log", std::ofstream::app);
     // End Initialization
-    logSessionStarted();
 
     std::cout<<"--------------------------OPCIONES:----------------"<<std::endl;
     std::cout<<"PARA EJECUTAR AL SERVIDOR INGRESE LA OPCION: 1"<<std::endl;
@@ -110,7 +106,6 @@ int main(int argc, char* argv[]) {
 
     switch(imput){
         case '1':
-            services();
             server();
             break;
 
@@ -126,6 +121,5 @@ int main(int argc, char* argv[]) {
             std::cout<<"Opción Incorrecta"<<std::endl;
     }
     
-    logSessionFinished();
     return 0;
 }

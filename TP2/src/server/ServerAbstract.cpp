@@ -8,19 +8,15 @@ ServerAbstract::ServerAbstract(const std::string& file,const char letter,int cli
     this->mType = getpid();
     this->reciverType = clientType;
     this->finalized = false;
-    this->serverIsDied = new MemoriaCompartida();
-    this->serverIsDied->crear ( SHM,LETRA );
     log(SERVER_ABSTRACT_NAME + " :Inicializador Server Abstract, para atender a cliente con id: ",clientType,INFORMATION);
 }
 
 ServerAbstract::~ServerAbstract(){
-    this->serverIsDied->liberar ();
     this->deleteResources();
 }
 
 void ServerAbstract::deleteResources() {
     delete this->mQueue;
-    delete this->serverIsDied;
 }
 
 
@@ -32,25 +28,16 @@ std::string ServerAbstract::logMemberVariables(){
 
 
 void ServerAbstract::solveQueryWeather(struct messageQuery message){
-    std::cout<<"Consultarlo con el servicio del clima"<<std::endl;
-    std::cout<<"Consulta Recibida: "<< message.query<<std::endl;
     log(SERVER_ABSTRACT_NAME + " :solveQueryWeather para cliente con id: ",this->reciverType,INFORMATION);
     struct messageReplyWeatherService reply;
-/*
-    reply.mtype = this->reciverType;
-    reply.temperature = 20;
-    reply.pressure = 20;
-	reply.humidity = 20;
-    reply.errorId = 0;
-    this->mQueue->write(static_cast<const void*>(&reply),sizeof(messageReplyWeatherService));
-*/
+
     ADMINISTRATOR->sendReadMessageToWeatherService(this->mType, message.query);
     reply = ADMINISTRATOR->recieveMessageFromWeatherService(this->mType);
 
     if (reply.errorId == NO_ERROR) {
         log(SERVER_ABSTRACT_NAME + " : se responde la consulta satisfactoriamente del Servicio del clima",INFORMATION);
     } else {
-        log(SERVER_ABSTRACT_NAME + " : la consulta del clima no se pudo responder",ERROR);
+        log(SERVER_ABSTRACT_NAME + " : la consulta del clima no se pudo responder",WARNING);
     }
 
     reply.mtype = this->reciverType;
@@ -59,23 +46,18 @@ void ServerAbstract::solveQueryWeather(struct messageQuery message){
 }
 
 void ServerAbstract::solveQueryExchangeRate(struct messageQuery message){
-    std::cout<<"Consultarlo con el servicio de tiepo de cambio"<<std::endl;
+    std::cout<<"Consultarlo con el servicio de tipo de cambio"<<std::endl;
     std::cout<<"Consulta Recibida: "<< message.query<<std::endl;
     log(SERVER_ABSTRACT_NAME + " :solveQueryExchangeRate para cliente con id: ",this->reciverType,INFORMATION);
     struct messageReplyExchangeRatesService reply;
-/*
-    reply.mtype = this->reciverType;    
-    reply.exchangeRate = 10;
-    reply.errorId = 0;    
-*/
-
+    
     ADMINISTRATOR->sendReadMessageToCurrencyExchangeService(this->mType, message.query);
     reply = ADMINISTRATOR->recieveMessageFromCurrencyExchangeService(this->mType);
 
     if (reply.errorId == NO_ERROR) {
         log(SERVER_ABSTRACT_NAME + " : se responde la consulta satisfactoriamente del Servicio de tipo de cambio",INFORMATION);
     } else {
-        log(SERVER_ABSTRACT_NAME + " : la consulta de tipo de cambio no se pudo responder",ERROR);
+        log(SERVER_ABSTRACT_NAME + " : la consulta de tipo de cambio no se pudo responder",WARNING);
     }
 
     reply.mtype = this->reciverType;

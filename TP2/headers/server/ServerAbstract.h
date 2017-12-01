@@ -7,7 +7,6 @@
 #include "tools/logger.h"
 #include "queue/Queue.h"
 #include "interfaces/Loggable.h"
-#include "shareMemory/MemoriaCompartida.h"
 
 class ServerAbstract : public Loggable{
 	const std::string SERVER_ABSTRACT_NAME = typeid(ServerAbstract).name();
@@ -17,7 +16,6 @@ class ServerAbstract : public Loggable{
         bool finalized;
 		Queue *mQueue;
 		void deleteResources();
-		MemoriaCompartida *serverIsDied;
 	public:
 		void solveQueryExchangeRate(struct messageQuery message);
         void solveQueryWeather(struct messageQuery message);
